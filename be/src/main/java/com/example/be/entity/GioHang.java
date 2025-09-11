@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chat_lieu")
+@Table(name = "gio_hang")
 @Getter
 @Setter
 @ToString
