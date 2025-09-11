@@ -1,0 +1,151 @@
+
+.top-header {
+    background-color: #171a23;
+    height: 55px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Rowdies:wght@700&display=swap');
+
+.navbar-wrapper {
+  background-color: #F5F0CF;
+  padding: 10px 0;
+}
+
+.logo {
+  max-width: 180px;
+  max-height: 180px;
+}
+
+.slogan {
+  text-align: left;
+  font-size: calc(2rem + 1vw);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-family: "Rowdies", sans-serif;
+  color: #BF1927;
+  text-shadow: -3px 3px 0px #f3b114;
+  line-height: 1.5;
+  margin-top: -20px;
+
+}
+
+.menu {
+  background-color: #f3b114;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: start;
+  gap: 20px;
+  flex-wrap: wrap;
+
+}
+
+.menu a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-weight: 640;
+}
+
+.menu a.active {
+  color: black;
+}
+
+.menu a:hover {
+  color: black;
+}
+
+.hotline-box {
+  background-color: #b21f1f;
+  color: white;
+  border: 4px dashed #f3b114;
+  padding: 18px 30px;
+  font-size: 1.4rem;
+  width: 100%;              /* full chiều ngang cột */
+  max-width: 450px;         /* hoặc tăng nếu muốn nữa */
+}
+.address {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500; /* đậm vừa phải cho dễ đọc */
+  justify-content: center;
+}
+.address svg {
+  vertical-align: top;
+  margin-top: 3px; /* tùy chỉnh nếu muốn dịch cao hơn nữa */
+  color: red;
+}
+.address-divider {
+  width: 100%;
+  border: 0;
+  height: 1px;
+  background-color: #ccc;
+  margin: 6px 0;
+}
+.hotline-top {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.hotline-top .phone {
+  color: #f3b114;
+  font-weight: bold;
+  font-size: 1.6rem;
+}
+
+.open-time {
+  display: flex;
+  justify-content: center;    /* căn giữa cả cụm */
+  align-items: center;        /* căn giữa theo trục dọc */
+  gap: 10px;                  /* khoảng cách giữa OPEN và giờ */
+  margin-top: 12px;
+}
+
+.open-icon {
+  background-color: white;
+  color: #b21f1f;
+  padding: 6px 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.time-text {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.footer{
+    background-color: #F5F0CF;
+}
+.title-contact-bottom {
+  font-size: 2rem;
+  font-weight: 750;
+  line-height: 1.4;
+  margin-bottom: 3rem;
+  text-align: start;
+  color: black;
+  text-transform: none; /* bỏ viết hoa toàn bộ */
+}
+
+.title-contact-bottom span {
+  font-family: "Rowdies", sans-serif;
+  color: #BF1927;
+  text-shadow: -3px 3px 0px #f3b114;
+  font-size: 3rem;
+  display: block;
+  text-transform: uppercase; /* riêng Hungry vẫn viết hoa */
+}
+
+address   {
+    color: black;
+     text-align: start;
+     font-weight: 900;
+     font-size: large;
+}
+address span  {
+    font-family: "Rowdies", sans-serif;
+    color: #BF1927;
+    text-shadow: -3px 3px 0px #f3b114;
+    font-size: calc(1rem + 1vw);
+}

@@ -1,0 +1,196 @@
+#app {
+  height: 100%;
+}
+html,
+body {
+  position: relative;
+  height: 100%;
+}
+
+body {
+        background-color: #f5f0cf;
+  font-family:
+    Helvetica Neue,
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 14px;
+  color: #fff;
+
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  overflow-clip-margin: content-box;
+  overflow: clip;
+}
+
+.autoplay-progress {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--swiper-theme-color);
+}
+
+.autoplay-progress svg {
+  --progress: 0;
+  position: absolute;
+  left: 0;
+  top: 0px;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  stroke-width: 4px;
+  stroke: var(--swiper-theme-color);
+  fill: none;
+  stroke-dashoffset: calc(125.6px * (1 - var(--progress)));
+  stroke-dasharray: 125.6;
+  transform: rotate(-90deg);
+}
+
+
+/* menu */
+.menu-title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+.menu-title {
+  font-family: "Arial Black", sans-serif;
+  font-size: 48px;  /* to hơn */
+  color: #bf1927;   /* đỏ */
+  text-shadow: -3px 3px 0 #f3b114; /* viền vàng */
+  margin: 50px 30px;
+  position: relative;
+}
+/* mỗi gạch bên */
+.line {
+  position: relative;
+  width: 150px;     /* dài ra rõ ràng */
+  height: 3px;
+  background-color: #bf1927;
+}
+
+/* thêm 1 gạch song song phía dưới */
+.line::before {
+  content: "";
+  position: absolute;
+  top: 6px;         /* khoảng cách giữa 2 gạch */
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #bf1927;
+}
+
+/* cách đều danh mục col */
+.box {
+  height: 370px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 20px;
+    position: relative;
+}
+.img-danhmuc {
+  width: 95%;           /* nhỏ hơn khung box một chút */
+  height: 280px;        /* tuỳ chỉnh chiều cao nếu muốn */
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;       /* căn giữa bên trong box */
+  border-radius: 4px;
+   transition: transform 0.8s ease; 
+}
+.box:hover .img-danhmuc {
+  transform: scale(1.05); /* phóng to 5% */
+}
+.prd-cate-title span {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: "Rowdies", sans-serif;
+    background: #BF1927;
+    color: white;
+    padding: 0.8rem;
+    display: inline-block;
+}
+
+
+/* menu hôm nay */
+.menu-day {
+  background-image: url(https://cdn3622.cdn-template-4s.com/media/template/bg-2.webp);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* KHÔNG set height ở đây */
+}
+
+
+.row-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.row-flex .col-day {
+  flex: 0 0 calc(50% - 16px); /* 2 cột, trừ gap */
+  height: 450px;
+}
+
+
+.product-title  {
+    background-image: url(https://cdn3622.cdn-template-4s.com/media/template/name-sp.webp);
+    background-size: contain;
+    background-position: left center;
+    background-repeat: no-repeat;
+    margin-bottom: 1rem;
+      padding: 1rem 2rem;
+}
+.product-title h4 {
+  margin: 0;
+  padding-left: 1rem; /* đẩy text cách nền */
+  text-align: left;
+}
+
+.product-title a {
+  color: white;
+  text-decoration: none; /* bỏ gạch chân */
+  font-weight: bold;
+}
+.img-day {
+  width: 95%;           /* nhỏ hơn khung box một chút */
+  height: 350px;        /* tuỳ chỉnh chiều cao nếu muốn */
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;       /* căn giữa bên trong box */
+  border-radius: 4px;
+   transition: transform 0.8s ease; 
+}
+.box-day:hover .img-day {
+  transform: scale(1.05); /* phóng to 5% */
+}
