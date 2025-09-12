@@ -1,197 +1,299 @@
 
-// import React, { useState, useEffect } from "react";
-// import { useLocation } from "react-router-dom";
-// import { toast } from "react-toastify";
-// import banner1 from "../../../assets/image/banner1.jpg";
-// import banner2 from "../../../assets/image/banner2.jpg";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import "./home.css";
-// // Import Swiper styles
-// import "swiper/css";
-// import "swiper/css/pagination";
-// import "swiper/css/navigation";
-// import { Pagination, Navigation } from "swiper/modules";
-// export const Home = ({ children }) => {
-//     const location = useLocation();
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./home.css";
+// Import Swiper styles
 
-//     useEffect(() => {
-//       if (location.state?.fromGuardError) {
-//         const toastId = "guard-error-toast";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Pagination, Navigation } from "swiper/modules";
+export const Home = ({ children }) => {
 
-//         // Kiểm tra toast đang hiện chưa, nếu chưa thì show
-//         if (!toast.isActive(toastId)) {
-//           toast.error(location.state.fromGuardError, {
-//             toastId,
-//             position: "top-right",
-//             autoClose: 3000,
-//             pauseOnHover: true,
-//             draggable: true,
-//             theme: "colored",
-//           });
-//         }
+  return (
+    <div>
+      <div className="carousel-wrapper">
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={30}
+          loop={true}
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          modules={[Pagination, Navigation]}
+          className="mySwiper"
+        >
+          <SwiperSlide>
+            <img
+              src="https://cdn3522.cdn-template-4s.com/media/icon/c94b80778cc44b28a45fe4aea8415e52-1.jpg"
+              className="carousel-img"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              src="https://cdn3522.cdn-template-4s.com/media/icon/710dd2f63feed8b04c443e5fcecf08d0.jpg"
+              className="carousel-img"
+            />
+          </SwiperSlide>
+        </Swiper>
+      </div>
+      <section style={{ backgroundColor: "#eee" }}>
+        <div className="text-center container py-5">
+          <h4 className="mt-4 mb-5">
+            <strong>Bestsellers</strong>
+          </h4>
 
-//         // Xóa state để tránh show lại toast khi back
-//         window.history.replaceState({}, document.title);
-//       }
-//     }, [location.state]);
-//   return (
-//     <div>
-//       <div className="container">
-//         <div className="carousel-wrapper">
-//           <Swiper
-//             slidesPerView={1}
-//             spaceBetween={30}
-//             loop={true}
-//             pagination={{
-//               clickable: true,
-//             }}
-//             navigation={true}
-//             modules={[Pagination, Navigation]}
-//             className="mySwiper"
-//           >
-//             <SwiperSlide>
-//               <img src={banner1} className="carousel-img" />
-//             </SwiperSlide>
-//             <SwiperSlide>
-//               <img src={banner2} className="carousel-img" />
-//             </SwiperSlide>
-//           </Swiper>
-//         </div>
-//         {/* menu danh mục */}
+          {/* Row 1 */}
+          <div className="row">
+            <div className="col-lg-4 col-md-12 mb-4">
+              <div className="card">
+                <div
+                  className="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                  data-mdb-ripple-color="light"
+                >
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/belt.webp"
+                    className="w-100"
+                    alt="product"
+                  />
+                  <a href="#!">
+                    <div className="mask">
+                      <div className="d-flex justify-content-start align-items-end h-100">
+                        <h5>
+                          <span className="badge bg-primary ms-2">New</span>
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="hover-overlay">
+                      <div
+                        className="mask"
+                        style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                      />
+                    </div>
+                  </a>
+                </div>
+                <div className="card-body">
+                  <a href="#!" className="text-reset">
+                    <h5 className="card-title mb-3">Product name</h5>
+                  </a>
+                  <a href="#!" className="text-reset">
+                    <p>Category</p>
+                  </a>
+                  <h6 className="mb-3">$61.99</h6>
+                </div>
+              </div>
+            </div>
 
-//         <div className="row g-3 mt-2">
-//           <div className="menu-title-wrapper">
-//             <div className="line"></div>
-//             <h2 className="menu-title">Danh mục</h2>
-//             <div className="line"></div>
-//           </div>
-//           <div className="col-12 col-sm-6 col-lg-3">
-//             <div className="box p-2">
-//               <a href="#">
-//                 <img
-//                   src="https://dayphache.edu.vn/wp-content/uploads/2020/02/mon-tra-sua-tran-chau.jpg"
-//                   className="img-danhmuc"
-//                 />
-//                 <div className="prd-cate-title mt-3 text-center">
-//                   <span>Trà sữa</span>
-//                 </div>
-//               </a>
-//             </div>
-//           </div>
-//           <div className="col-12 col-sm-6 col-lg-3">
-//             <div className="box p-2">
-//               <a href="#">
-//                 <img
-//                   src="https://www.unileverfoodsolutions.com.vn/dam/global-ufs/mcos/phvn/vietnam/calcmenu/recipes/VN-recipes/other/energizing-lemon-tea/main-header.jpg"
-//                   className="img-danhmuc"
-//                 />
-//                 <div className="prd-cate-title mt-3 text-center">
-//                   <span>Trà chanh</span>
-//                 </div>
-//               </a>
-//             </div>
-//           </div>
-//           <div className="col-12 col-sm-6 col-lg-3">
-//             <div className="box p-2">
-//               <a href="#">
-//                 <img
-//                   src="https://cdnphoto.dantri.com.vn/i7Ew_JAtefE35zxJrPzBE0EuvLk=/thumb_w/1020/2022/08/06/caphe-1659747941762.jpeg"
-//                   className="img-danhmuc"
-//                 />
-//                 <div className="prd-cate-title mt-3 text-center">
-//                   <span>Cà phê</span>
-//                 </div>
-//               </a>
-//             </div>
-//           </div>
-//           <div className="col-12 col-sm-6 col-lg-3">
-//             <div className="box p-2">
-//               <a href="#">
-//                 <img
-//                   src="https://cdn2.tuoitre.vn/zoom/700_390/2018/6/4/photo1528102564896-1528102564896209081221.jpg"
-//                   className="img-danhmuc"
-//                 />
-//                 <div className="prd-cate-title mt-3 text-center">
-//                   <span>Nước ép</span>
-//                 </div>
-//               </a>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="menu-day mt-5 pb-5">
-//         <div className="container">
-//           <div className="menu-title-wrapper">
-//             <div className="line"></div>
-//             <h2 className="menu-title">Uống gì hôm nay?</h2>
-//             <div className="line"></div>
-//           </div>
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="card">
+                <div
+                  className="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                  data-mdb-ripple-color="light"
+                >
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/img%20(4).webp"
+                    className="w-100"
+                    alt="product"
+                  />
+                  <a href="#!">
+                    <div className="mask">
+                      <div className="d-flex justify-content-start align-items-end h-100">
+                        <h5>
+                          <span className="badge bg-success ms-2">Eco</span>
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="hover-overlay">
+                      <div
+                        className="mask"
+                        style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                      />
+                    </div>
+                  </a>
+                </div>
+                <div className="card-body">
+                  <a href="#!" className="text-reset">
+                    <h5 className="card-title mb-3">Product name</h5>
+                  </a>
+                  <a href="#!" className="text-reset">
+                    <p>Category</p>
+                  </a>
+                  <h6 className="mb-3">$61.99</h6>
+                </div>
+              </div>
+            </div>
 
-//           <div className="row-flex">
-//             <div className="col-lg-6 col-md-6 col-12 col-day">
-//               <div className="product-title ">
-//                 <h4>
-//                   <span>Trà sữa matcha</span>
-//                 </h4>
-//               </div>
-//               <a href="#">
-//                 <div className="box-day">
-//                   <img
-//                     src="https://dayphache.edu.vn/wp-content/uploads/2018/02/tra-sua-matcha.jpg"
-//                     className="img-day"
-//                   />
-//                 </div>
-//               </a>
-//             </div>
-//             <div className="col-lg-6 col-md-6 col-12 col-day">
-//               <div className="product-title ">
-//                 <h4>
-//                   <span>Trà sữa trân châu</span>
-//                 </h4>
-//               </div>
-//               <a href="#">
-//                 <div className="box-day">
-//                   <img
-//                     src="https://dayphache.edu.vn/wp-content/uploads/2020/02/mon-tra-sua-tran-chau.jpg"
-//                     className="img-day"
-//                   />
-//                 </div>
-//               </a>
-//             </div>
-//             <div className="col-lg-6 col-md-6 col-12 col-day">
-//               <div className="product-title ">
-//                 <h4>
-//                   <span>Trà sữa trân châu</span>
-//                 </h4>
-//               </div>
-//               <a href="#">
-//                 <div className="box-day">
-//                   <img
-//                     src="https://dayphache.edu.vn/wp-content/uploads/2020/02/mon-tra-sua-tran-chau.jpg"
-//                     className="img-day"
-//                   />
-//                 </div>
-//               </a>
-//             </div>
-//             <div className="col-lg-6 col-md-6 col-12 col-day">
-//               <div className="product-title ">
-//                 <h4>
-//                   <span>Trà sữa trân châu</span>
-//                 </h4>
-//               </div>
-//               <a href="#">
-//                 <div className="box-day">
-//                   <img
-//                     src="https://dayphache.edu.vn/wp-content/uploads/2018/02/tra-sua-matcha.jpg"
-//                     className="img-day"
-//                   />
-//                 </div>
-//               </a>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="card">
+                <div
+                  className="bg-image hover-zoom ripple"
+                  data-mdb-ripple-color="light"
+                >
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/shoes%20(3).webp"
+                    className="w-100"
+                    alt="product"
+                  />
+                  <a href="#!">
+                    <div className="mask">
+                      <div className="d-flex justify-content-start align-items-end h-100">
+                        <h5>
+                          <span className="badge bg-danger ms-2">-10%</span>
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="hover-overlay">
+                      <div
+                        className="mask"
+                        style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                      />
+                    </div>
+                  </a>
+                </div>
+                <div className="card-body">
+                  <a href="#!" className="text-reset">
+                    <h5 className="card-title mb-3">Product name</h5>
+                  </a>
+                  <a href="#!" className="text-reset">
+                    <p>Category</p>
+                  </a>
+                  <h6 className="mb-3">
+                    <s>$61.99</s>
+                    <strong className="ms-2 text-danger">$50.99</strong>
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 2 */}
+          <div className="row">
+            <div className="col-lg-4 col-md-12 mb-4">
+              <div className="card">
+                <div
+                  className="bg-image hover-zoom ripple"
+                  data-mdb-ripple-color="light"
+                >
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/img%20(23).webp"
+                    className="w-100"
+                    alt="product"
+                  />
+                  <a href="#!">
+                    <div className="mask">
+                      <div className="d-flex justify-content-start align-items-end h-100">
+                        <h5>
+                          <span className="badge bg-success ms-2">Eco</span>
+                          <span className="badge bg-danger ms-2">-10%</span>
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="hover-overlay">
+                      <div
+                        className="mask"
+                        style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                      />
+                    </div>
+                  </a>
+                </div>
+                <div className="card-body">
+                  <a href="#!" className="text-reset">
+                    <h5 className="card-title mb-3">Product name</h5>
+                  </a>
+                  <a href="#!" className="text-reset">
+                    <p>Category</p>
+                  </a>
+                  <h6 className="mb-3">
+                    <s>$61.99</s>
+                    <strong className="ms-2 text-danger">$50.99</strong>
+                  </h6>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="card">
+                <div
+                  className="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
+                  data-mdb-ripple-color="light"
+                >
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/img%20(17).webp"
+                    className="w-100"
+                    alt="product"
+                  />
+                  <a href="#!">
+                    <div className="mask">
+                      <div className="d-flex justify-content-start align-items-end h-100" />
+                    </div>
+                    <div className="hover-overlay">
+                      <div
+                        className="mask"
+                        style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                      />
+                    </div>
+                  </a>
+                </div>
+                <div className="card-body">
+                  <a href="#!" className="text-reset">
+                    <h5 className="card-title mb-3">Product name</h5>
+                  </a>
+                  <a href="#!" className="text-reset">
+                    <p>Category</p>
+                  </a>
+                  <h6 className="mb-3">$61.99</h6>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="card">
+                <div
+                  className="bg-image hover-zoom ripple"
+                  data-mdb-ripple-color="light"
+                >
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/img%20(30).webp"
+                    className="w-100"
+                    alt="product"
+                  />
+                  <a href="#!">
+                    <div className="mask">
+                      <div className="d-flex justify-content-start align-items-end h-100">
+                        <h5>
+                          <span className="badge bg-primary ms-2">New</span>
+                          <span className="badge bg-success ms-2">Eco</span>
+                          <span className="badge bg-danger ms-2">-10%</span>
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="hover-overlay">
+                      <div
+                        className="mask"
+                        style={{ backgroundColor: "rgba(251, 251, 251, 0.15)" }}
+                      />
+                    </div>
+                  </a>
+                </div>
+                <div className="card-body">
+                  <a href="#!" className="text-reset">
+                    <h5 className="card-title mb-3">Product name</h5>
+                  </a>
+                  <a href="#!" className="text-reset">
+                    <p>Category</p>
+                  </a>
+                  <h6 className="mb-3">
+                    <s>$61.99</s>
+                    <strong className="ms-2 text-danger">$50.99</strong>
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};

@@ -187,12 +187,6 @@ const DashboardAdmin = ({ children }) => {
                 }
               >
                 <MenuItem
-                  active={location.pathname === "/admin-nhan-vien"}
-                  onClick={() => nav("/admin-nhan-vien")}
-                >
-                  Nhân viên
-                </MenuItem>
-                <MenuItem
                   active={location.pathname === "/admin-khach-hang"}
                   onClick={() => nav("/admin-khach-hang")}
                 >

@@ -9,7 +9,7 @@ import AdminGuard from "../guard/AdminGuard";
 import { Suspense } from "react";
 import { DashboardClient } from "../layouts/client/DashboardClient";
 import DashboardAdmin from "../layouts/admin/DashboardAdmin";
-// import { Home } from "../layouts/client/home/home";
+import { Home } from "../layouts/client/home/home";
 import { Login } from "../layouts/login/Login";
 
 
@@ -18,7 +18,6 @@ import { Login } from "../layouts/login/Login";
 import KhachHang from "../layouts/admin/khachhang/KhachHang";
 import AddKhachHang from "../layouts/admin/khachhang/AddKhachHang";
 import UpdateKhachHang from "../layouts/admin/khachhang/UpdateKhachHang";
-import DetailKhachHang from "../layouts/admin/khachhang/DetailKhachHang";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 function App() {
@@ -56,7 +55,7 @@ function App() {
               element={
                 <GuestGuard>
                   <DashboardClient>
-                    {/* <Home /> */}
+                    <Home />
                   </DashboardClient>
                 </GuestGuard>
               }

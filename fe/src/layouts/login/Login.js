@@ -70,15 +70,21 @@ export const Login = () => {
         style={{ width: 1300, height: 700 }}
       >
         <div className="row h-100">
-          <div className="col-md-6 p-0 overflow-hidden">
+          <div className="col-md-6 p-0 overflow-hidden ">
             <img
               src={loginImage}
-              alt="login form"
-              style={{ width: "80%", height: "100%", objectFit: "cover" }}
+              alt="logo bes"
+              style={{
+                width: "100%", // rộng bằng col-md-6
+                height: "100%", // cao bằng col-md-6
+                objectFit: "contain", // giữ nguyên tỷ lệ, không bị cắt
+                display: "block",
+                margin: "0 auto", // căn giữa theo chiều ngang
+              }}
             />
           </div>
 
-          <div className="col-md-6 d-flex flex-column justify-content-center px-4">
+          <div className="col-md-6 d-flex flex-column justify-content-center mt-5  px-4">
             <img
               className="d-block mx-auto"
               width={170}
@@ -87,11 +93,16 @@ export const Login = () => {
               style={{ marginTop: "-200px" }}
             />
 
-            <Form form={form} onFinish={login} layout="vertical" className="text-center">
+            <Form
+              form={form}
+              onFinish={login}
+              layout="vertical"
+              className="text-center"
+            >
               <Form.Item name="email" className="mb-1">
                 <Input
                   placeholder="Mời nhập Email"
-                  style={{ height: 45, width: 550  }}
+                  style={{ height: 45, width: 550 }}
                 />
               </Form.Item>
 
@@ -145,10 +156,6 @@ export const Login = () => {
               >
                 Đăng ký
               </Button>
-            </div>
-
-            <div className="divider text-center d-flex align-items-center justify-content-center mt-3">
-              <h4 className="text-center fw-bold mx-3 mb-0">OR</h4>
             </div>
           </div>
         </div>
