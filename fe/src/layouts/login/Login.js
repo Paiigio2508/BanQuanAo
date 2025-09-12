@@ -74,7 +74,7 @@ export const Login = () => {
             <img
               src={loginImage}
               alt="login form"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              style={{ width: "80%", height: "100%", objectFit: "cover" }}
             />
           </div>
 
