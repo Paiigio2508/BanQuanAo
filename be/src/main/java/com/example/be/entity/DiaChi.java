@@ -8,13 +8,14 @@ import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Entity
-@Table(name = "dia_chi")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@Table(name = "dia_chi")
+@Entity
+@Builder
 public class DiaChi extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "id_nguoi_dung",referencedColumnName = "id")

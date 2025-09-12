@@ -3,8 +3,8 @@ import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import loginImage from "../../assets/image/login.png";
-import logoShop from "../../assets/image/logoNobackground.png";
+import loginImage from "../../assets/images/logo.jpg";
+import logoShop from "../../assets/images/logonobackground.png";
 import { LoginAPI } from "../../pages/api/login/LoginAPI";
 
 export const Login = () => {

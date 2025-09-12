@@ -10,8 +10,15 @@ import { Suspense } from "react";
 import { DashboardClient } from "../layouts/client/DashboardClient";
 import DashboardAdmin from "../layouts/admin/DashboardAdmin";
 // import { Home } from "../layouts/client/home/home";
-// import { Login } from "../layouts/login/Login";
+import { Login } from "../layouts/login/Login";
 
+
+
+// khách hàng
+import KhachHang from "../layouts/admin/khachhang/KhachHang";
+import AddKhachHang from "../layouts/admin/khachhang/AddKhachHang";
+import UpdateKhachHang from "../layouts/admin/khachhang/UpdateKhachHang";
+import DetailKhachHang from "../layouts/admin/khachhang/DetailKhachHang";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 function App() {
@@ -24,14 +31,14 @@ function App() {
             <Route path="/not-access" element={<NotAccess />} />
 
             {/* login */}
-            {/* <Route
+            <Route
               path="/login"
               element={
                 <GuestGuard>
                   <Login />
                 </GuestGuard>
               }
-            /> */}
+            />
             <Route
               path="/sign-up"
               element={<GuestGuard>{/* Component sign-up */}</GuestGuard>}
@@ -74,46 +81,7 @@ function App() {
                 </AdminGuard>
               }
             />
-            {/* <Route
-              path="/admin-nhan-vien"
-              element={
-                <AdminGuard>
-                  <DashboardAdmin>
-                    <NhanVien />
-                  </DashboardAdmin>
-                </AdminGuard>
-              }
-            />
-            <Route
-              path="/admin-them-nhan-vien"
-              element={
-                <AdminGuard>
-                  <DashboardAdmin>
-                    <AddNhanVien />
-                  </DashboardAdmin>
-                </AdminGuard>
-              }
-            />
-            <Route
-              path="/admin-update-nhan-vien/:id"
-              element={
-                <AdminGuard>
-                  <DashboardAdmin>
-                    <UpdateNhanVien />
-                  </DashboardAdmin>
-                </AdminGuard>
-              }
-            />
-            <Route
-              path="/admin-detail-nhan-vien/:id"
-              element={
-                <AdminGuard>
-                  <DashboardAdmin>
-                    <DetailNhanVien />
-                  </DashboardAdmin>
-                </AdminGuard>
-              }
-            />
+      
             <Route
               path="/admin-khach-hang"
               element={
@@ -145,16 +113,7 @@ function App() {
               }
             />
 
-            <Route
-              path="/admin-danh-muc"
-              element={
-                <AdminGuard>
-                  <DashboardAdmin>
-                    <DanhMuc />
-                  </DashboardAdmin>
-                </AdminGuard>
-              }
-            /> */}
+  
 
 
             {/* <Route
