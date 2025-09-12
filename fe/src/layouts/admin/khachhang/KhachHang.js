@@ -1,4 +1,5 @@
 import "./khachhang.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useEffect } from "react";
 import {
   Button,
@@ -201,12 +202,12 @@ export default function KhachHang() {
           borderRadius: "8px",
         }}
       >
-        <h5 className="text-start">
+        <h4 className="text-start">
           <FilterFilled size={30} /> Bộ lọc
-        </h5>
+        </h4>
         <hr />
         <Form
-          className="row col-md-12"
+          className="row "
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 14 }}
           layout="horizontal"
