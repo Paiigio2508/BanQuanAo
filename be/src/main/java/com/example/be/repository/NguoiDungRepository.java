@@ -98,7 +98,7 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, String> {
                 COALESCE(a.dia_chi, 'Không có') AS diaChi
             FROM nguoi_dung u
             LEFT JOIN dia_chi a
-                ON u.id = a.nguoi_dung_id
+                ON u.id = a.id_nguoi_dung
                 AND a.trang_thai = 0
             WHERE u.chuc_vu = :chucVu
               AND u.id = :id

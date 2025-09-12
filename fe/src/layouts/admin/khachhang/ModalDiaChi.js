@@ -2,7 +2,7 @@ import { Button, Modal, Table, Tag, Radio, Space } from "antd";
 import React, { useState, useEffect } from "react";
 import AddModalDiaChi from "./AddModalDiaChi";
 import ModalUpdateDiaChi from "./ModalUpdateDiaChi";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { KhachHangAPI } from "../../../pages/api/khachhang/KhachHangAPI";
 
 const ModalDiaChi = (props) => {

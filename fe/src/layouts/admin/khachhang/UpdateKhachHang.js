@@ -56,7 +56,7 @@ export default function UpdateKhachHang() {
 
         form.setFieldsValue({
           ten: data.ten || "",
-          cccd: data.cccd || "",
+          canCuocCongDan: data.cccd || "",
           gioiTinh: data.gioiTinh || "",
           email: data.email || "",
           soDienThoai: data.soDienThoai || "",
@@ -107,8 +107,6 @@ export default function UpdateKhachHang() {
 
   const handleSuccess = () => {
     form.validateFields().then((values) => {
-      console.log("validate values", values);
-
       const provinceName =
         listProvince.find(
           (p) => Number(p.ProvinceID) === Number(values.provinceId)
@@ -135,13 +133,13 @@ export default function UpdateKhachHang() {
         tenHuyen: districtName,
         tenXa: wardName,
         id: id,
-        anh: fileImage ? null : oldImage, // nếu không upload mới, giữ link cũ
+        anh: fileImage ? fileImage : oldImage,
+        // nếu không upload mới, giữ link cũ
       };
 
       const formData = new FormData();
       if (fileImage) formData.append("file", fileImage); // nếu có thì append file
       formData.append("request", JSON.stringify(payload));
-
       KhachHangAPI.update(formData)
         .then(() => {
           toast.success("Cập nhật thành công!", { autoClose: 3000 });
@@ -201,7 +199,7 @@ export default function UpdateKhachHang() {
                       <Input className="text-center" />
                     </Form.Item>
                     <Form.Item
-                      name="cccd"
+                      name="canCuocCongDan"
                       label="Căn cước"
                       rules={[
                         { required: true, message: "Vui lòng nhập CCCD." },
