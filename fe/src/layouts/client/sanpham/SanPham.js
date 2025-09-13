@@ -10,7 +10,7 @@ import {
   Space,
 } from "antd";
 import "./sanpham.css";
-export const SanPham = ({ children }) => {
+export const SanPhamClient = ({ children }) => {
   return (
     <div className="container-fuild">
       <div className="banner-san-pham-shop mt-4">

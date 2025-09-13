@@ -26,7 +26,7 @@ import AddKhachHang from "../layouts/admin/khachhang/AddKhachHang";
 import UpdateKhachHang from "../layouts/admin/khachhang/UpdateKhachHang";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { SanPham } from '../layouts/client/sanpham/SanPham';
+import { SanPhamClient } from '../layouts/client/sanpham/SanPham';
 import { GioHang } from '../layouts/client/giohang/GioHang';
 import { LienHe } from '../layouts/client/lienhe/lienhe';
 function App() {
