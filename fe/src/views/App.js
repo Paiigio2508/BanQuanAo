@@ -13,7 +13,13 @@ import DashboardAdmin from "../layouts/admin/DashboardAdmin";
 import { Login } from "../layouts/login/Login";
 
 
-
+//SanPham
+import ChatLieu from '../layouts/admin/sanpham/ChatLieu';
+import Hang from '../layouts/admin/sanpham/Hang';
+import DanhMuc from '../layouts/admin/sanpham/DanhMuc';
+import GioiTinh from '../layouts/admin/sanpham/GioiTinh';
+import MauSac from '../layouts/admin/sanpham/MauSac';
+import SanPham from '../layouts/admin/sanpham/SanPham';
 // khách hàng
 import KhachHang from "../layouts/admin/khachhang/KhachHang";
 import AddKhachHang from "../layouts/admin/khachhang/AddKhachHang";
@@ -113,24 +119,75 @@ function App() {
               }
             />
 
-  
 
+            <Route
+              path="/admin-chat-lieu"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <ChatLieu/>
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
+     
+            <Route
+              path="/admin-hang"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <Hang/>
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
 
-            {/* <Route
+            <Route
+              path="/admin-danh-muc"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <DanhMuc/>
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
+
+            <Route
+              path="/admin-gioi-tinh"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <GioiTinh/>
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
+
+            <Route
+              path="/admin-mau-sac"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <MauSac/>
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
+
+            <Route
               path="/admin-san-pham"
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <SanPham />
+                    <SanPham/>
                   </DashboardAdmin>
                 </AdminGuard>
               }
-            /> */}
-     
+            />
           </Routes>
         </Suspense>
       </BrowserRouter>
-      <ToastContainer />
     </>
   );
 }
