@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @SuperBuilder
 public class MauSac extends BaseEntityBangCon {
 }
