@@ -7,8 +7,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "./Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoShop from "../../assets/images/logo1.png";
-
+import { Input, Space } from "antd";
+import Search from "antd/es/input/Search";
 export const DashboardClient = ({ children }) => {
+  const { Search } = Input;
   return (
     <>
       <div className="top-header">
@@ -27,40 +29,31 @@ export const DashboardClient = ({ children }) => {
             />
           </li>
           <li>
-            <Link to="/" className="nav-link my-nav-link">
+            <Link to="/home" className="nav-link my-nav-link">
               Trang chủ
             </Link>
           </li>
           <li>
-            <Link to="/about" className="nav-link my-nav-link">
-              Về chúng tôi
+            <Link to="/san-pham" className="nav-link my-nav-link">
+              Sản phẩm
             </Link>
           </li>
           <li>
-            <Link to="/veston" className="nav-link my-nav-link">
-              Veston công sở
-            </Link>
-          </li>
-          <li>
-            <Link to="/polo" className="nav-link my-nav-link">
-              Áo polo
-            </Link>
-          </li>
-          <li>
-            <Link to="/somi" className="nav-link my-nav-link">
-              Áo sơ mi
-            </Link>
-          </li>
-          <li>
-            <Link to="/phukien" className="nav-link my-nav-link">
-              Phụ kiện
-            </Link>
-          </li>
-
-          <li>
-            <Link to="/contact" className="nav-link my-nav-link">
+            <Link to="/lien-he" className="nav-link my-nav-link">
               Liên hệ
             </Link>
+          </li>
+          <li>
+            <Link to="/gio-hang" className="nav-link my-nav-link">
+              Giỏ hàng
+            </Link>
+          </li>
+          <li className="mb-4">
+            <Search
+            className="mt-4"
+              placeholder="Tìm kiếm mã, tên phẩm phẩm"
+              style={{ width: 200 }}
+            />
           </li>
         </ul>
       </div>
