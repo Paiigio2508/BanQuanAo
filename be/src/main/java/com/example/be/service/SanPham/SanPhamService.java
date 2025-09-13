@@ -1,0 +1,43 @@
+package com.example.be.service.SanPham;
+
+import com.example.be.dto.repon.ThuocTinhRepo;
+import com.example.be.dto.request.admin.sanphamrequest.ThuocTinhRequest;
+import com.example.be.dto.request.admin.sanphamrequest.ThuocTinhSearchRequest;
+import com.example.be.entity.SanPham;
+
+import com.example.be.repository.SanPham.SanPhamRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class SanPhamService {
+    @Autowired
+    SanPhamRepository sanPhamRepository;
+    public List<ThuocTinhRepo> getAllSanPham() {
+        return sanPhamRepository.getALLSP();
+    }
+    public SanPham update(String id, ThuocTinhRequest request) {
+        SanPham sp = request.mapToEntity(new SanPham());
+        sp.setId(id);
+        return sanPhamRepository.save(sp);
+    }
+
+    public SanPham detailSP(String id){return sanPhamRepository.findById(id).get();}
+
+    public List<ThuocTinhRepo> getTim(ThuocTinhSearchRequest bangConSearch) {
+        return sanPhamRepository.tim(bangConSearch);
+    }
+
+    public String addSP(ThuocTinhRequest sp){
+        SanPham sanPham = SanPham.builder()
+                .ma(sp.getMa())
+                .ten(sp.getTen())
+                .ngayTao(sp.getNgayTao())
+                .trangThai(0)
+                .build();
+        sanPhamRepository.save(sanPham);
+        return "Done";
+    }
+}
