@@ -29,6 +29,9 @@ import AddKhachHang from "../layouts/admin/khachhang/AddKhachHang";
 import UpdateKhachHang from "../layouts/admin/khachhang/UpdateKhachHang";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SanPhamClient } from '../layouts/client/sanpham/SanPham';
+import { GioHang } from '../layouts/client/giohang/GioHang';
+import { LienHe } from '../layouts/client/lienhe/lienhe';
 function App() {
   return (
     <>
@@ -70,16 +73,35 @@ function App() {
               }
             />
             <Route
-              path="/menu"
+              path="/san-pham"
               element={
                 <GuestGuard>
                   <DashboardClient>
-                    {/* <MENU /> */}
+                    <SanPham />
                   </DashboardClient>
                 </GuestGuard>
               }
             />
-
+            <Route
+              path="/gio-hang"
+              element={
+                <GuestGuard>
+                  <DashboardClient>
+                    <GioHang />
+                  </DashboardClient>
+                </GuestGuard>
+              }
+            />
+            <Route
+              path="/lien-he"
+              element={
+                <GuestGuard>
+                  <DashboardClient>
+                    <LienHe />
+                  </DashboardClient>
+                </GuestGuard>
+              }
+            />
             {/* admin */}
             <Route
               path="/admin"
@@ -89,7 +111,6 @@ function App() {
                 </AdminGuard>
               }
             />
-
             <Route
               path="/admin-khach-hang"
               element={
