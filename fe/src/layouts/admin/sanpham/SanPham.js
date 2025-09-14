@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { GiMaterialsScience } from 'react-icons/gi';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { ThuocTinhAPI } from '../../../pages/api/sanpham/ThuocTinh.api';
+import { Link, useNavigate } from "react-router-dom";
 export default function SanPham() {
   //Form
   const [selectedValue, setSelectedValue] = useState('1');
@@ -252,7 +253,13 @@ export default function SanPham() {
       dataIndex: "id",
       render: (title) => (
         <Space size="middle">
-          <a className='btn btn-danger' onClick={() => showModal(`${title}`)}><BsFillEyeFill className='mb-1' /></a>
+                 <Link
+            to={`/admin-chi-tiet-san-pham/${title}`}
+            className="btn btn-danger"
+          >
+            <BsFillEyeFill />
+          </Link>
+          {/* <a className='btn btn-danger' onClick={() => showModal(`${title}`)}><BsFillEyeFill className='mb-1' /></a> */}
         </Space>
       ),
     },
