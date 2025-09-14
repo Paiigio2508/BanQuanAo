@@ -1,0 +1,162 @@
+/* tiêu đề + giá */
+.card-tilte-san-pham{
+  color: #333;
+  font-family: 'Arial', sans-serif;
+  font-size: 19px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+  margin-bottom: 15px;
+}
+.text-gia-tien {
+  font-size: 15px;
+  font-weight: 600;
+  color: #007BFF;
+  padding: 5px 10px;
+  background-color: #F0F0F0;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  margin: 5px 0;
+}
+
+/* card + hiệu ứng */
+.container-card-sanpham .card {
+  position: relative;
+  width: 280px;
+  height: 420px;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.container-card-sanpham .card:before {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 0;
+  background: burlywood;
+  clip-path: circle(150px at 80% 20%);
+  transition: 0.5s ease-in-out;
+}
+.container-card-sanpham .card:hover:before {
+  clip-path: circle(300px at 80% -20%);
+}
+.container-card-sanpham .card:after {
+  content: 'TSPORT';
+  position: absolute;
+  top: 50%;
+  left: 1%;
+  font-size: 4em;
+  font-weight: 800;
+  font-style: italic;
+  color: rgba(15, 15, 2, 0.05);
+}
+
+/* ảnh */
+.container-card-sanpham .card .imgBx {
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 100%;
+  height: 220px;
+  transition: 0.5s;
+}
+.container-card-sanpham .card:hover .imgBx {
+  top: 0%;
+  transform: translateY(0%);
+}
+.container-card-sanpham .card .imgBx img {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 270px;
+  height: 210px;
+  object-fit: contain;
+}
+
+/* nội dung + block size/color hiện khi hover */
+.container-card-sanpham .card .contentBx {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100px;
+  text-align: center;
+  transition: 1s;
+  z-index: 1;
+}
+.container-card-sanpham .card:hover .contentBx {
+  height: 230px;
+}
+.container-card-sanpham .card .contentBx .size,
+.container-card-sanpham .card .contentBx .color {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.5s;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.container-card-sanpham .card:hover .contentBx .size {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.5s;
+}
+.container-card-sanpham .card:hover .contentBx .color {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.6s;
+}
+
+/* pill size */
+.container-card-sanpham .card .contentBx .size span {
+  width: 28px;
+  height: 28px;
+  line-height: 26px;
+  font-weight: bold;
+  font-size: 14px;
+  display: inline-block;
+  color: #111;
+  background: wheat;
+  margin: 0 5px;
+  transition: 0.5s;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.container-card-sanpham .card .contentBx .size span:hover {
+  background: #9bdc28;
+}
+
+/* nút */
+.button-36,
+.button-35 {
+  padding: 5px 15px;
+  padding-bottom: 18px;
+  border: 0;
+  font-size: 16px;
+  transition: all 150ms ease-in-out;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: bold;
+  box-shadow:
+    rgba(99, 99, 99, 0.2) 0 2px 8px 0,
+    inset 0px -6px 0px rgba(0, 0, 0, 0.1),
+    inset 0px -2px 0px rgba(0, 0, 0, 0.15);
+}
+.button-36 { background: linear-gradient(135deg, #ba7f5b, #fefdfe); }
+.button-35 { background: linear-gradient(135deg, #040404, #5b025b); }
+
+.button-36:hover,
+.button-35:hover { filter: brightness(1.05); }
+.button-36:active,
+.button-35:active {
+  filter: brightness(0.95);
+  padding-top: 15px;
+  padding-bottom: 15px;
+  box-shadow:
+    rgba(99, 99, 99, 0.2) 0 2px 6px 0,
+    inset 0px -1px 0px rgba(0, 0, 0, 0.15);
+}
