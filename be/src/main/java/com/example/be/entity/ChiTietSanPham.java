@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ChiTietSanPham  extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "san_pham_id")
@@ -35,7 +35,7 @@ public class ChiTietSanPham  extends BaseEntity {
     @JoinColumn(name = "danh_muc_id")
     private DanhMuc danhMuc;
     @ManyToOne
-    @JoinColumn(name = "hang")
+    @JoinColumn(name = "hang_id")
     private Hang hang;
     private BigDecimal giaNhap;
     private BigDecimal giaBan;

@@ -20,6 +20,9 @@ import DanhMuc from '../layouts/admin/sanpham/DanhMuc';
 import GioiTinh from '../layouts/admin/sanpham/GioiTinh';
 import MauSac from '../layouts/admin/sanpham/MauSac';
 import SanPham from '../layouts/admin/sanpham/SanPham';
+import KichThuoc from '../layouts/admin/sanpham/KichThuoc';
+import ChiTietSanPham from '../layouts/admin/sanpham/ChiTietSanPham';
+import AddChiTietSanPham from '../layouts/admin/sanpham/AddChiTietSanPham';
 // khách hàng
 import KhachHang from "../layouts/admin/khachhang/KhachHang";
 import AddKhachHang from "../layouts/admin/khachhang/AddKhachHang";
@@ -86,7 +89,7 @@ function App() {
                 </AdminGuard>
               }
             />
-      
+
             <Route
               path="/admin-khach-hang"
               element={
@@ -124,18 +127,18 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <ChatLieu/>
+                    <ChatLieu />
                   </DashboardAdmin>
                 </AdminGuard>
               }
             />
-     
+
             <Route
               path="/admin-hang"
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <Hang/>
+                    <Hang />
                   </DashboardAdmin>
                 </AdminGuard>
               }
@@ -146,7 +149,7 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <DanhMuc/>
+                    <DanhMuc />
                   </DashboardAdmin>
                 </AdminGuard>
               }
@@ -157,7 +160,7 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <GioiTinh/>
+                    <GioiTinh />
                   </DashboardAdmin>
                 </AdminGuard>
               }
@@ -168,7 +171,7 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <MauSac/>
+                    <MauSac />
                   </DashboardAdmin>
                 </AdminGuard>
               }
@@ -179,7 +182,39 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <SanPham/>
+                    <SanPham />
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
+
+            <Route
+              path="/admin-kich-thuoc"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <KichThuoc />
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
+
+            <Route
+              path="/admin-chi-tiet-san-pham/:id"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <ChiTietSanPham />
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
+            <Route
+              path="/admin-them-chi-tiet-san-pham/:id"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <AddChiTietSanPham />
                   </DashboardAdmin>
                 </AdminGuard>
               }

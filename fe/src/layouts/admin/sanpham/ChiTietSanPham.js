@@ -1,25 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, Radio, Form, Input, Select, Space, Table, Tag, Modal } from 'antd';
+import { Button, Divider, Form, Input, Radio, Select, Space, Table, Tag, Modal, Image } from 'antd';
 import { PlusCircleOutlined, RetweetOutlined } from "@ant-design/icons";
 import { BookFilled } from "@ant-design/icons";
 import { FilterFilled } from "@ant-design/icons";
-import { BiSolidCategory } from 'react-icons/bi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { GiMaterialsScience } from 'react-icons/gi';
 import { BsFillEyeFill } from 'react-icons/bs';
+import { ChiTietSanPhamAPI } from '../../../pages/api/sanpham/ChiTietSanPham.api';
 import { ThuocTinhAPI } from '../../../pages/api/sanpham/ThuocTinh.api';
+import { Link, useNavigate } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 
-export default function DanhMuc() {
+export default function ChiTietSanPham() {
   //Form
+  const { id } = useParams();
+  const nav = useNavigate();
   const [selectedValue, setSelectedValue] = useState('1');
+
   const handleChange = (value) => {
     setSelectedValue(value);
   };
-  const [formTim] = Form.useForm();
   const [componentSize, setComponentSize] = useState('default');
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+  const [form] = Form.useForm();
+  const [form1] = Form.useForm();
+  const [formTim] = Form.useForm();
+  //Ấn Add
+  const [open, setOpen] = useState(false);
+  const [bordered] = useState(false);
   const formItemLayout = {
     labelCol: {
       span: 4
@@ -28,17 +39,19 @@ export default function DanhMuc() {
       span: 20
     },
   };
-  //Ấn add 
-  const [open, setOpen] = useState(false);
-  const [bordered] = useState(false);
-  const addDanhMuc = (value) => {
+
+const themCTSP = () => {
+  nav(`/admin-them-chi-tiet-san-pham/${id}`);
+};
+
+  const addChiTietSanPham = (value) => {
     const checkTrung = (code) => {
-      return danhMuc.some(dm => dm.ten.trim().toLowerCase() === code.trim().toLowerCase());
+      return chiTietSanPham.some(sp => sp.ten.trim().toLowerCase() === code.trim().toLowerCase());
     };
     if (!(checkTrung(value.ten))) {
-      ThuocTinhAPI.create("danh-muc",value)
+      ThuocTinhAPI.create("san-pham", value)
         .then((res) => {
-          toast('✔️ Thêm thành công!', {
+          toast('✔️ Thêm thành công !', {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -48,12 +61,12 @@ export default function DanhMuc() {
             progress: undefined,
             theme: "light",
           });
-          loadDanhMuc();
+          loadChiTietSanPham();
           setOpen(false);
           form.resetFields();
         })
     } else {
-      toast.error('Danh mục đã tồn tại!', {
+      toast.error('Sản phẩm đã tồn tại!', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -64,15 +77,14 @@ export default function DanhMuc() {
         theme: "light",
       });
     }
-
-  } 
+  }
   //Update
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [dmUpdate, setDmUpdate] = useState("");
+  const [clUpdate, setClUpdate] = useState("");
   const [tenCheck, setTenCheck] = useState("");
 
   const showModal = async (idDetail) => {
-    await ThuocTinhAPI.detail("danh-muc",idDetail)
+    await ThuocTinhAPI.detail("san-pham", idDetail)
       .then((res) => {
         form1.setFieldsValue({
           id: res.data.id,
@@ -81,25 +93,22 @@ export default function DanhMuc() {
           trangThai: res.data.trangThai,
           ngayTao: res.data.ngayTao,
           ngaySua: res.data.ngaySua,
-          nguoiTao: res.data.nguoiTao,
-          nguoiSua: res.data.nguoiSua,
         });
         setTenCheck(res.data.ten)
-        setDmUpdate(res.data)
+        setClUpdate(res.data)
       })
-      setOpenUpdate(true)
+    setOpenUpdate(true)
   };
-  const updateDanhMuc = () => {
-
-    if (dmUpdate.ten != tenCheck) {
+  const updateChiTietSanPham = () => {
+    if (clUpdate.ten != tenCheck) {
       const checkTrung = (ten) => {
-        return danhMuc.some(dm =>
-          dm.ten.trim().toLowerCase() === ten.trim().toLowerCase()
+        return chiTietSanPham.some(x =>
+          x.ten.trim().toLowerCase() === ten.trim().toLowerCase()
         );
       };
 
-      if (checkTrung(dmUpdate.ten)) {
-        toast.error('Danh mục trùng với danh mục khác !', {
+      if (checkTrung(clUpdate.ten)) {
+        toast.error('Sản phẩm trùng với sản phẩm khác !', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -112,7 +121,7 @@ export default function DanhMuc() {
         return;
       }
     }
-    ThuocTinhAPI.update("danh-muc",dmUpdate.id, dmUpdate)
+    ThuocTinhAPI.update("san-pham", clUpdate.id, clUpdate)
       .then((res) => {
         toast('✔️ Sửa thành công!', {
           position: "top-right",
@@ -124,10 +133,9 @@ export default function DanhMuc() {
           progress: undefined,
           theme: "light",
         });
-        setDmUpdate("");
-        loadDanhMuc();
+        setClUpdate("");
+        loadChiTietSanPham();
         setOpenUpdate(false);
-
       })
   }
   //Tìm kiếm
@@ -135,14 +143,15 @@ export default function DanhMuc() {
     if (allValues.hasOwnProperty('ten')) {
       allValues.ten = allValues.ten.trim();
     }
-    timKiemCT(allValues);
+    timKiemSP(allValues);
   }
-  const timKiemCT = (dataSearch) => {
-    ThuocTinhAPI.search("danh-muc",dataSearch)
+  const timKiemSP = (dataSearch) => {
+    ThuocTinhAPI.search("san-pham", dataSearch)
       .then((res) => {
-        setDanhMucs(res.data);
+        setChiTietSanPhams(res.data);
       })
   }
+
   //Validate
   const validateDateAdd = (_, value) => {
     const { getFieldValue } = form;
@@ -155,7 +164,7 @@ export default function DanhMuc() {
       return Promise.reject("Tên không được để trống");
     }
 
-    const specialCharacterRegex = /[!@#$%^&*()_+\=\[\]{};':"\\|,.<>\/?]/;
+    const specialCharacterRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     if (specialCharacterRegex.test(tenTim)) {
       return Promise.reject("Tên không được chứa ký tự đặc biệt");
     }
@@ -166,7 +175,7 @@ export default function DanhMuc() {
     return Promise.resolve();
   };
 
-  const validateDateUpdate = (_, value) => {
+  const validateDateKichThuocUpdate = (_, value) => {
     const { getFieldValue } = form1;
     const tenTim = getFieldValue("ten");
     if (tenTim != undefined) {
@@ -177,7 +186,7 @@ export default function DanhMuc() {
       return Promise.reject("Tên không được để trống");
     }
 
-    const specialCharacterRegex = /[!@#$%^&*()_+\=\[\]{};':"\\|,.<>\/?]/;
+    const specialCharacterRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     if (specialCharacterRegex.test(tenTim)) {
       return Promise.reject("Tên không được chứa ký tự đặc biệt");
     }
@@ -197,45 +206,97 @@ export default function DanhMuc() {
     return Promise.resolve();
   };
   //Table
-  const [danhMuc, setDanhMucs] = useState([]);
+  const [chiTietSanPham, setChiTietSanPhams] = useState([]);
 
   useEffect(() => {
-    loadDanhMuc();
+    loadChiTietSanPham();
   }, []);
 
-  const loadDanhMuc = () => {
-    ThuocTinhAPI.getAll("danh-muc",)
-      .then((res) => {
-        setDanhMucs(res.data);
-      })
+  const loadChiTietSanPham = () => {
+    ChiTietSanPhamAPI.showCTSPBySanPhamId(id).then((res) => {
+      setChiTietSanPhams(res.data);
+    })
   };
 
-  console.log(danhMuc)
+  console.log(chiTietSanPham)
+
   const columns = [
     {
       title: "STT",
-      dataIndex: "id",
-      key: "id",
-      render: (id, record, index) => {
+      dataIndex: "idCTSP",
+      key: "idCTSP",
+      align: "center",
+      render: (idCTSP, record, index) => {
         ++index;
         return index;
       },
       showSorterTooltip: false,
+    }
+    ,
+    {
+      title: "Ảnh",
+      dataIndex: "linkAnh",
+      key: "linkAnh",
+      align: "center",
+      render: (text) => (
+        <Image
+          width={100}
+          height={100}
+          style={{ borderRadius: "15px" }}
+          src={text}
+        />
+      ),
     },
     {
-      title: "Mã",
-      dataIndex: "ma",
-      center: "true",
-      sorter: (a, b) => a.ma - b.ma,
-    }, ,
+      title: "Tên Sản Phẩm",
+      dataIndex: "tenSP",
+      align: "center",
+    },
     {
-      title: "Tên",
-      dataIndex: "ten",
+      title: "Kích Thước",
+      dataIndex: "tenKichThuoc",
+      align: "center",
+    },
+    {
+      title: "Tên Màu Sắc",
+      dataIndex: "tenMauSac",
+      align: "center",
+    },
+    {
+      title: "Màu Sắc",
+      dataIndex: "maMauSac",
+      key: "maMauSac",
+      align: "center",
+      render: (text, record) => {
+        return <>
+          <div style={{
+            backgroundColor: `${record.maMauSac}`,
+            borderRadius: 6,
+            width: 60,
+            height: 25,
+          }} className='custom-div'></div >
+        </>;
+      }
+    },
+    {
+      title: "Số Lượng",
+      dataIndex: "soLuong",
+      align: "center",
+    },
+    {
+      title: "Giá Bán",
+      dataIndex: "giaBan",
+      align: "center",
+      key: "giaBan",
+      render: (text) => {
+        return new Intl.NumberFormat("vi-VN").format(text) + " VNĐ";
+      }
     },
     {
       title: "Trạng thái",
       dataIndex: "trangThai",
       key: "trangThai",
+      align: "center",
       render: (trang_thai) => (
         <>
           {trang_thai === 0 ? (
@@ -253,23 +314,28 @@ export default function DanhMuc() {
     {
       title: "Hành động",
       key: "action",
-      dataIndex: "id",
+      dataIndex: "idCTSP",
       render: (title) => (
         <Space size="middle">
-          <a className='btn btn-danger' onClick={() => showModal(`${title}`) }><BsFillEyeFill className='mb-1' /></a>
+          <Link
+            to={`/admin-chi-tiet-san-pham/${title}`}
+            className="btn btn-danger"
+          >
+            <BsFillEyeFill />
+          </Link>
+          {/* <a className='btn btn-danger' onClick={() => showModal(`${title}`)}><BsFillEyeFill className='mb-1' /></a> */}
         </Space>
       ),
     },
   ]
-  const [form] = Form.useForm();
-  const [form1] = Form.useForm();
+
   return (
     <div className="container-fluid" style={{ borderRadius: 20 }}>
       <div className="container-fluid">
         <Divider orientation="center" color="#d0aa73">
           <h4 className="text-first pt-1 fw-bold">
             {" "}
-            <BiSolidCategory size={35} /> Quản lý danh mục
+            <GiMaterialsScience size={35} /> Quản lý Chi Tiết Sản Phẩm
           </h4>
         </Divider>
         <div
@@ -327,22 +393,24 @@ export default function DanhMuc() {
                 type="primary"
                 htmlType="reset"
                 icon={<RetweetOutlined />}
-                onClick={loadDanhMuc}
+                onClick={loadChiTietSanPham}
               >
                 Làm mới
               </Button>
             </Form.Item>
           </Form>
         </div>
-        <div className="text-end">
-          <button onClick={() => setOpen(true)} class="button-them">
-            <span class="text">
-              <PlusCircleOutlined /> Thêm danh mục
+
+        <div className="text-end mt-3">
+          <button onClick={themCTSP} className="button-them">
+            <span className="text">
+              <PlusCircleOutlined /> Thêm chi tiết sản phẩm
             </span>
           </button>
         </div>
+
         <div
-          className=" bg-light mt-3 m-2 p-3 pt-2"
+          className=" bg-light mt-3 p-3 pt-2"
           style={{
             border: "1px solid #ddd", // Border color
             boxShadow: "0 3px 8px rgba(0, 0, 0, 0.1)", // Box shadow
@@ -350,111 +418,26 @@ export default function DanhMuc() {
           }}
         >
           <h5>
-            <BookFilled size={30} /> Danh sách danh mục
+            <BookFilled size={30} /> Danh sách sản phẩm
           </h5>
           <hr />
           <div className="ms-3">
-            {/* Add danh mục */}
-
-            <Modal
-              title="Thêm Danh Mục"
-              centered
-              open={open}
-              onOk={() => form.submit()}
-              onCancel={() => setOpen(false)}
-              width={500}
-            >
-              <Form
-                initialValues={{
-                  size: componentSize,
-                }}
-                onValuesChange={onFormLayoutChange}
-                size={componentSize}
-                style={{
-                  maxWidth: 1000,
-                }}
-                onFinish={addDanhMuc}
-                form={form}
-              >
-                <Form.Item
-                  label="Tên"
-                  name="ten"
-                  hasFeedback
-                  rules={[{ required: true,validator: validateDateAdd }]}
-                >
-                  <Input maxLength={31} className="border" />
-                </Form.Item>
-              </Form>
-            </Modal>
-
-            {/* Update danh mục */}
-            <Modal
-              title="Sửa Danh Mục"
-              centered
-              open={openUpdate}
-              onOk={() => form1.submit()}
-              onCancel={() => {
-                setOpenUpdate(false);
-              }}
-                          width={500}
-            >
-              <Form
-                {...formItemLayout}
-                initialValues={{
-                  size: componentSize,
-                }}
-                onValuesChange={onFormLayoutChange}
-                size={componentSize}
-                style={{
-                  maxWidth: 1000,
-                }}
-                onFinish={updateDanhMuc}
-                form={form1}
-                >
-                  <Form.Item
-                    name="ten"
-                    label={<b>Tên</b>}
-                    hasFeedback
-                    rules={[
-                      { required: true, validator: validateDateUpdate },
-                    ]}
-                  >
-                    <Input
-                      className="border"
-                      maxLength={31}
-                      value={dmUpdate.ten}
-                      onChange={(e) =>
-                        setDmUpdate({ ...dmUpdate, ten: e.target.value })
-                      }
-                    ></Input>
-                  </Form.Item>
-                <Form.Item label={<b>Trạng thái </b>}>
-                  <Radio.Group
-                    onChange={(e) =>
-                      setDmUpdate({ ...dmUpdate, trangThai: e.target.value })
-                    }
-                    value={dmUpdate.trangThai}
-                  >
-                    <Radio value={0}>Còn bán</Radio>
-                    <Radio value={1}>Dừng bán</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Form>
-            </Modal>
-          </div>
+        </div>
           <div className="container-fluid mt-4">
-            <Table
-              align="center"
-              dataSource={danhMuc}
-              columns={columns}
-              pagination={{
-                showQuickJumper: true,
-                defaultPageSize: 5,
-                position: ["bottomCenter"],
-                defaultCurrent: 1,
-                total: danhMuc.length,
-              }}
-            />
+            <div>
+              <Table
+                className="text-center"
+                dataSource={chiTietSanPham}
+                columns={columns}
+                pagination={{
+                  showQuickJumper: true,
+                  defaultPageSize: 5,
+                  position: ["bottomCenter"],
+                  defaultCurrent: 1,
+                  total: chiTietSanPham.length,
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
