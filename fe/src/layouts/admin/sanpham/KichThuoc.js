@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { ThuocTinhAPI } from '../../../pages/api/sanpham/ThuocTinh.api';
 
-export default function DanhMuc() {
+export default function KichThuoc() {
   //Form
   const [selectedValue, setSelectedValue] = useState('1');
   const handleChange = (value) => {
@@ -31,12 +31,12 @@ export default function DanhMuc() {
   //Ấn add 
   const [open, setOpen] = useState(false);
   const [bordered] = useState(false);
-  const addDanhMuc = (value) => {
+  const addKichThuoc = (value) => {
     const checkTrung = (code) => {
-      return danhMuc.some(dm => dm.ten.trim().toLowerCase() === code.trim().toLowerCase());
+      return kichThuoc.some(kt => kt.ten.trim().toLowerCase() === code.trim().toLowerCase());
     };
     if (!(checkTrung(value.ten))) {
-      ThuocTinhAPI.create("danh-muc",value)
+      ThuocTinhAPI.create("kich-thuoc",value)
         .then((res) => {
           toast('✔️ Thêm thành công!', {
             position: "top-right",
@@ -48,12 +48,12 @@ export default function DanhMuc() {
             progress: undefined,
             theme: "light",
           });
-          loadDanhMuc();
+          loadKichThuoc();
           setOpen(false);
           form.resetFields();
         })
     } else {
-      toast.error('Danh mục đã tồn tại!', {
+      toast.error('Kích thước đã tồn tại!', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -68,11 +68,11 @@ export default function DanhMuc() {
   } 
   //Update
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [dmUpdate, setDmUpdate] = useState("");
+  const [ktUpdate, setDmUpdate] = useState("");
   const [tenCheck, setTenCheck] = useState("");
 
   const showModal = async (idDetail) => {
-    await ThuocTinhAPI.detail("danh-muc",idDetail)
+    await ThuocTinhAPI.detail("kich-thuoc",idDetail)
       .then((res) => {
         form1.setFieldsValue({
           id: res.data.id,
@@ -89,17 +89,17 @@ export default function DanhMuc() {
       })
       setOpenUpdate(true)
   };
-  const updateDanhMuc = () => {
+  const updateKichThuoc = () => {
 
-    if (dmUpdate.ten != tenCheck) {
+    if (ktUpdate.ten != tenCheck) {
       const checkTrung = (ten) => {
-        return danhMuc.some(dm =>
-          dm.ten.trim().toLowerCase() === ten.trim().toLowerCase()
+        return kichThuoc.some(kt =>
+          kt.ten.trim().toLowerCase() === ten.trim().toLowerCase()
         );
       };
 
-      if (checkTrung(dmUpdate.ten)) {
-        toast.error('Danh mục trùng với danh mục khác !', {
+      if (checkTrung(ktUpdate.ten)) {
+        toast.error('Kích thước trùng với kích thước khác !', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -112,7 +112,7 @@ export default function DanhMuc() {
         return;
       }
     }
-    ThuocTinhAPI.update("danh-muc",dmUpdate.id, dmUpdate)
+    ThuocTinhAPI.update("kich-thuoc",ktUpdate.id, ktUpdate)
       .then((res) => {
         toast('✔️ Sửa thành công!', {
           position: "top-right",
@@ -125,7 +125,7 @@ export default function DanhMuc() {
           theme: "light",
         });
         setDmUpdate("");
-        loadDanhMuc();
+        loadKichThuoc();
         setOpenUpdate(false);
 
       })
@@ -138,9 +138,9 @@ export default function DanhMuc() {
     timKiemCT(allValues);
   }
   const timKiemCT = (dataSearch) => {
-    ThuocTinhAPI.search("danh-muc",dataSearch)
+    ThuocTinhAPI.search("kich-thuoc",dataSearch)
       .then((res) => {
-        setDanhMucs(res.data);
+        setKichThuocs(res.data);
       })
   }
   //Validate
@@ -197,20 +197,19 @@ export default function DanhMuc() {
     return Promise.resolve();
   };
   //Table
-  const [danhMuc, setDanhMucs] = useState([]);
+  const [kichThuoc, setKichThuocs] = useState([]);
 
   useEffect(() => {
-    loadDanhMuc();
+    loadKichThuoc();
   }, []);
 
-  const loadDanhMuc = () => {
-    ThuocTinhAPI.getAll("danh-muc",)
+  const loadKichThuoc = () => {
+    ThuocTinhAPI.getAll("kich-thuoc",)
       .then((res) => {
-        setDanhMucs(res.data);
+        setKichThuocs(res.data);
       })
   };
 
-  console.log(danhMuc)
   const columns = [
     {
       title: "STT",
@@ -269,7 +268,7 @@ export default function DanhMuc() {
         <Divider orientation="center" color="#d0aa73">
           <h4 className="text-first pt-1 fw-bold">
             {" "}
-            <BiSolidCategory size={35} /> Quản lý danh mục
+            <BiSolidCategory size={35} /> Quản lý kích thước
           </h4>
         </Divider>
         <div
@@ -327,7 +326,7 @@ export default function DanhMuc() {
                 type="primary"
                 htmlType="reset"
                 icon={<RetweetOutlined />}
-                onClick={loadDanhMuc}
+                onClick={loadKichThuoc}
               >
                 Làm mới
               </Button>
@@ -337,7 +336,7 @@ export default function DanhMuc() {
         <div className="text-end">
           <button onClick={() => setOpen(true)} class="button-them">
             <span class="text">
-              <PlusCircleOutlined /> Thêm danh mục
+              <PlusCircleOutlined /> Thêm kích thước
             </span>
           </button>
         </div>
@@ -350,14 +349,14 @@ export default function DanhMuc() {
           }}
         >
           <h5>
-            <BookFilled size={30} /> Danh sách danh mục
+            <BookFilled size={30} /> Danh sách kích thước
           </h5>
           <hr />
           <div className="ms-3">
-            {/* Add danh mục */}
+            {/* Add kích thước */}
 
             <Modal
-              title="Thêm Danh Mục"
+              title="Thêm Kích Thước"
               centered
               open={open}
               onOk={() => form.submit()}
@@ -373,7 +372,7 @@ export default function DanhMuc() {
                 style={{
                   maxWidth: 1000,
                 }}
-                onFinish={addDanhMuc}
+                onFinish={addKichThuoc}
                 form={form}
               >
                 <Form.Item
@@ -387,9 +386,9 @@ export default function DanhMuc() {
               </Form>
             </Modal>
 
-            {/* Update danh mục */}
+            {/* Update kích thước */}
             <Modal
-              title="Sửa Danh Mục"
+              title="Sửa Kích Thước"
               centered
               open={openUpdate}
               onOk={() => form1.submit()}
@@ -408,7 +407,7 @@ export default function DanhMuc() {
                 style={{
                   maxWidth: 1000,
                 }}
-                onFinish={updateDanhMuc}
+                onFinish={updateKichThuoc}
                 form={form1}
                 >
                   <Form.Item
@@ -422,18 +421,18 @@ export default function DanhMuc() {
                     <Input
                       className="border"
                       maxLength={31}
-                      value={dmUpdate.ten}
+                      value={ktUpdate.ten}
                       onChange={(e) =>
-                        setDmUpdate({ ...dmUpdate, ten: e.target.value })
+                        setDmUpdate({ ...ktUpdate, ten: e.target.value })
                       }
                     ></Input>
                   </Form.Item>
                 <Form.Item label={<b>Trạng thái </b>}>
                   <Radio.Group
                     onChange={(e) =>
-                      setDmUpdate({ ...dmUpdate, trangThai: e.target.value })
+                      setDmUpdate({ ...ktUpdate, trangThai: e.target.value })
                     }
-                    value={dmUpdate.trangThai}
+                    value={ktUpdate.trangThai}
                   >
                     <Radio value={0}>Còn bán</Radio>
                     <Radio value={1}>Dừng bán</Radio>
@@ -445,14 +444,14 @@ export default function DanhMuc() {
           <div className="container-fluid mt-4">
             <Table
               align="center"
-              dataSource={danhMuc}
+              dataSource={kichThuoc}
               columns={columns}
               pagination={{
                 showQuickJumper: true,
                 defaultPageSize: 5,
                 position: ["bottomCenter"],
                 defaultCurrent: 1,
-                total: danhMuc.length,
+                total: kichThuoc.length,
               }}
             />
           </div>
