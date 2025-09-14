@@ -8,7 +8,9 @@ export const AppConfig = {
 export const requestAdmin = axios.create({
   baseURL: AppConfig.apiUrl,
 });
-
+export const requestClient = axios.create({
+  baseURL: AppConfig.apiUrl,
+});
 // Axios instance cho request địa chỉ, KHÔNG đặt baseURL vì gọi thẳng API GHN
 export const requestAdress = axios.create();
 

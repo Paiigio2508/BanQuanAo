@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/quen-mat-khau").permitAll()
                         .requestMatchers("/api/dang-ky").permitAll()
                         .requestMatchers("/api/get-all").permitAll()
+                        .requestMatchers("/home").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("NHANVIEN")
                         .anyRequest().authenticated()
                 )

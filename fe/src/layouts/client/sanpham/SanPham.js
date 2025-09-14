@@ -10,7 +10,18 @@ import {
   Space,
 } from "antd";
 import "./sanpham.css";
+import { ProductCard } from "./productCard";
+import { HomeAPI } from "../../../pages/api/client/HomeAPI";
 export const SanPhamClient = ({ children }) => {
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+      getNew();
+    }, []);
+    const getNew = () => {
+      HomeAPI.getAllSanPham().then((res) => {
+        setProducts(res.data);
+      });
+    };
   return (
     <div className="container-fuild">
       <div className="banner-san-pham-shop mt-4">
@@ -115,23 +126,17 @@ export const SanPhamClient = ({ children }) => {
           </div>
           <div className="col-md-9">
             <div className="row">
-              <Row gutter={16}>
-                <Col span={8}>
-                  <Card title="Card title" variant="borderless">
-                    Card content
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card title="Card title" variant="borderless">
-                    Card content
-                  </Card>
-                </Col>
-                <Col span={8}>
-                  <Card title="Card title" variant="borderless">
-                    Card content
-                  </Card>
-                </Col>
-              </Row>
+              <div class="container">
+                <div className="row">
+                  {products.map((product, index) => {
+                    return (
+                      <div className="col-md-3">
+                        <ProductCard key={index} product={product} />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </div>

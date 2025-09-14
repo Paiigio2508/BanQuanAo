@@ -7,10 +7,33 @@ import { toast, ToastContainer } from "react-toastify";
 import "./Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoShop from "../../assets/images/logo1.png";
-import { Input, Space } from "antd";
-import Search from "antd/es/input/Search";
+import { Avatar, Dropdown, Typography, Space, Input, Button } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 export const DashboardClient = ({ children }) => {
   const { Search } = Input;
+    const [idUser, setIdUser] = useState(null);
+   const [userName, setUserName] = useState("");
+   const [linkAnh, setLinkAnh] = useState("");
+   
+const isLoggedIn = !!userName?.trim();
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData) {
+      setIdUser(userData.userID || null);
+      setUserName(userData.ten || "Admin");
+      setLinkAnh(userData.anh || "");
+    }
+  }, []);
+     const dangXuat = () => {
+       localStorage.clear();
+       window.location.reload();
+     };
+      const items = [
+        { key: "1", label: <a >Đổi mật khẩu</a> },
+        { key: "2", label: "Thông tin" },
+        { key: "3", label: <a onClick={dangXuat}>Đăng xuất</a> },
+      ];
+
   return (
     <>
       <div className="top-header">
@@ -19,43 +42,69 @@ export const DashboardClient = ({ children }) => {
         </marquee>
       </div>
       <div className="bg-white">
-        <ul className="nav-list">
-          <li>
-            <img
-              className="d-block mx-auto"
-              width={200}
-              src={logoShop}
-              alt="logo"
-            />
-          </li>
-          <li>
-            <Link to="/home" className="nav-link my-nav-link">
-              Trang chủ
-            </Link>
-          </li>
-          <li>
-            <Link to="/san-pham" className="nav-link my-nav-link">
-              Sản phẩm
-            </Link>
-          </li>
-          <li>
-            <Link to="/lien-he" className="nav-link my-nav-link">
-              Liên hệ
-            </Link>
-          </li>
-          <li>
-            <Link to="/gio-hang" className="nav-link my-nav-link">
-              Giỏ hàng
-            </Link>
-          </li>
-          <li className="mb-4">
-            <Search
-            className="mt-4"
-              placeholder="Tìm kiếm mã, tên phẩm phẩm"
-              style={{ width: 200 }}
-            />
-          </li>
-        </ul>
+        <nav className="nav-bar">
+          <ul className="nav-list">
+            <li>
+              <img width={200} src={logoShop} alt="logo" />
+            </li>
+            <li>
+              <Link to="/home" className="nav-link my-nav-link">
+                Trang chủ
+              </Link>
+            </li>
+            <li>
+              <Link to="/san-pham" className="nav-link my-nav-link">
+                Sản phẩm
+              </Link>
+            </li>
+            <li>
+              <Link to="/lien-he" className="nav-link my-nav-link">
+                Liên hệ
+              </Link>
+            </li>
+            <li>
+              <Link to="/gio-hang" className="nav-link my-nav-link">
+                Giỏ hàng
+              </Link>
+            </li>
+            <li>
+              <Search
+                placeholder="Tìm kiếm mã, tên phẩm phẩm"
+                style={{ width: 240 }}
+              />
+            </li>
+          </ul>
+
+          <div className="nav-right">
+            <div className="nav-right">
+              {isLoggedIn ? (
+                <Dropdown menu={{ items }} arrow placement="bottomRight">
+                  <span
+                    style={{
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <Avatar
+                      src={linkAnh}
+                      icon={!linkAnh && <UserOutlined />}
+                      style={{ width: 40, height: 40 }}
+                    />
+                    <span className="text-dark" style={{ fontWeight: 500 }}>
+                      {userName}
+                    </span>
+                  </span>
+                </Dropdown>
+              ) : (
+                <Link to="/login">
+                  <Button className="">Đăng nhập</Button>
+                </Link>
+              )}
+            </div>
+          </div>
+        </nav>
       </div>
 
       <div>{children}</div>
