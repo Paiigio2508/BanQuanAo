@@ -2,6 +2,7 @@ package com.example.be.service;
 
 import com.example.be.dto.impldto.NguoiDungResponseImplDTO;
 import com.example.be.dto.repon.DiaChiKhachHangRepon;
+import com.example.be.dto.request.admin.DangKyRequest;
 import com.example.be.dto.request.admin.DiaChiRequest;
 import com.example.be.dto.request.admin.NguoiDungRequest;
 import com.example.be.dto.request.admin.SearchTenAndTrangThaiRequest;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,7 +41,13 @@ public class KhachHangService {
         return nguoiDungRepository.getNguoiDungByChucVu("KHACHHANG");
     }
     public NguoiDungResponseImplDTO add(NguoiDungRequest request) {
-        String password = RandomStringUtils.random(8, true, true);
+        String randompassword = RandomStringUtils.random(8, true, true);
+        String pass;
+        if(request.getMatKhau()==null){
+            pass=passwordEncoder.encode(randompassword);
+        }else {
+            pass=passwordEncoder.encode(request.getMatKhau());
+        }
         NguoiDung add = NguoiDung.builder()
                 .ten(request.getTen())
                 .ma(String.format("KH%03d", nguoiDungRepository.countNguoiDungByChucVu("KHACHHANG") + 1))
@@ -49,10 +57,10 @@ public class KhachHangService {
                 .canCuocCongDan(request.getCanCuocCongDan())
                 .trangThai(0)
                 .ngaySinh(request.getNgaySinh())
-                .anh(request.getAnh())
+                .anh(request.getAnh() == null ?  "https://i.pinimg.com/736x/bc/43/98/bc439871417621836a0eeea768d60944.jpg": request.getAnh())
                 .ngayThamGia(java.sql.Date.valueOf(LocalDate.now()))
                 .ngayTao(LocalDateTime.now())
-                .matKhau(passwordEncoder.encode(password))
+                .matKhau(pass)
                 .soDienThoai(request.getSoDienThoai())
                 .build();
         nguoiDungRepository.save(add);
@@ -69,7 +77,7 @@ public class KhachHangService {
         diaChi.setNguoiDung(add);
         diaChi.setTrangThai(0);
         diaChiRepository.save(diaChi);
-        emailService.sendEmailPasword(request.getEmail(), "Mật khẩu bạn là ", password);
+        emailService.sendEmailPasword(request.getEmail(), "Mật khẩu bạn là ", pass);
         return new NguoiDungResponseImplDTO(add, diaChi);
     }
     @Async
@@ -135,4 +143,47 @@ public class KhachHangService {
         diaChi.setTrangThai(0);
         return diaChiRepository.save(diaChi);
     }
+
+    // khách hàng đăng kí tài khoản mới
+    public NguoiDung signUp(DangKyRequest dangKyRequest) {
+
+        emailService.sendEmailPasword(dangKyRequest.getEmail(), "Bạn đã đăng ký thành công tài khoản ở cửa hàng MiShoes" +
+                "Mật khẩu bạn là ", dangKyRequest.getMatKhau());
+        int count = (int) nguoiDungRepository.countNguoiDungByChucVu("KHACHHANG"); // đếm số lượng
+        String ma = String.format("KH%03d", count + 1);
+        NguoiDung nguoiDung = NguoiDung.builder()
+                        .ma(ma)
+                .ten(dangKyRequest.getTen())
+                .email(dangKyRequest.getEmail())
+                .matKhau(passwordEncoder.encode(dangKyRequest.getMatKhau()))
+                .chucVu("KHACHHANG")
+                .ngayTao(LocalDateTime.now())
+                .trangThai(0)
+                .build();
+        return nguoiDungRepository.save(nguoiDung);
+    }
+    // khách hàng quên mật khẩu
+    public NguoiDung QuenMatKhau(DangKyRequest dangKyRequest) {
+        // Tạo mật khẩu ngẫu nhiên 8 ký tự gồm chữ và số
+        String password = RandomStringUtils.random(8, true, true);
+
+        // Gửi email thông báo mật khẩu mới
+        emailService.sendEmailPasword(
+                dangKyRequest.getEmail(),
+                "Bạn thay đổi mật khẩu thành công. Mật khẩu mới của bạn là: ",
+                password
+        );
+
+        // Tìm người dùng theo email
+        Optional<NguoiDung> optionalNguoiDung = nguoiDungRepository.findByEmail(dangKyRequest.getEmail());
+
+        if (optionalNguoiDung.isPresent()) {
+            NguoiDung nguoiDung = optionalNguoiDung.get();
+            nguoiDung.setMatKhau(passwordEncoder.encode(password)); // mã hoá mật khẩu trước khi lưu
+            return nguoiDungRepository.save(nguoiDung);
+        } else {
+            throw new RuntimeException("Không tìm thấy người dùng với email: " + dangKyRequest.getEmail());
+        }
+    }
+
 }

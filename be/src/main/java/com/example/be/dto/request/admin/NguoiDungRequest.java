@@ -16,6 +16,7 @@ public class NguoiDungRequest {
     private Boolean gioiTinh;
     private String canCuocCongDan;
     private String anh;
+    private String matKhau;
     private int trangThai;
     private int idThanhPho;
     private String tenThanhPho;

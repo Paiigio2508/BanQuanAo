@@ -111,9 +111,7 @@ const DashboardAdmin = ({ children }) => {
                   <img src={logoShop} width={100} alt="logo" />
                   <span
                     style={{ color: "white", marginTop: 5, fontSize: "24px" }}
-                  >
-              
-                  </span>
+                  ></span>
                 </>
               ) : (
                 <img src={logoShop} width={40} alt="logo" />
@@ -203,6 +201,8 @@ const DashboardAdmin = ({ children }) => {
               </SubMenu>
 
               <MenuItem
+                active={location.pathname === "/admin-khach-hang"}
+                onClick={() => nav("/admin-hoa-don")}
                 icon={<FaMoneyBills size={24} />}
                 suffix={
                   !collapsed && (
