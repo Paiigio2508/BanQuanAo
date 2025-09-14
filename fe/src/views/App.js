@@ -6,6 +6,7 @@ import NotFoud from "../pages/404/NotFoud";
 import NotAccess from "../pages/403/NotAccess";
 import GuestGuard from "../guard/GuestGuard";
 import AdminGuard from "../guard/AdminGuard";
+import "react-toastify/dist/ReactToastify.css"; 
 import { Suspense } from "react";
 import { DashboardClient } from "../layouts/client/DashboardClient";
 import DashboardAdmin from "../layouts/admin/DashboardAdmin";
@@ -29,6 +30,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { SanPhamClient } from '../layouts/client/sanpham/SanPham';
 import { GioHang } from '../layouts/client/giohang/GioHang';
 import { LienHe } from '../layouts/client/lienhe/lienhe';
+import HoaDon from '../layouts/admin/hoadon/HoaDon';
+import { QuenMatKhau } from '../layouts/login/QuenMatKhau';
+import { DangKy } from '../layouts/login/DangKy';
 function App() {
   return (
     <>
@@ -48,13 +52,17 @@ function App() {
               }
             />
             <Route
-              path="/sign-up"
-              element={<GuestGuard>{/* Component sign-up */}</GuestGuard>}
+              path="/dang-ky"
+              element={<GuestGuard>
+               <DangKy/>
+              </GuestGuard>}
             />
             <Route
-              path="/forgot-password"
+              path="/quen-mat-khau"
               element={
-                <GuestGuard>{/* Component forgot-password */}</GuestGuard>
+                <GuestGuard>
+                  <QuenMatKhau />
+                </GuestGuard>
               }
             />
 
@@ -74,7 +82,7 @@ function App() {
               element={
                 <GuestGuard>
                   <DashboardClient>
-                    <SanPham />
+                    <SanPhamClient />
                   </DashboardClient>
                 </GuestGuard>
               }
@@ -139,24 +147,23 @@ function App() {
               }
             />
 
-
             <Route
               path="/admin-chat-lieu"
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <ChatLieu/>
+                    <ChatLieu />
                   </DashboardAdmin>
                 </AdminGuard>
               }
             />
-     
+
             <Route
               path="/admin-hang"
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <Hang/>
+                    <Hang />
                   </DashboardAdmin>
                 </AdminGuard>
               }
@@ -167,7 +174,7 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <DanhMuc/>
+                    <DanhMuc />
                   </DashboardAdmin>
                 </AdminGuard>
               }
@@ -178,7 +185,7 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <GioiTinh/>
+                    <GioiTinh />
                   </DashboardAdmin>
                 </AdminGuard>
               }
@@ -189,7 +196,7 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <MauSac/>
+                    <MauSac />
                   </DashboardAdmin>
                 </AdminGuard>
               }
@@ -200,12 +207,33 @@ function App() {
               element={
                 <AdminGuard>
                   <DashboardAdmin>
-                    <SanPham/>
+                    <SanPham />
+                  </DashboardAdmin>
+                </AdminGuard>
+              }
+            />
+            <Route
+              path="/admin-hoa-don"
+              element={
+                <AdminGuard>
+                  <DashboardAdmin>
+                    <HoaDon />
                   </DashboardAdmin>
                 </AdminGuard>
               }
             />
           </Routes>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </Suspense>
       </BrowserRouter>
     </>

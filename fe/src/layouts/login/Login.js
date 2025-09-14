@@ -3,8 +3,8 @@ import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import loginImage from "../../assets/images/logo.jpg";
-import logoShop from "../../assets/images/logonobackground.png";
+import loginImage from "../../assets/images/logo1.png";
+import bannerLogin from "../../assets/images/bannerLogin.png";
 import { LoginAPI } from "../../pages/api/login/LoginAPI";
 
 export const Login = () => {
@@ -72,7 +72,7 @@ export const Login = () => {
         <div className="row h-100">
           <div className="col-md-6 p-0 overflow-hidden ">
             <img
-              src={loginImage}
+              src={bannerLogin}
               alt="logo bes"
               style={{
                 width: "100%", // rộng bằng col-md-6
@@ -84,11 +84,11 @@ export const Login = () => {
             />
           </div>
 
-          <div className="col-md-6 d-flex flex-column justify-content-center mt-5  px-4">
+          <div className="col-md-6 d-flex flex-column justify-content-center   px-4">
             <img
-              className="d-block mx-auto"
-              width={170}
-              src={logoShop}
+              className="d-block mx-auto mb-5"
+              width={350}
+              src={loginImage}
               alt="logo"
               style={{ marginTop: "-200px" }}
             />
@@ -134,8 +134,8 @@ export const Login = () => {
               </Form.Item>
 
               <div className="text-center mb-3 mt-3">
-                <Link to={`/forgot-password`}>
-                  <b>Forgot password?</b>
+                <Link to={`/quen-mat-khau`}>
+                  <b>Quên mật khẩu?</b>
                 </Link>
               </div>
 
@@ -152,7 +152,7 @@ export const Login = () => {
               <Button
                 className="mb-2 w-50 text-center"
                 style={{ height: 35 }}
-                onClick={() => nav("/sign-up")}
+                onClick={() => nav("/dang-ky")}
               >
                 Đăng ký
               </Button>

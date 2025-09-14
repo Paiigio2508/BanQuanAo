@@ -38,7 +38,10 @@ public class SecurityConfig {
                 .cors().and()
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/dang-nhap").permitAll()
+                        .requestMatchers("/api/quen-mat-khau").permitAll()
+                        .requestMatchers("/api/dang-ky").permitAll()
+                        .requestMatchers("/api/get-all").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("NHANVIEN")
                         .anyRequest().authenticated()
                 )
