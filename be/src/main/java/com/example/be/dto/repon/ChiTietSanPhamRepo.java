@@ -15,10 +15,16 @@ public interface ChiTietSanPhamRepo {
     String getTenMauSac();
     @Value("#{target.maMS}")
     String getMaMauSac();
+    @Value("#{target.moTa}")
+    String getMoTa();
     @Value("#{target.soLuong}")
     int getSoLuong();
     @Value("#{target.giaBan}")
     int getGiaBan();
     @Value("#{target.trangThai}")
     int getTrangThai();
+    String getTenDM();
+    String getTenCL();
+    String getTenGT();
+    String getTenHang();
 }
