@@ -3,10 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Slider,
   Checkbox,
-  Card,
-  Col,
   Collapse,
-  Row,
   Space,
 } from "antd";
 import "./sanpham.css";
@@ -65,7 +62,7 @@ export const SanPhamClient = ({ children }) => {
                 items={[
                   {
                     key: "1",
-                    label: "Danh mục",
+                    label: "Hãng",
                     children: (
                       <div className="scrollable-content">
                         <Checkbox.Group>
@@ -83,6 +80,24 @@ export const SanPhamClient = ({ children }) => {
                             );
                           })} */}
                         </Checkbox.Group>
+                      </div>
+                    ),
+                  },
+                ]}
+              />
+              <Collapse
+                className="mb-2"
+                collapsible="icon"
+                defaultActiveKey={["1"]}
+                items={[
+                  {
+                    key: "1",
+                    label: "Sản phẩm",
+                    children: (
+                      <div>
+                        <div className="scrollable-content">
+                          <Checkbox.Group></Checkbox.Group>
+                        </div>
                       </div>
                     ),
                   },
@@ -113,7 +128,7 @@ export const SanPhamClient = ({ children }) => {
                 items={[
                   {
                     key: "1",
-                    label: "Giới tính",
+                    label: "Size",
                     children: (
                       <div>
                         <Checkbox.Group></Checkbox.Group>

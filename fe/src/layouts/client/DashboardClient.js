@@ -1,13 +1,10 @@
 // 🔼 Import phải đặt ở đầu
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { TbShoppingCartHeart } from "react-icons/tb";
-import { get, set } from "local-storage";
-import { toast, ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
 import "./Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoShop from "../../assets/images/logo1.png";
-import { Avatar, Dropdown, Typography, Space, Input, Button } from "antd";
+import { Avatar, Dropdown,Input, Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 export const DashboardClient = ({ children }) => {
   const { Search } = Input;
