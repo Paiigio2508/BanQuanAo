@@ -18,13 +18,13 @@ export const ProductCard = ({ product }) => {
       </div>
 
       <div className="contentBox">
-        <h3>
-          {product.tenSP} {product.tenKichThuoc}
+        <h3 className="product-name" style={{ textAlign: "center" }}>
+          {product.tenSP} [{product.tenMS} - {product.tenKT}]<br></br>
           <Button
             className="ms-2"
             styles={{ border: "1px solid black" }}
             shape="circle"
-            style={{ backgroundColor: product.maMauSac }}
+            style={{ backgroundColor: product.maMS }}
           />
         </h3>
         <h2 className="price">

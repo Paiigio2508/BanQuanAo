@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, Form, Input, Radio, Select, Space, Table, Tag, Modal, Image } from 'antd';
+import { Button, Divider, Form, Input, Radio, Select, Space, Table, Tag, Image, Slider } from 'antd';
 import { PlusCircleOutlined, RetweetOutlined } from "@ant-design/icons";
 import { BookFilled } from "@ant-design/icons";
 import { FilterFilled } from "@ant-design/icons";
@@ -11,6 +11,7 @@ import { ChiTietSanPhamAPI } from '../../../pages/api/sanpham/ChiTietSanPham.api
 import { ThuocTinhAPI } from '../../../pages/api/sanpham/ThuocTinh.api';
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
+import { Color } from 'antd/es/color-picker';
 
 export default function ChiTietSanPham() {
   //Form
@@ -28,183 +29,91 @@ export default function ChiTietSanPham() {
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
   const [formTim] = Form.useForm();
-  //Ấn Add
-  const [open, setOpen] = useState(false);
-  const [bordered] = useState(false);
-  const formItemLayout = {
-    labelCol: {
-      span: 4
-    },
-    wrapperCol: {
-      span: 20
-    },
+
+  const themCTSP = () => {
+    nav(`/admin-them-chi-tiet-san-pham/${id}`);
   };
 
-const themCTSP = () => {
-  nav(`/admin-them-chi-tiet-san-pham/${id}`);
-};
+  //Load Combobox Danh Mục
+  const [danhMuc, setDanhMucs] = useState([]);
 
-  const addChiTietSanPham = (value) => {
-    const checkTrung = (code) => {
-      return chiTietSanPham.some(sp => sp.ten.trim().toLowerCase() === code.trim().toLowerCase());
-    };
-    if (!(checkTrung(value.ten))) {
-      ThuocTinhAPI.create("san-pham", value)
-        .then((res) => {
-          toast('✔️ Thêm thành công !', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          loadChiTietSanPham();
-          setOpen(false);
-          form.resetFields();
-        })
-    } else {
-      toast.error('Sản phẩm đã tồn tại!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-  }
-  //Update
-  const [openUpdate, setOpenUpdate] = useState(false);
-  const [clUpdate, setClUpdate] = useState("");
-  const [tenCheck, setTenCheck] = useState("");
+  useEffect(() => {
+    loadDanhMuc();
+  }, []);
 
-  const showModal = async (idDetail) => {
-    await ThuocTinhAPI.detail("san-pham", idDetail)
+  const loadDanhMuc = () => {
+    ThuocTinhAPI.getAll("danh-muc",)
       .then((res) => {
-        form1.setFieldsValue({
-          id: res.data.id,
-          ma: res.data.ma,
-          ten: res.data.ten,
-          trangThai: res.data.trangThai,
-          ngayTao: res.data.ngayTao,
-          ngaySua: res.data.ngaySua,
-        });
-        setTenCheck(res.data.ten)
-        setClUpdate(res.data)
+        setDanhMucs(res.data);
       })
-    setOpenUpdate(true)
   };
-  const updateChiTietSanPham = () => {
-    if (clUpdate.ten != tenCheck) {
-      const checkTrung = (ten) => {
-        return chiTietSanPham.some(x =>
-          x.ten.trim().toLowerCase() === ten.trim().toLowerCase()
-        );
-      };
+  //Load Combobox Chất Liệu
+  const [chatLieu, setChatLieus] = useState([]);
 
-      if (checkTrung(clUpdate.ten)) {
-        toast.error('Sản phẩm trùng với sản phẩm khác !', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-    }
-    ThuocTinhAPI.update("san-pham", clUpdate.id, clUpdate)
+  useEffect(() => {
+    loadChatLieu();
+  }, []);
+
+  const loadChatLieu = () => {
+    ThuocTinhAPI.getAll("chat-lieu")
       .then((res) => {
-        toast('✔️ Sửa thành công!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        setClUpdate("");
-        loadChiTietSanPham();
-        setOpenUpdate(false);
+        setChatLieus(res.data);
       })
-  }
-  //Tìm kiếm
-  const onChangeFilter = (changedValues, allValues) => {
-    if (allValues.hasOwnProperty('ten')) {
-      allValues.ten = allValues.ten.trim();
-    }
-    timKiemSP(allValues);
-  }
-  const timKiemSP = (dataSearch) => {
-    ThuocTinhAPI.search("san-pham", dataSearch)
+  };
+
+  //Load Combobox Giới Tính
+  const [gioiTinh, setGioiTinhs] = useState([]);
+
+  useEffect(() => {
+    loadGioiTinh();
+  }, []);
+
+  const loadGioiTinh = () => {
+    ThuocTinhAPI.getAll("gioi-tinh")
       .then((res) => {
-        setChiTietSanPhams(res.data);
+        setGioiTinhs(res.data);
       })
-  }
+  };
+  //Load Combobox Hãng
+  const [hang, setHangs] = useState([]);
 
-  //Validate
-  const validateDateAdd = (_, value) => {
-    const { getFieldValue } = form;
-    const tenTim = getFieldValue("ten");
-    if (tenTim != undefined) {
-      if (!tenTim.trim()) {
-        return Promise.reject("Tên không được để trống");
-      }
-    } else {
-      return Promise.reject("Tên không được để trống");
-    }
+  useEffect(() => {
+    loadHang();
+  }, []);
 
-    const specialCharacterRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    if (specialCharacterRegex.test(tenTim)) {
-      return Promise.reject("Tên không được chứa ký tự đặc biệt");
-    }
+  const loadHang = async () => {
+    ThuocTinhAPI.getAll("hang")
+      .then((res) => {
+        setHangs(res.data);
+      })
+  };
+  // Load Combobox Kích Thước
+  const [kichThuoc, setKichThuocs] = useState([]);
 
-    if (tenTim.trim().length > 30) {
-      return Promise.reject("Tên không được vượt quá 30 ký tự");
-    }
-    return Promise.resolve();
+  useEffect(() => {
+    loadKichThuoc();
+  }, []);
+
+  const loadKichThuoc = () => {
+    ThuocTinhAPI.getAll("kich-thuoc",)
+      .then((res) => {
+        setKichThuocs(res.data);
+      })
+  };
+  // Load Combobox Màu Sắc
+  const [mauSac, setMauSacs] = useState([]);
+
+  useEffect(() => {
+    loadMauSac();
+  }, []);
+
+  const loadMauSac = () => {
+    ThuocTinhAPI.getAll("mau-sac")
+      .then((res) => {
+        setMauSacs(res.data);
+      })
   };
 
-  const validateDateKichThuocUpdate = (_, value) => {
-    const { getFieldValue } = form1;
-    const tenTim = getFieldValue("ten");
-    if (tenTim != undefined) {
-      if (!tenTim.trim()) {
-        return Promise.reject("Tên không được để trống");
-      }
-    } else {
-      return Promise.reject("Tên không được để trống");
-    }
-
-    const specialCharacterRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-    if (specialCharacterRegex.test(tenTim)) {
-      return Promise.reject("Tên không được chứa ký tự đặc biệt");
-    }
-
-    if (tenTim.trim().length > 30) {
-      return Promise.reject("Tên không được vượt quá 30 ký tự");
-    }
-    return Promise.resolve();
-  };
-
-  const validateDateTim = (_, value) => {
-    const { getFieldValue } = formTim;
-    const ten = getFieldValue("ten");
-    if (ten.trim().length > 30) {
-      return Promise.reject("Tên không được vượt quá 30 ký tự");
-    }
-    return Promise.resolve();
-  };
   //Table
   const [chiTietSanPham, setChiTietSanPhams] = useState([]);
 
@@ -218,7 +127,41 @@ const themCTSP = () => {
     })
   };
 
-  console.log(chiTietSanPham)
+  //Tìm kiếm
+  const onChangeTimKiem = (changedValues, allValues) => {
+    const updatedValues = { ...allValues };
+    if (updatedValues.soLuongCT && updatedValues.soLuongCT.length > 0) {
+      updatedValues.soLuongBatDau = updatedValues.soLuongCT[0] !== undefined ? updatedValues.soLuongCT[0] : 1;
+    } else {
+      updatedValues.soLuongBatDau = 1;
+    }
+    if (updatedValues.soLuongCT && updatedValues.soLuongCT.length > 0) {
+      updatedValues.soLuongKetThuc = updatedValues.soLuongCT[1] !== undefined ? updatedValues.soLuongCT[1] : 1000;
+    } else {
+      updatedValues.soLuongKetThuc = 1000;
+    }
+    if (updatedValues.giaBanCT && updatedValues.giaBanCT.length > 0) {
+      updatedValues.giaBanBatDau = updatedValues.giaBanCT[0] !== undefined ? updatedValues.giaBanCT[0] : 100000;
+    } else {
+      updatedValues.giaBanBatDau = 100000;
+    }
+    if (updatedValues.giaBanCT && updatedValues.giaBanCT.length > 0) {
+      updatedValues.giaBanKetThuc = updatedValues.giaBanCT[1] !== undefined ? updatedValues.giaBanCT[1] : 50000000;
+    } else {
+      updatedValues.giaBanKetThuc = 50000000;
+    }
+    timKiemCT(updatedValues)
+    console.log(updatedValues);
+    
+  }
+  const timKiemCT = (dataSearch) => {
+    ChiTietSanPhamAPI.searchChiTietSanPham(id, dataSearch)
+      .then(response => {
+        setChiTietSanPhams(response.data);
+        console.log(chiTietSanPham)
+      })
+      .catch(error => console.error('Error adding item:', error));
+  }
 
   const columns = [
     {
@@ -248,33 +191,29 @@ const themCTSP = () => {
       ),
     },
     {
-      title: "Tên Sản Phẩm",
+      title: "Sản phẩm",
       dataIndex: "tenSP",
       align: "center",
-    },
-    {
-      title: "Kích Thước",
-      dataIndex: "tenKichThuoc",
-      align: "center",
-    },
-    {
-      title: "Tên Màu Sắc",
-      dataIndex: "tenMauSac",
-      align: "center",
+      render: (_, record) => {
+        return `${record.tenSP} [${record.tenMS} - ${record.tenKT}]`;
+      },
     },
     {
       title: "Màu Sắc",
-      dataIndex: "maMauSac",
-      key: "maMauSac",
+      dataIndex: "maMS",
+      key: "maMS",
       align: "center",
       render: (text, record) => {
         return <>
-          <div style={{
-            backgroundColor: `${record.maMauSac}`,
-            borderRadius: 6,
-            width: 60,
-            height: 25,
-          }} className='custom-div'></div >
+          <Button
+            style={{
+              backgroundColor: record.maMS,
+              borderColor: 'black',
+              color: "#fff",
+              width: 70,
+              height: 20
+            }}>
+          </Button>
         </>;
       }
     },
@@ -318,12 +257,11 @@ const themCTSP = () => {
       render: (title) => (
         <Space size="middle">
           <Link
-            to={`/admin-chi-tiet-san-pham/${title}`}
+            to={`/admin-update-chi-tiet-san-pham/${title}`}
             className="btn btn-danger"
           >
             <BsFillEyeFill />
           </Link>
-          {/* <a className='btn btn-danger' onClick={() => showModal(`${title}`)}><BsFillEyeFill className='mb-1' /></a> */}
         </Space>
       ),
     },
@@ -351,53 +289,163 @@ const themCTSP = () => {
           </h5>
           <hr />
           <Form
-            className="row"
             labelCol={{
-              span: 10,
+              span: 6,
             }}
             wrapperCol={{
-              span: 20,
+              span: 14,
             }}
             layout="horizontal"
             initialValues={{
               size: componentSize,
             }}
-            onValuesChange={onChangeFilter}
+            onValuesChange={onChangeTimKiem}
             size={componentSize}
             style={{
-              maxWidth: 1400,
+              maxWidth: 1600,
             }}
-            form={formTim}
           >
-            <div className="col-md-5">
-              <Form.Item label="Tên & Mã" name="ten" rules={[{ validator: validateDateTim }]}>
-                <Input
-                  maxLength={31}
-                  placeholder="Nhập tên hoặc mã"
-                />
+            {/* Form tìm kiếm */}
+            {/* Các Thuộc Tính Dòng 1 */}
+            <div className="row mt-3">
+              {/* Kích Thước */}
+              <div className="col-md-4">
+                <Form.Item label="Kích Thước" name="idKT">
+                  <Select placeholder="Chọn một giá trị">
+                    {kichThuoc.map((item) => (
+                      <Select.Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+              {/* Màu Sắc */}
+              <div className="col-md-4">
+                <Form.Item label="Màu Sắc" name="idMS">
+                  <Select placeholder="Chọn một giá trị">
+                    {mauSac.map((item) => (
+                      <Select.Option key={item.id} value={item.id}>
+                        <div
+                          style={{
+                            color: "white",
+                            fontWeight: "bolder",
+                            backgroundColor: `${item.ma}`,
+                            borderRadius: 6,
+                            border: "1px solid black",
+                            width: 155,
+                            height: 25,
+                          }}
+                          className="text-center"
+                        >{item.ten} - {item.ma}</div>
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+              {/* Danh Mục */}
+              <div className="col-md-4">
+                <Form.Item label="Danh Mục" name="idDM">
+                  <Select placeholder="Chọn một giá trị">
+                    {danhMuc.map((item) => (
+                      <Select.Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+            </div>
+
+            {/* Các Thuộc Tính Dòng 2 */}
+            <div className="row">
+              {/* Chất Liệu */}
+              <div className="col-md-4">
+                <Form.Item label="Chất Liệu" name="idCL">
+                  <Select placeholder="Chọn một giá trị">
+                    {chatLieu.map((item) => (
+                      <Select.Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+              {/* Độ Cao */}
+              <div className="col-md-4">
+                <Form.Item label="Đế giày" name="idGT">
+                  <Select placeholder="Chọn một giá trị">
+                    {gioiTinh.map((item) => (
+                      <Select.Option key={item.ma} value={item.id}>
+                        {item.ten}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className="col-md-4">
+                <Form.Item label="Số lượng" name="soLuongCT">
+                  <Slider
+                    range
+                    step={100}
+                    defaultValue={[1, 1000]}
+                    min={1}
+                    max={1000}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+
+            {/* Các Thuộc Tính Dòng 3 */}
+            <div className="row">
+              {/* Hãng */}
+              <div className="col-md-4">
+                <Form.Item label="Hãng" name="idH">
+                  <Select placeholder="Chọn một giá trị">
+                    {hang.map((item) => (
+                      <Select.Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+              {/* Trạng Thái */}
+              <div className="col-md-4">
+                <Form.Item label="Trạng thái" name="trangThaiCT">
+                  <Select placeholder="Chọn một giá trị" defaultValue="0">
+                    <Select.Option value="0">Còn Bán</Select.Option>
+                    <Select.Option value="1">Dừng Bán</Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className="col-md-4">
+                <Form.Item
+                  label="Giá bán"
+                  name="giaBanCT"
+                >
+                  <Slider
+                    range
+                    step={100000}
+                    defaultValue={[100000, 50000000]}
+                    min={100000}
+                    max={50000000}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+            <div className="container-fluid">
+              <Form.Item className="text-center" style={{ paddingLeft: 360 }}>
+                <Button
+                  type="primary"
+                  htmlType="reset"
+                  onClick={loadChiTietSanPham}
+                  icon={<RetweetOutlined />}
+                >
+                  Làm mới
+                </Button>
               </Form.Item>
             </div>
-            <div className="col-md-5">
-              <Form.Item
-                label="Trạng Thái"
-                name="trangThai"
-              >
-                <Select placeholder="Chọn trạng thái" value={selectedValue} onChange={handleChange}>
-                  <Select.Option value="0">Còn Bán</Select.Option>
-                  <Select.Option value="1">Dừng Bán</Select.Option>
-                </Select>
-              </Form.Item>
-            </div>
-            <Form.Item className="text-center" style={{ paddingLeft: 200 }}>
-              <Button
-                type="primary"
-                htmlType="reset"
-                icon={<RetweetOutlined />}
-                onClick={loadChiTietSanPham}
-              >
-                Làm mới
-              </Button>
-            </Form.Item>
           </Form>
         </div>
 
@@ -422,7 +470,7 @@ const themCTSP = () => {
           </h5>
           <hr />
           <div className="ms-3">
-        </div>
+          </div>
           <div className="container-fluid mt-4">
             <div>
               <Table

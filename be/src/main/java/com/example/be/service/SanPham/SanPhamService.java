@@ -1,5 +1,6 @@
 package com.example.be.service.SanPham;
 
+import com.example.be.dto.repon.SanPhamRepo;
 import com.example.be.dto.repon.ThuocTinhRepo;
 import com.example.be.dto.request.admin.sanphamrequest.ThuocTinhRequest;
 import com.example.be.dto.request.admin.sanphamrequest.ThuocTinhSearchRequest;
@@ -15,7 +16,7 @@ import java.util.List;
 public class SanPhamService {
     @Autowired
     SanPhamRepository sanPhamRepository;
-    public List<ThuocTinhRepo> getAllSanPham() {
+    public List<SanPhamRepo> getAllSanPham() {
         return sanPhamRepository.getALLSP();
     }
     public SanPham update(String id, ThuocTinhRequest request) {
@@ -26,7 +27,7 @@ public class SanPhamService {
 
     public SanPham detailSP(String id){return sanPhamRepository.findById(id).get();}
 
-    public List<ThuocTinhRepo> getTim(ThuocTinhSearchRequest bangConSearch) {
+    public List<SanPhamRepo> getTim(ThuocTinhSearchRequest bangConSearch) {
         return sanPhamRepository.tim(bangConSearch);
     }
 
@@ -39,5 +40,13 @@ public class SanPhamService {
                 .build();
         sanPhamRepository.save(sanPham);
         return "Done";
+    }
+
+    public List<String>  getListMauSacBySanPhamID(String id){
+        return sanPhamRepository.getListMauSacBySanPhamId(id);
+    }
+
+    public List<String>  getListKichThuocBySanPhamID(String id){
+        return sanPhamRepository.getListKichThuocBySanPhamId(id);
     }
 }

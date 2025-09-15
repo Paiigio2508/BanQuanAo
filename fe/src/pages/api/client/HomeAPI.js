@@ -7,4 +7,12 @@ export class HomeAPI {
       url: `/home`,
     });
   };
+
+  static timMang = (data) => {
+    return requestClient({
+      method: "POST",
+      url: `/home/searchMang`,
+      data: data
+    });
+  };
 } 
