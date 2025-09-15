@@ -30,6 +30,7 @@ import SanPham from "../layouts/admin/sanpham/SanPham";
 import KichThuoc from "../layouts/admin/sanpham/KichThuoc";
 import ChiTietSanPham from "../layouts/admin/sanpham/ChiTietSanPham";
 import AddChiTietSanPham from "../layouts/admin/sanpham/AddChiTietSanPham";
+import UpdateChiTietSanPham from "../layouts/admin/sanpham/UpdateChiTietSanPham";
 import HoaDon from "../layouts/admin/hoadon/HoaDon";
 import KhachHang from "../layouts/admin/khachhang/KhachHang";
 import AddKhachHang from "../layouts/admin/khachhang/AddKhachHang";
@@ -244,6 +245,16 @@ function App() {
               <AdminGuard>
                 <DashboardAdmin>
                   <AddChiTietSanPham />
+                </DashboardAdmin>
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin-update-chi-tiet-san-pham/:id"
+            element={
+              <AdminGuard>
+                <DashboardAdmin>
+                  <UpdateChiTietSanPham />
                 </DashboardAdmin>
               </AdminGuard>
             }

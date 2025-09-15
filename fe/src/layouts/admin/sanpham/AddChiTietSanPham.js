@@ -10,24 +10,11 @@ import { ThuocTinhAPI } from "../../../pages/api/sanpham/ThuocTinh.api";
 import { useParams } from 'react-router-dom';
 import './SanPham.css'
 
-// helpers
-const safe = (v) => (v == null ? "" : String(v));
-const sTrim = (v) => safe(v).trim();
-
 export default function AddChiTietSanPham() {
   const [form] = Form.useForm();
   const nav = useNavigate();
   const { TextArea } = Input;
   const { id } = useParams();
-
-  // Địa chỉ
-  const [listProvince, setListProvince] = useState([]);
-  const [listDistricts, setListDistricts] = useState([]);
-  const [listWard, setListWard] = useState([]);
-
-  const [province, setProvince] = useState(null);
-  const [district, setDistrict] = useState(null);
-  const [ward, setWard] = useState(null);
 
   const [imageUrl, setImageUrl] = useState("");
 
@@ -58,11 +45,6 @@ export default function AddChiTietSanPham() {
       })
   };
 
-  useEffect(() => {
-    AddressApi.fetchAllProvince().then((res) => {
-      setListProvince(res?.data?.data ?? []);
-    });
-  }, []);
   //Load Combobox Giới Tính
   const [gioiTinh, setGioiTinhs] = useState([]);
 
@@ -117,48 +99,6 @@ export default function AddChiTietSanPham() {
   };
   const handleFileUpload = (cloudinaryUrl) => setImageUrl(cloudinaryUrl);
 
-  const handleProvinceChange = (value) => {
-    try {
-      const provinceObj = JSON.parse(value);
-      setProvince(provinceObj);
-      form.setFieldsValue({ tenThanhPho: provinceObj.ProvinceName });
-
-      AddressApi.fetchAllProvinceDistricts(provinceObj.ProvinceID).then((res) =>
-        setListDistricts(res?.data?.data ?? [])
-      );
-
-      // reset cấp dưới
-      setDistrict(null);
-      setWard(null);
-      setListWard([]);
-      form.setFieldsValue({ tenHuyen: undefined, tenXa: undefined });
-    } catch { }
-  };
-
-  const handleDistrictChange = (value) => {
-    try {
-      const districtObj = JSON.parse(value);
-      setDistrict(districtObj);
-      form.setFieldsValue({ tenHuyen: districtObj.DistrictName });
-
-      AddressApi.fetchAllProvinceWard(districtObj.DistrictID).then((res) =>
-        setListWard(res?.data?.data ?? [])
-      );
-
-      // reset xã
-      setWard(null);
-      form.setFieldsValue({ tenXa: undefined });
-    } catch { }
-  };
-
-  const handleWardChange = (value) => {
-    try {
-      const wardObj = JSON.parse(value);
-      setWard(wardObj);
-      form.setFieldsValue({ tenXa: wardObj.WardName });
-    } catch { }
-  };
-
   // Submit form
   const handleFinish = (values) => {
     const data = {
@@ -179,7 +119,7 @@ export default function AddChiTietSanPham() {
       });
   };
 
-  const back = () => nav("/admin-khach-hang");
+  const back = () => nav("/admin-san-pham");
 
   return (
     <>
@@ -210,7 +150,7 @@ export default function AddChiTietSanPham() {
         <Row gutter={14}>
           <Col span={7}>
             <Card style={{ height: "100%", minHeight: "550px" }}>
-              <h5 className="text-center fw-bold">Ảnh đại diện</h5>
+              <h5 className="text-center fw-bold">Ảnh sản phẩm</h5>
               <Row justify="center" className="mt-5">
                 <UpLoadImage onFileUpload={handleFileUpload} />
               </Row>
@@ -219,7 +159,7 @@ export default function AddChiTietSanPham() {
 
           <Col span={17}>
             <Card>
-              <h5 className="text-center fw-bold">Thông tin khách hàng</h5>
+              <h5 className="text-center fw-bold">Thông tin chi tiết sản phẩm</h5>
 
               <Row justify="end" style={{ marginBottom: 15, marginTop: 10 }}>
                 <Col>
@@ -285,7 +225,6 @@ export default function AddChiTietSanPham() {
                     rules={[{ required: true, message: "Hãy chọn giới tính" }]}
                   >
                     <Select
-                      onChange={handleProvinceChange}
                       placeholder="-- Chọn Giới Tính --"
                     >
                       {gioiTinh.map((item) => (
@@ -325,12 +264,22 @@ export default function AddChiTietSanPham() {
                     rules={[{ required: true, message: "Hãy chọn màu sắc" }]}
                   >
                     <Select
-                      onChange={handleProvinceChange}
                       placeholder="-- Chọn Màu Sắc --"
                     >
                       {mauSac.map((item) => (
                         <Select.Option key={item.id} value={item.id}>
-                          {item.ten}
+                          <div
+                            style={{
+                              color: "white",
+                              fontWeight: "bolder",
+                              backgroundColor: `${item.ma}`,
+                              borderRadius: 6,
+                              border: "1px solid black",
+                              width: 400,
+                              height: 25,
+                            }}
+                            className="text-center"
+                          >{item.ten} - {item.ma}</div>
                         </Select.Option>
                       ))}
                     </Select>
@@ -342,7 +291,6 @@ export default function AddChiTietSanPham() {
                     rules={[{ required: true, message: "Hãy chọn hãng" }]}
                   >
                     <Select
-                      onChange={handleProvinceChange}
                       placeholder="-- Chọn Hãng --"
                     >
                       {hang.map((item) => (
@@ -359,7 +307,6 @@ export default function AddChiTietSanPham() {
                     rules={[{ required: true, message: "Hãy chọn kích thước" }]}
                   >
                     <Select
-                      onChange={handleProvinceChange}
                       placeholder="-- Chọn Kích Thước --"
                     >
                       {kichThuoc.map((item) => (

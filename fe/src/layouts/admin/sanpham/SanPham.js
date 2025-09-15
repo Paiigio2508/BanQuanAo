@@ -39,7 +39,7 @@ export default function SanPham() {
       return sanPham.some(sp => sp.ten.trim().toLowerCase() === code.trim().toLowerCase());
     };
     if (!(checkTrung(value.ten))) {
-      ThuocTinhAPI.create("san-pham",value)
+      ThuocTinhAPI.create("san-pham", value)
         .then((res) => {
           toast('✔️ Thêm thành công !', {
             position: "top-right",
@@ -74,7 +74,7 @@ export default function SanPham() {
   const [tenCheck, setTenCheck] = useState("");
 
   const showModal = async (idDetail) => {
-    await ThuocTinhAPI.detail("san-pham",idDetail)
+    await ThuocTinhAPI.detail("san-pham", idDetail)
       .then((res) => {
         form1.setFieldsValue({
           id: res.data.id,
@@ -111,7 +111,7 @@ export default function SanPham() {
         return;
       }
     }
-    ThuocTinhAPI.update("san-pham",clUpdate.id, clUpdate)
+    ThuocTinhAPI.update("san-pham", clUpdate.id, clUpdate)
       .then((res) => {
         toast('✔️ Sửa thành công!', {
           position: "top-right",
@@ -136,7 +136,7 @@ export default function SanPham() {
     timKiemSP(allValues);
   }
   const timKiemSP = (dataSearch) => {
-    ThuocTinhAPI.search("san-pham",dataSearch)
+    ThuocTinhAPI.search("san-pham", dataSearch)
       .then((res) => {
         setSanPhams(res.data);
       })
@@ -195,16 +195,44 @@ export default function SanPham() {
     return Promise.resolve();
   };
   //Table
+  //Load Màu Sắc
+  const [listMS, setListMs] = useState([]);
+  const loadListMauSac = (id) => {
+    console.log("hihi")
+    if (!listMS[id]) {
+      ThuocTinhAPI.getListMauSacBySanPhamId(id).then((res) => {
+        setListMs((prevListMS) => ({
+          ...prevListMS,
+          [id]: res.data,
+        }));
+      });
+    }
+  };
+  //Load Kích Thước
+  const [listKT, setListKt] = useState([]);
+  const loadListKichThuoc = (id) => {
+    if (!listKT[id]) {
+      ThuocTinhAPI.getListKichThuocBySanPhamId(id).then((res) => {
+        setListKt((prevListKT) => ({
+          ...prevListKT,
+          [id]: res.data,
+        }));
+      });
+    }
+  };
+  //Load Sản Phẩm
   const [sanPham, setSanPhams] = useState([]);
-
   useEffect(() => {
     loadSanPham();
   }, []);
-
   const loadSanPham = () => {
     ThuocTinhAPI.getAll("san-pham")
       .then((res) => {
         setSanPhams(res.data);
+        res.data.forEach((sp) => {
+          loadListMauSac(sp.id);
+          loadListKichThuoc(sp.id);
+        });
       })
   };
 
@@ -212,6 +240,7 @@ export default function SanPham() {
     {
       title: "STT",
       dataIndex: "id",
+      align: "center",
       key: "id",
       render: (id, record, index) => {
         ++index;
@@ -222,15 +251,81 @@ export default function SanPham() {
     {
       title: "Mã",
       dataIndex: "ma",
-      center: "true",
+      align: "center",
       sorter: (a, b) => a.ma - b.ma,
     }, ,
     {
       title: "Tên",
       dataIndex: "ten",
+      align: "center",
+    },
+    {
+      title: "Kích thước",
+      key: "kichThuoc",
+      align: "center",
+      width: 120,
+      render: (record) => {
+        const kichThuocList = listKT[record.id] || [];
+        return (
+          <div
+            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+          >
+            {kichThuocList.map((kt, index) => (
+              <div key={index} style={{ width: "50%", padding: "0.5rem" }}>
+                <Tag
+                  style={{
+                    textAlign: "center",
+                    width: 40,
+                    height: 20,
+                    backgroundColor: "white",
+                    border: "1px solid #C6C5C5",
+                    borderColor: "#C6C5C5",
+                  }}
+                >
+                  {kt}
+                </Tag>
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Màu sắc",
+      key: "mauSac",
+      align: "center",
+      width: 120,
+      render: (record) => {
+        const mauSacList = listMS[record.id] || [];
+        return (
+          <div
+            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+          >
+            {mauSacList.map((mau, index) => (
+              <div key={index} style={{ width: "50%", padding: "0.5rem" }}>
+                <Tag
+                  style={{
+                    width: 40,
+                    height: 20,
+                    border: "1px solid #C6C5C5",
+                    borderColor: "#C6C5C5",
+                  }}
+                  color={mau}
+                ></Tag>
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Số Lượng",
+      dataIndex: "soLuong",
+      align: "center",
     },
     {
       title: "Trạng thái",
+      align: "center",
       dataIndex: "trangThai",
       key: "trangThai",
       render: (trang_thai) => (
@@ -253,7 +348,7 @@ export default function SanPham() {
       dataIndex: "id",
       render: (title) => (
         <Space size="middle">
-                 <Link
+          <Link
             to={`/admin-chi-tiet-san-pham/${title}`}
             className="btn btn-danger"
           >
@@ -382,7 +477,7 @@ export default function SanPham() {
                   label="Tên"
                   name="ten"
                   hasFeedback
-                  rules={[{ required: true,validator: validateDateAdd }]}
+                  rules={[{ required: true, validator: validateDateAdd }]}
                 >
                   <Input maxLength={31} className="border" />
                 </Form.Item>

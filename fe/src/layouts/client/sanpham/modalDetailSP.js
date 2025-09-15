@@ -33,7 +33,7 @@ const ModalDetailSP = ({
 
         <div className="col-md-6">
           <h3>
-            {productData.tenSP} {productData.tenGT}
+            {productData.tenSP} - {productData.tenGT}
           </h3>
           <h5 className="mb-3" style={{ color: "red" }}>
             <span style={{ color: "black" }}>
@@ -47,7 +47,7 @@ const ModalDetailSP = ({
           <h6>Màu</h6>
           <Button
             style={{
-              backgroundColor: productData.maMauSac,
+              backgroundColor: productData.maMS,
               borderRadius: 40,
               width: 30,
               height: 30,
@@ -56,7 +56,7 @@ const ModalDetailSP = ({
           />
           <hr />
           <h6>Size</h6>
-          <div>{productData.tenKichThuoc || "-"}</div>
+          <div>{productData.tenKT || "-"}</div>
 
           <h6 className="mt-3">Số lượng</h6>
           <div className="row">

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ThuocTinhRequest {
+    private String id;
     private String ma;
     private String ten;
     private LocalDateTime ngayTao;
@@ -16,6 +17,7 @@ public class ThuocTinhRequest {
 
 
     public <T extends BaseEntityBangCon> T mapToEntity(T entity) {
+        entity.setId(this.id);
         entity.setMa(this.ma);
         entity.setTen(this.ten);
         entity.setNgayTao(this.ngayTao);

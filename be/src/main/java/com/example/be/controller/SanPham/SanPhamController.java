@@ -45,5 +45,15 @@ public class SanPhamController {
         v.setNgayTao(LocalDateTime.now());
         return  ResponseEntity.ok(sanPhamService.addSP(v));
     }
+
+    @GetMapping("/listMS/{id}")
+    public ResponseEntity<?> getListMauSacBySanPhamId(@PathVariable("id") String id){
+        return ResponseEntity.ok(sanPhamService.getListMauSacBySanPhamID(id));
+    }
+
+    @GetMapping("/listKT/{id}")
+    public ResponseEntity<?> getListKichThuocBySanPhamId(@PathVariable("id") String id){
+        return ResponseEntity.ok(sanPhamService.getListKichThuocBySanPhamID(id));
+    }
 }
 
