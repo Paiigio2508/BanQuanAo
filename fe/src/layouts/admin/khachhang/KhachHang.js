@@ -13,7 +13,7 @@ import {
   Image,
 } from "antd";
 import { FilterFilled } from "@ant-design/icons";
-import { BsFillEyeFill, BsPencilSquare } from "react-icons/bs";
+import { BsPencilSquare } from "react-icons/bs";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { ToastContainer, toast } from "react-toastify";
 import { BiSolidUserBadge } from "react-icons/bi";
@@ -155,12 +155,7 @@ export default function KhachHang() {
       dataIndex: "id",
       render: (id) => (
         <Space size="middle">
-          <Link
-            to={`/admin-detail-khach-hang/${id}`}
-            className="btn btn-success"
-          >
-            <BsFillEyeFill />
-          </Link>
+     
           <Link
             to={`/admin-update-khach-hang/${id}`}
             className="btn btn-danger"

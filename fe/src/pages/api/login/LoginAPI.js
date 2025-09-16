@@ -5,22 +5,28 @@ export class LoginAPI {
   static login = (dataLogin) => {
     return requestAdmin({
       method: "POST",
-      url: `/api/login`,
+      url: `/api/dang-nhap`,
       data: dataLogin,
     });
   };
   static signUp = (data) => {
     return requestAdmin({
       method: "POST",
-      url: `/api/sign-up`,
+      url: `/api/dang-ky`,
       data: data,
     });
   };
   static forgotPass = (data) => {
     return requestAdmin({
       method: "POST",
-      url: `/api/forgot-password`,
+      url: `/api/quen-mat-khau`,
       data: data,
+    });
+  };
+  static getAll = () => {
+    return requestAdmin({
+      method: "GET",
+      url: `/api/get-all`,
     });
   };
 }

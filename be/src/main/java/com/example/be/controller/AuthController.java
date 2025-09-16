@@ -1,10 +1,16 @@
 package com.example.be.controller;
 import com.example.be.dto.login.LoginRequest;
 import com.example.be.dto.login.LoginRespon;
+import com.example.be.dto.request.admin.DangKyRequest;
+import com.example.be.dto.request.admin.NguoiDungRequest;
 import com.example.be.entity.NguoiDung;
 import com.example.be.service.CustomUserDetailsService;
+import com.example.be.service.KhachHangService;
 import com.example.be.util.sercurity.JwtTokenProvider;
+import com.google.gson.Gson;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,15 +23,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     // Inject CustomUserDetailsService
     private final CustomUserDetailsService customUserDetailsService;
-
-    @PostMapping("/login")
+    @Autowired
+    KhachHangService khachHangService;
+    @PostMapping("/dang-nhap")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -56,6 +62,18 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
-
-
+    @PostMapping("/dang-ky")
+    public ResponseEntity<?> signUP(@RequestParam("request") String requestJson) {
+        Gson gson = new Gson();
+        NguoiDungRequest requestDto = gson.fromJson(requestJson, NguoiDungRequest.class);
+        return ResponseEntity.ok(khachHangService.add(requestDto));
+    }
+    @PostMapping("/quen-mat-khau")
+    public ResponseEntity<?> forgotPass(@RequestBody DangKyRequest dangKyRequest) {
+        return ResponseEntity.ok(khachHangService.QuenMatKhau(dangKyRequest));
+    }
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(khachHangService.getAll());
+    }
 }

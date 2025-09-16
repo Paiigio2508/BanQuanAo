@@ -3,8 +3,8 @@ import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import loginImage from "../../assets/images/logo.jpg";
-import logoShop from "../../assets/images/logonobackground.png";
+import loginImage from "../../assets/images/logo1.png";
+import bannerLogin from "../../assets/images/bannerLogin.png";
 import { LoginAPI } from "../../pages/api/login/LoginAPI";
 
 export const Login = () => {
@@ -70,28 +70,39 @@ export const Login = () => {
         style={{ width: 1300, height: 700 }}
       >
         <div className="row h-100">
-          <div className="col-md-6 p-0 overflow-hidden">
+          <div className="col-md-6 p-0 overflow-hidden ">
             <img
-              src={loginImage}
-              alt="login form"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              src={bannerLogin}
+              alt="logo bes"
+              style={{
+                width: "100%", // rộng bằng col-md-6
+                height: "100%", // cao bằng col-md-6
+                objectFit: "contain", // giữ nguyên tỷ lệ, không bị cắt
+                display: "block",
+                margin: "0 auto", // căn giữa theo chiều ngang
+              }}
             />
           </div>
 
-          <div className="col-md-6 d-flex flex-column justify-content-center px-4">
+          <div className="col-md-6 d-flex flex-column justify-content-center   px-4">
             <img
-              className="d-block mx-auto"
-              width={170}
-              src={logoShop}
+              className="d-block mx-auto mb-5"
+              width={350}
+              src={loginImage}
               alt="logo"
               style={{ marginTop: "-200px" }}
             />
 
-            <Form form={form} onFinish={login} layout="vertical" className="text-center">
+            <Form
+              form={form}
+              onFinish={login}
+              layout="vertical"
+              className="text-center"
+            >
               <Form.Item name="email" className="mb-1">
                 <Input
                   placeholder="Mời nhập Email"
-                  style={{ height: 45, width: 550  }}
+                  style={{ height: 45, width: 550 }}
                 />
               </Form.Item>
 
@@ -123,8 +134,8 @@ export const Login = () => {
               </Form.Item>
 
               <div className="text-center mb-3 mt-3">
-                <Link to={`/forgot-password`}>
-                  <b>Forgot password?</b>
+                <Link to={`/quen-mat-khau`}>
+                  <b>Quên mật khẩu?</b>
                 </Link>
               </div>
 
@@ -141,14 +152,10 @@ export const Login = () => {
               <Button
                 className="mb-2 w-50 text-center"
                 style={{ height: 35 }}
-                onClick={() => nav("/sign-up")}
+                onClick={() => nav("/dang-ky")}
               >
                 Đăng ký
               </Button>
-            </div>
-
-            <div className="divider text-center d-flex align-items-center justify-content-center mt-3">
-              <h4 className="text-center fw-bold mx-3 mb-0">OR</h4>
             </div>
           </div>
         </div>

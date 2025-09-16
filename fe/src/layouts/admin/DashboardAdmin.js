@@ -111,9 +111,7 @@ const DashboardAdmin = ({ children }) => {
                   <img src={logoShop} width={100} alt="logo" />
                   <span
                     style={{ color: "white", marginTop: 5, fontSize: "24px" }}
-                  >
-              
-                  </span>
+                  ></span>
                 </>
               ) : (
                 <img src={logoShop} width={40} alt="logo" />
@@ -151,6 +149,14 @@ const DashboardAdmin = ({ children }) => {
                 >
                   Hãng
                 </MenuItem>
+
+                <MenuItem
+                  active={location.pathname === "/admin-kich-thuoc"}
+                  onClick={() => nav("/admin-kich-thuoc")}
+                >
+                 Kích Thước
+                </MenuItem>
+
                 <MenuItem
                   active={location.pathname === "/admin-chat-lieu"}
                   onClick={() => nav("/admin-chat-lieu")}
@@ -187,12 +193,6 @@ const DashboardAdmin = ({ children }) => {
                 }
               >
                 <MenuItem
-                  active={location.pathname === "/admin-nhan-vien"}
-                  onClick={() => nav("/admin-nhan-vien")}
-                >
-                  Nhân viên
-                </MenuItem>
-                <MenuItem
                   active={location.pathname === "/admin-khach-hang"}
                   onClick={() => nav("/admin-khach-hang")}
                 >
@@ -201,6 +201,8 @@ const DashboardAdmin = ({ children }) => {
               </SubMenu>
 
               <MenuItem
+                active={location.pathname === "/admin-khach-hang"}
+                onClick={() => nav("/admin-hoa-don")}
                 icon={<FaMoneyBills size={24} />}
                 suffix={
                   !collapsed && (
