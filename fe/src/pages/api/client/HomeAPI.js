@@ -15,4 +15,11 @@ export class HomeAPI {
       data: data
     });
   };
+
+  static timKiemDashboard = (tenTim) => {
+    return requestClient({
+      method: "GET",
+      url: `/home/tim-kiem/${tenTim}`,
+    });
+  };
 } 

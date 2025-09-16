@@ -21,25 +21,28 @@ public class ClientService {
 
     public List<ChiTietSanPhamRepo> getSearchListSanPham(ChiTietSanPhamArraySearchRequest sp) {
 
-        if(sp.getArraySanPham().length>0 && sp.getArrayMauSac().length<=0 && sp.getArrayKichThuoc().length<=0){
+        if(sp.getArrayHang().length>0 && sp.getArrayMauSac().length<=0 && sp.getArrayKichThuoc().length<=0){
             return chiTietSanPhamClientRepository.getLocSanPham(sp);
         }
-        if(sp.getArraySanPham().length>0 && sp.getArrayMauSac().length>0 && sp.getArrayKichThuoc().length<=0){
+        if(sp.getArrayHang().length>0 && sp.getArrayMauSac().length>0 && sp.getArrayKichThuoc().length<=0){
             return chiTietSanPhamClientRepository.getLocSanPhamMauSac(sp);
         }
-        if(sp.getArraySanPham().length>0 && sp.getArrayMauSac().length<=0 && sp.getArrayKichThuoc().length>0){
+        if(sp.getArrayHang().length>0 && sp.getArrayMauSac().length<=0 && sp.getArrayKichThuoc().length>0){
             System.out.println(sp);
             return chiTietSanPhamClientRepository.getLocSanPhamKichThuoc(sp);
         }
-        if(sp.getArraySanPham().length<=0 && sp.getArrayMauSac().length>0 && sp.getArrayKichThuoc().length<=0){
+        if(sp.getArrayHang().length<=0 && sp.getArrayMauSac().length>0 && sp.getArrayKichThuoc().length<=0){
             return chiTietSanPhamClientRepository.getLocMauSac(sp);
         }
-        if(sp.getArraySanPham().length<=0 && sp.getArrayMauSac().length>0 && sp.getArrayKichThuoc().length>0){
+        if(sp.getArrayHang().length<=0 && sp.getArrayMauSac().length>0 && sp.getArrayKichThuoc().length>0){
             return chiTietSanPhamClientRepository.getLocMauSacKichthuoc(sp);
         }
-        if(sp.getArraySanPham().length<=0 && sp.getArrayMauSac().length<=0 && sp.getArrayKichThuoc().length>0){
+        if(sp.getArrayHang().length<=0 && sp.getArrayMauSac().length<=0 && sp.getArrayKichThuoc().length>0){
             return chiTietSanPhamClientRepository.getLocKichThuoc(sp);
         }
         return chiTietSanPhamClientRepository.getLocSanPhamNoData(sp);
+    }
+    public List<ChiTietSanPhamRepo> getTim(String ten) {
+        return chiTietSanPhamClientRepository.getTimSanPham(ten);
     }
 }

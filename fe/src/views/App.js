@@ -18,6 +18,7 @@ import { Home } from "../layouts/client/home/home";
 import { SanPhamClient } from "../layouts/client/sanpham/SanPham";
 import { GioHang } from "../layouts/client/giohang/GioHang";
 import { LienHe } from "../layouts/client/lienhe/lienhe";
+import { TimKiemDashBoard } from "../layouts/client/sanpham/TimKiemSanPham";
 
 // Admin layouts/pages
 import DashboardAdmin from "../layouts/admin/DashboardAdmin";
@@ -114,6 +115,16 @@ function App() {
                 <DashboardClient>
                   <LienHe />
                 </DashboardClient>
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/tim-kiem/:ten"
+            element={
+              <GuestGuard>
+                  <DashboardClient>
+                    <TimKiemDashBoard />
+                  </DashboardClient>
               </GuestGuard>
             }
           />
