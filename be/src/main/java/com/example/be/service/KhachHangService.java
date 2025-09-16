@@ -19,8 +19,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -118,6 +116,11 @@ public class KhachHangService {
         return optional;
 
     }
+
+    //tìm địa chỉ mặc định khách hàng
+    public DiaChiKhachHangRepon findDiaChiMacDinh(String idKH){
+        return diaChiRepository.findDiaChiMacDinh(idKH);
+    }
     // tìm kiếm list địa chỉ khách hàng
     public List<DiaChiKhachHangRepon> findDiaChiByKH(String idKH){
         return diaChiRepository.findDiaChiByKH(idKH);
@@ -144,24 +147,6 @@ public class KhachHangService {
         return diaChiRepository.save(diaChi);
     }
 
-    // khách hàng đăng kí tài khoản mới
-    public NguoiDung signUp(DangKyRequest dangKyRequest) {
-
-        emailService.sendEmailPasword(dangKyRequest.getEmail(), "Bạn đã đăng ký thành công tài khoản ở cửa hàng MiShoes" +
-                "Mật khẩu bạn là ", dangKyRequest.getMatKhau());
-        int count = (int) nguoiDungRepository.countNguoiDungByChucVu("KHACHHANG"); // đếm số lượng
-        String ma = String.format("KH%03d", count + 1);
-        NguoiDung nguoiDung = NguoiDung.builder()
-                        .ma(ma)
-                .ten(dangKyRequest.getTen())
-                .email(dangKyRequest.getEmail())
-                .matKhau(passwordEncoder.encode(dangKyRequest.getMatKhau()))
-                .chucVu("KHACHHANG")
-                .ngayTao(LocalDateTime.now())
-                .trangThai(0)
-                .build();
-        return nguoiDungRepository.save(nguoiDung);
-    }
     // khách hàng quên mật khẩu
     public NguoiDung QuenMatKhau(DangKyRequest dangKyRequest) {
         // Tạo mật khẩu ngẫu nhiên 8 ký tự gồm chữ và số

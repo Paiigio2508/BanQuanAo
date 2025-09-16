@@ -12,68 +12,56 @@ import {SortDescendingOutlined } from "@ant-design/icons";
 import "./sanpham.css";
 import { ProductCard } from "./productCard";
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
-import { ThuocTinhAPI } from "../../../pages/api/sanpham/ThuocTinh.api";
 
 export const SanPhamClient = ({ children }) => {
   const [products, setProducts] = useState([]);
-  const [sortType, setSortType] = useState('');
+  const [sortType, setSortType] = useState("");
 
   //Load Combobox Hãng
   const [hang, setHangs] = useState([]);
 
   useEffect(() => {
     loadHang();
+    loadMauSac();
+    loadKichThuoc();
   }, []);
 
   const loadHang = async () => {
-    ThuocTinhAPI.getAll("hang")
-      .then((res) => {
-        setHangs(res.data);
-      })
+    HomeAPI.getAll("hang").then((res) => {
+      setHangs(res.data);
+    });
   };
 
   // Load Combobox Màu Sắc
   const [mauSac, setMauSacs] = useState([]);
-
-  useEffect(() => {
-    loadMauSac();
-  }, []);
-
   const loadMauSac = () => {
-    ThuocTinhAPI.getAll("mau-sac")
-      .then((res) => {
-        setMauSacs(res.data);
-      })
+    HomeAPI.getAll("mau-sac").then((res) => {
+      setMauSacs(res.data);
+    });
   };
 
   // Load Combobox Kích Thước
-  const [kichThuoc, setKichThuocs] = useState([]);
-
-  useEffect(() => {
-    loadKichThuoc();
-  }, []);
-
+  const [kichThuoc, setKichThuocs] = useState([]);;
   const loadKichThuoc = () => {
-    ThuocTinhAPI.getAll("kich-thuoc",)
-      .then((res) => {
-        setKichThuocs(res.data);
-      })
+    HomeAPI.getAll("kich-thuoc").then((res) => {
+      setKichThuocs(res.data);
+    });
   };
 
   //Sort
   const sortProducts = (type) => {
     let sortedProducts = [...products];
     switch (type) {
-      case '1': // Giá tăng dần
+      case "1": // Giá tăng dần
         sortedProducts.sort((a, b) => a.giaBan - b.giaBan);
         break;
-      case '2': // Giá giảm dần
+      case "2": // Giá giảm dần
         sortedProducts.sort((a, b) => b.giaBan - a.giaBan);
         break;
-      case '3': // Từ A-Z
+      case "3": // Từ A-Z
         sortedProducts.sort((a, b) => a.tenSP.localeCompare(b.tenSP));
         break;
-      case '4': // Từ Z-A
+      case "4": // Từ Z-A
         sortedProducts.sort((a, b) => b.tenSP.localeCompare(a.tenSP));
         break;
       default:
@@ -89,39 +77,23 @@ export const SanPhamClient = ({ children }) => {
 
   const items = [
     {
-      key: '1',
-      label: (
-        <a onClick={() => handleSortChange('1')}>
-          Giá tăng dần
-        </a>
-      ),
+      key: "1",
+      label: <a onClick={() => handleSortChange("1")}>Giá tăng dần</a>,
     },
     {
-      key: '2',
-      label: (
-        <a onClick={() => handleSortChange('2')}>
-          Giá giảm dần
-        </a>
-      ),
+      key: "2",
+      label: <a onClick={() => handleSortChange("2")}>Giá giảm dần</a>,
     },
     {
-      key: '3',
-      label: (
-        <a onClick={() => handleSortChange('3')}>
-          Từ A-Z
-        </a>
-      ),
+      key: "3",
+      label: <a onClick={() => handleSortChange("3")}>Từ A-Z</a>,
     },
     {
-      key: '4',
-      label: (
-        <a onClick={() => handleSortChange('4')}>
-          Từ Z-A
-        </a>
-      ),
+      key: "4",
+      label: <a onClick={() => handleSortChange("4")}>Từ Z-A</a>,
     },
-  ]
-   //Tìm kiếm đa trường
+  ];
+  //Tìm kiếm đa trường
   const [arrayHang, setArrayHang] = useState([]);
   const [arrayMauSac, setArrayMauSac] = useState([]);
   const [arrayKichThuoc, setArrayKichThuoc] = useState([]);
@@ -133,30 +105,32 @@ export const SanPhamClient = ({ children }) => {
     arrayMauSac: arrayMauSac,
     arrayKichThuoc: arrayKichThuoc,
     giaBatDau: giaBatDau,
-    giaKetThuc: giaKetThuc
-  }
+    giaKetThuc: giaKetThuc,
+  };
 
   const changeHang = (idHang, checked) => {
     if (checked) {
-      setArrayHang(prevArray => [...prevArray, idHang]);
+      setArrayHang((prevArray) => [...prevArray, idHang]);
     } else {
-      setArrayHang(prevArray => prevArray.filter(item => item !== idHang));
+      setArrayHang((prevArray) => prevArray.filter((item) => item !== idHang));
     }
   };
 
   const changeMauSac = (idMau, checked) => {
     if (checked) {
-      setArrayMauSac(prevArray => [...prevArray, idMau]);
+      setArrayMauSac((prevArray) => [...prevArray, idMau]);
     } else {
-      setArrayMauSac(prevArray => prevArray.filter(item => item !== idMau));
+      setArrayMauSac((prevArray) => prevArray.filter((item) => item !== idMau));
     }
   };
 
   const changeKichThuoc = (idKichThuoc, checked) => {
     if (checked) {
-      setArrayKichThuoc(prevArray => [...prevArray, idKichThuoc]);
+      setArrayKichThuoc((prevArray) => [...prevArray, idKichThuoc]);
     } else {
-      setArrayKichThuoc(prevArray => prevArray.filter(item => item !== idKichThuoc));
+      setArrayKichThuoc((prevArray) =>
+        prevArray.filter((item) => item !== idKichThuoc)
+      );
     }
   };
 
@@ -166,17 +140,22 @@ export const SanPhamClient = ({ children }) => {
   };
 
   const getTimMang = (data) => {
-    console.log(data)
-    HomeAPI.timMang(data)
-      .then((res) => {
-        setProducts(res.data)
-        console.log(products)
-      })
-  }
+    console.log(data);
+    HomeAPI.timMang(data).then((res) => {
+      setProducts(res.data);
+      console.log(products);
+    });
+  };
 
   useEffect(() => {
     getTimMang(dataTimKiem);
-  }, [dataTimKiem.arrayHang, dataTimKiem.arrayMauSac, dataTimKiem.arrayKichThuoc, dataTimKiem.giaBatDau, dataTimKiem.giaKetThuc])
+  }, [
+    dataTimKiem.arrayHang,
+    dataTimKiem.arrayMauSac,
+    dataTimKiem.arrayKichThuoc,
+    dataTimKiem.giaBatDau,
+    dataTimKiem.giaKetThuc,
+  ]);
 
   return (
     <div className="container-fuild">
@@ -207,7 +186,7 @@ export const SanPhamClient = ({ children }) => {
                         defaultValue={[100000, 5000000]}
                         min={100000}
                         max={5000000}
-                      onChange={onChange}
+                        onChange={onChange}
                       />
                     ),
                   },
@@ -260,11 +239,10 @@ export const SanPhamClient = ({ children }) => {
                             {mauSac.map((mau, index) => {
                               return (
                                 <Checkbox
-
                                   key={mau.id}
                                   value={mau.id}
-                                  onChange={(e) =>
-                                    console.log("")
+                                  onChange={
+                                    (e) => console.log("")
                                     // changeMauSac(mau.id, e.target.checked)
                                   }
                                 >
@@ -272,7 +250,6 @@ export const SanPhamClient = ({ children }) => {
                                     {mau.ten.charAt(0).toUpperCase() +
                                       mau.ten.slice(1)}
                                   </b>
-
                                 </Checkbox>
                               );
                             })}
@@ -295,19 +272,19 @@ export const SanPhamClient = ({ children }) => {
                       <div>
                         <Checkbox.Group>
                           {kichThuoc.map((kichThuoc, index) => {
-                              return (
-                                <Checkbox
-                                  key={kichThuoc.id}
-                                  value={kichThuoc.id}
-                                  onChange={(e) =>
-                                    console.log("")
-                                    // changeSanPham(hang.id, e.target.checked)
-                                  }
-                                >
-                                  <b>{kichThuoc.ten}</b>
-                                </Checkbox>
-                              );
-                            })}
+                            return (
+                              <Checkbox
+                                key={kichThuoc.id}
+                                value={kichThuoc.id}
+                                onChange={
+                                  (e) => console.log("")
+                                  // changeSanPham(hang.id, e.target.checked)
+                                }
+                              >
+                                <b>{kichThuoc.ten}</b>
+                              </Checkbox>
+                            );
+                          })}
                         </Checkbox.Group>
                       </div>
                     ),
@@ -319,17 +296,17 @@ export const SanPhamClient = ({ children }) => {
           <div className="col-md-9">
             <div className="row">
               <div class="container">
-                  <div className="d-flex justify-content-end mb-4">
-                <Dropdown
-                  menu={{
-                    items,
-                  }}
-                  placement="bottomLeft"
-                  arrow
-                >
-                  <Button icon={<SortDescendingOutlined />}>Sắp xếp</Button>
-                </Dropdown>
-              </div>
+                <div className="d-flex justify-content-end mb-4">
+                  <Dropdown
+                    menu={{
+                      items,
+                    }}
+                    placement="bottomLeft"
+                    arrow
+                  >
+                    <Button icon={<SortDescendingOutlined />}>Sắp xếp</Button>
+                  </Dropdown>
+                </div>
                 <div className="row">
                   {products.map((product, index) => {
                     return (

@@ -12,7 +12,7 @@ export class HomeAPI {
     return requestClient({
       method: "POST",
       url: `/home/searchMang`,
-      data: data
+      data: data,
     });
   };
 
@@ -20,6 +20,12 @@ export class HomeAPI {
     return requestClient({
       method: "GET",
       url: `/home/tim-kiem/${tenTim}`,
+    });
+  };
+  static getAll = (attribute) => {
+    return requestClient({
+      method: "GET",
+      url: `/home/${attribute}`,
     });
   };
 } 
