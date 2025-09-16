@@ -1,18 +1,25 @@
 // 🔼 Import phải đặt ở đầu
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import "./Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoShop from "../../assets/images/logo1.png";
-import { Avatar, Dropdown,Input, Button } from "antd";
+import { Avatar, Dropdown, Input, Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 export const DashboardClient = ({ children }) => {
   const { Search } = Input;
-    const [idUser, setIdUser] = useState(null);
-   const [userName, setUserName] = useState("");
-   const [linkAnh, setLinkAnh] = useState("");
-   
-const isLoggedIn = !!userName?.trim();
+  const [idUser, setIdUser] = useState(null);
+  const [userName, setUserName] = useState("");
+  const [linkAnh, setLinkAnh] = useState("");
+  const [valueSearch, setValueSearchs] = useState('');
+  const nav = useNavigate();
+  const onSearch = (value) => {
+    const keyword = value && value.trim() ? value.trim() : "allsanpham";
+    nav(`/tim-kiem/${keyword}`);
+    setValueSearchs('');
+  };
+  const isLoggedIn = !!userName?.trim();
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData) {
@@ -21,15 +28,15 @@ const isLoggedIn = !!userName?.trim();
       setLinkAnh(userData.anh || "");
     }
   }, []);
-     const dangXuat = () => {
-       localStorage.clear();
-       window.location.reload();
-     };
-      const items = [
-        { key: "1", label: <a >Đổi mật khẩu</a> },
-        { key: "2", label: "Thông tin" },
-        { key: "3", label: <a onClick={dangXuat}>Đăng xuất</a> },
-      ];
+  const dangXuat = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+  const items = [
+    { key: "1", label: <a >Đổi mật khẩu</a> },
+    { key: "2", label: "Thông tin" },
+    { key: "3", label: <a onClick={dangXuat}>Đăng xuất</a> },
+  ];
 
   return (
     <>
@@ -66,8 +73,11 @@ const isLoggedIn = !!userName?.trim();
             </li>
             <li>
               <Search
-                placeholder="Tìm kiếm mã, tên phẩm phẩm"
+                placeholder="Tìm kiếm tên phẩm phẩm"
                 style={{ width: 240 }}
+                onSearch={onSearch}
+                value={valueSearch}
+                onChange={(e) => setValueSearchs(e.target.value)}
               />
             </li>
           </ul>

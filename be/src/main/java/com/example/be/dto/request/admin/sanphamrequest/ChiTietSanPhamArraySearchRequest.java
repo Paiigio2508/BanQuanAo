@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class ChiTietSanPhamArraySearchRequest {
-    String[] arraySanPham;
+    String[] arrayHang;
     String[] arrayMauSac;
     String[] arrayKichThuoc;
     int giaBatDau;

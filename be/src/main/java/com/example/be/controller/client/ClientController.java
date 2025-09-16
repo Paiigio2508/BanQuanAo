@@ -23,4 +23,9 @@ public class ClientController {
     public ResponseEntity<?> getLocSanPham(@RequestBody ChiTietSanPhamArraySearchRequest request) {
         return ResponseEntity.ok(clientService.getSearchListSanPham(request));
     }
+
+    @GetMapping("/tim-kiem/{tenTim}")
+    public ResponseEntity<?> getTimSanPham(@PathVariable("tenTim") String tenTim) {
+        return ResponseEntity.ok(clientService.getTim(tenTim));
+    }
 }

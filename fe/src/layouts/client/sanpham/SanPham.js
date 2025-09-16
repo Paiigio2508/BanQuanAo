@@ -5,13 +5,18 @@ import {
   Checkbox,
   Collapse,
   Space,
+  Dropdown,
+  Button
 } from "antd";
+import {SortDescendingOutlined } from "@ant-design/icons";
 import "./sanpham.css";
 import { ProductCard } from "./productCard";
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
 import { ThuocTinhAPI } from "../../../pages/api/sanpham/ThuocTinh.api";
+
 export const SanPhamClient = ({ children }) => {
   const [products, setProducts] = useState([]);
+  const [sortType, setSortType] = useState('');
 
   //Load Combobox Hãng
   const [hang, setHangs] = useState([]);
@@ -24,20 +29,6 @@ export const SanPhamClient = ({ children }) => {
     ThuocTinhAPI.getAll("hang")
       .then((res) => {
         setHangs(res.data);
-      })
-  };
-
-  // Load Combobox Sản Phẩm
-  const [sanPham, setSanPhams] = useState([]);
-  useEffect(() => {
-    loadSanPham();
-  }, []);
-  const loadSanPham = () => {
-    ThuocTinhAPI.getAll("san-pham")
-      .then((res) => {
-        setSanPhams(res.data);
-        res.data.forEach((sp) => {
-        });
       })
   };
 
@@ -69,73 +60,124 @@ export const SanPhamClient = ({ children }) => {
       })
   };
 
+  //Sort
+  const sortProducts = (type) => {
+    let sortedProducts = [...products];
+    switch (type) {
+      case '1': // Giá tăng dần
+        sortedProducts.sort((a, b) => a.giaBan - b.giaBan);
+        break;
+      case '2': // Giá giảm dần
+        sortedProducts.sort((a, b) => b.giaBan - a.giaBan);
+        break;
+      case '3': // Từ A-Z
+        sortedProducts.sort((a, b) => a.tenSP.localeCompare(b.tenSP));
+        break;
+      case '4': // Từ Z-A
+        sortedProducts.sort((a, b) => b.tenSP.localeCompare(a.tenSP));
+        break;
+      default:
+        break;
+    }
+    setProducts(sortedProducts);
+  };
+
+  const handleSortChange = (type) => {
+    setSortType(type);
+    sortProducts(type);
+  };
+
+  const items = [
+    {
+      key: '1',
+      label: (
+        <a onClick={() => handleSortChange('1')}>
+          Giá tăng dần
+        </a>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <a onClick={() => handleSortChange('2')}>
+          Giá giảm dần
+        </a>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <a onClick={() => handleSortChange('3')}>
+          Từ A-Z
+        </a>
+      ),
+    },
+    {
+      key: '4',
+      label: (
+        <a onClick={() => handleSortChange('4')}>
+          Từ Z-A
+        </a>
+      ),
+    },
+  ]
    //Tìm kiếm đa trường
-  // const [arraySanPham, setArraySanPham] = useState([]);
-  // const [arrayMauSac, setArrayMauSac] = useState([]);
-  // const [arrayKichThuoc, setArrayKichThuoc] = useState([]);
-  // const [giaBatDau, setGiaBatDau] = useState(1000000);
-  // const [giaKetThuc, setGiaKetThuc] = useState(40000000);
+  const [arrayHang, setArrayHang] = useState([]);
+  const [arrayMauSac, setArrayMauSac] = useState([]);
+  const [arrayKichThuoc, setArrayKichThuoc] = useState([]);
+  const [giaBatDau, setGiaBatDau] = useState(100000);
+  const [giaKetThuc, setGiaKetThuc] = useState(5000000);
 
-  // const dataTimKiem = {
-  //   arraySanPham: arraySanPham,
-  //   arrayMauSac: arrayMauSac,
-  //   arrayKichThuoc: arrayKichThuoc,
-  //   giaBatDau: giaBatDau,
-  //   giaKetThuc: giaKetThuc
-  // }
+  const dataTimKiem = {
+    arrayHang: arrayHang,
+    arrayMauSac: arrayMauSac,
+    arrayKichThuoc: arrayKichThuoc,
+    giaBatDau: giaBatDau,
+    giaKetThuc: giaKetThuc
+  }
 
-  // const changeSanPham = (idHang, checked) => {
-  //   if (checked) {
-  //     setArraySanPham(prevArray => [...prevArray, idHang]);
-  //   } else {
-  //     setArraySanPham(prevArray => prevArray.filter(item => item !== idHang));
-  //   }
-  // };
+  const changeHang = (idHang, checked) => {
+    if (checked) {
+      setArrayHang(prevArray => [...prevArray, idHang]);
+    } else {
+      setArrayHang(prevArray => prevArray.filter(item => item !== idHang));
+    }
+  };
 
-  // const changeMauSac = (idMau, checked) => {
-  //   if (checked) {
-  //     setArrayMauSac(prevArray => [...prevArray, idMau]);
-  //   } else {
-  //     setArrayMauSac(prevArray => prevArray.filter(item => item !== idMau));
-  //   }
-  // };
+  const changeMauSac = (idMau, checked) => {
+    if (checked) {
+      setArrayMauSac(prevArray => [...prevArray, idMau]);
+    } else {
+      setArrayMauSac(prevArray => prevArray.filter(item => item !== idMau));
+    }
+  };
 
-  // const changeKichThuoc = (idKichThuoc, checked) => {
-  //   if (checked) {
-  //     setArrayKichThuoc(prevArray => [...prevArray, idKichThuoc]);
-  //   } else {
-  //     setArrayKichThuoc(prevArray => prevArray.filter(item => item !== idKichThuoc));
-  //   }
-  // };
+  const changeKichThuoc = (idKichThuoc, checked) => {
+    if (checked) {
+      setArrayKichThuoc(prevArray => [...prevArray, idKichThuoc]);
+    } else {
+      setArrayKichThuoc(prevArray => prevArray.filter(item => item !== idKichThuoc));
+    }
+  };
 
-  // const onChange = (value) => {
-  //   setGiaBatDau(value[0]);
-  //   setGiaKetThuc(value[1]);
-  // };
+  const onChange = (value) => {
+    setGiaBatDau(value[0]);
+    setGiaKetThuc(value[1]);
+  };
 
-  // const getTimMang = (data) => {
-  //   console.log(data)
-  //   HomeAPI.timMang(data)
-  //     .then((res) => {
-  //       setProducts(res.data)
-  //       console.log(products)
-  //     })
-  // }
-
-  // useEffect(() => {
-  //   getTimMang(dataTimKiem);
-  // }, [dataTimKiem.arraySanPham, dataTimKiem.arrayMauSac, dataTimKiem.arrayKichThuoc, dataTimKiem.giaBatDau, dataTimKiem.giaKetThuc])
-
+  const getTimMang = (data) => {
+    console.log(data)
+    HomeAPI.timMang(data)
+      .then((res) => {
+        setProducts(res.data)
+        console.log(products)
+      })
+  }
 
   useEffect(() => {
-    getNew();
-  }, []);
+    getTimMang(dataTimKiem);
+  }, [dataTimKiem.arrayHang, dataTimKiem.arrayMauSac, dataTimKiem.arrayKichThuoc, dataTimKiem.giaBatDau, dataTimKiem.giaKetThuc])
 
-  const getNew = () => {
-    HomeAPI.getAllSanPham().then((res) => {
-      setProducts(res.data);
-    });
-  };
   return (
     <div className="container-fuild">
       <div className="banner-san-pham-shop mt-4">
@@ -161,11 +203,11 @@ export const SanPhamClient = ({ children }) => {
                     children: (
                       <Slider
                         range
-                        step={1000000}
-                        defaultValue={[100000, 40000000]}
+                        step={100000}
+                        defaultValue={[100000, 5000000]}
                         min={100000}
-                        max={40000000}
-                      // onChange={onChange}
+                        max={5000000}
+                      onChange={onChange}
                       />
                     ),
                   },
@@ -189,8 +231,7 @@ export const SanPhamClient = ({ children }) => {
                                   key={hang.id}
                                   value={hang.id}
                                   onChange={(e) =>
-                                    console.log("")
-                                    // changeSanPham(sanPham.id, e.target.checked)
+                                    changeHang(hang.id, e.target.checked)
                                   }
                                 >
                                   <b>{hang.ten}</b>
@@ -278,6 +319,17 @@ export const SanPhamClient = ({ children }) => {
           <div className="col-md-9">
             <div className="row">
               <div class="container">
+                  <div className="d-flex justify-content-end mb-4">
+                <Dropdown
+                  menu={{
+                    items,
+                  }}
+                  placement="bottomLeft"
+                  arrow
+                >
+                  <Button icon={<SortDescendingOutlined />}>Sắp xếp</Button>
+                </Dropdown>
+              </div>
                 <div className="row">
                   {products.map((product, index) => {
                     return (
