@@ -42,6 +42,7 @@ GROUP BY o.id, sp.ten, kt.ten, ms.ten, ms.ma, o.so_luong, o.gia_ban, o.trang_tha
             """, nativeQuery = true)
     List<ChiTietSanPhamRepo> getLocSanPhamNoData(@Param("req") ChiTietSanPhamArraySearchRequest req);
 
+    //Lay all
     @Query(value = """
                        SELECT o.id AS idCTSP,
                                  o.hinh_anh AS linkAnh,
@@ -107,7 +108,6 @@ GROUP BY o.id, sp.ten, kt.ten, ms.ten, ms.ma, o.so_luong, o.gia_ban, o.trang_tha
     List<ChiTietSanPhamRepo> getLocSanPham(@Param("req") ChiTietSanPhamArraySearchRequest req);
 
     @Query(value = """
-            select
            SELECT o.id AS idCTSP,
            COALESCE(MIN(o.hinh_anh), 'Chưa có ảnh') AS linkAnh,
            sp.ten AS tenSP,

@@ -40,6 +40,10 @@ public class ClientService {
         if(sp.getArrayHang().length<=0 && sp.getArrayMauSac().length<=0 && sp.getArrayKichThuoc().length>0){
             return chiTietSanPhamClientRepository.getLocKichThuoc(sp);
         }
+        //Lay Full
+        if(sp.getArrayHang().length>0 && sp.getArrayMauSac().length>0 && sp.getArrayKichThuoc().length>0){
+            return chiTietSanPhamClientRepository.getLocSanPhamAll(sp);
+        }
         return chiTietSanPhamClientRepository.getLocSanPhamNoData(sp);
     }
     public List<ChiTietSanPhamRepo> getTim(String ten) {
