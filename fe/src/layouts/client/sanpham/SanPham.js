@@ -8,7 +8,7 @@ import {
   Dropdown,
   Button
 } from "antd";
-import {SortDescendingOutlined } from "@ant-design/icons";
+import { SortDescendingOutlined } from "@ant-design/icons";
 import "./sanpham.css";
 import { ProductCard } from "./productCard";
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
@@ -241,9 +241,8 @@ export const SanPhamClient = ({ children }) => {
                                 <Checkbox
                                   key={mau.id}
                                   value={mau.id}
-                                  onChange={
-                                    (e) => console.log("")
-                                    // changeMauSac(mau.id, e.target.checked)
+                                  onChange={(e) =>
+                                    changeMauSac(mau.id, e.target.checked)
                                   }
                                 >
                                   <b>
@@ -276,9 +275,8 @@ export const SanPhamClient = ({ children }) => {
                               <Checkbox
                                 key={kichThuoc.id}
                                 value={kichThuoc.id}
-                                onChange={
-                                  (e) => console.log("")
-                                  // changeSanPham(hang.id, e.target.checked)
+                                onChange={(e) =>
+                                  changeKichThuoc(kichThuoc.id, e.target.checked)
                                 }
                               >
                                 <b>{kichThuoc.ten}</b>
