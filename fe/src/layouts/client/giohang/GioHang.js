@@ -12,51 +12,79 @@ import {
   Tag,
   Button,
 } from "antd";
+import LogoVNP from "../../../assets/images/vnp.png";
 import Moment from "moment";
 import ModalDiaChi from "./modalDiaChi";
 import "./giohang.css";
 import { get, set } from "local-storage";
-import { BanHangClientAPI } from "../../../pages/api/client/banHangClient.api";
+import { HomeAPI } from "../../../pages/api/client/HomeAPI";
 import { ShipAPI } from "../../../pages/api/ship/ShipAPI";
 export const GioHang = ({ children }) => {
-    const [openModalDiaChi, setOpenModalDiaChi] = useState(false);
-     const [khachHang, setKhachHang] = useState(null);
-       const [diaChi, setDiaChi] = useState(null);
-        const [userID, setUserID] = useState("");
-          const [ngayShip, setNgayShip] = useState("");
-            const [moneyShip, setMoneyShip] = useState("");
-              const [soLuongSPGH, setSoLuongSPGH] = useState(0);
-       const storedData = get("userData");
-       const storedGioHang = get("GioHang");
+  const [openModalDiaChi, setOpenModalDiaChi] = useState(false);
+  const [khachHang, setKhachHang] = useState(null);
+  const [diaChi, setDiaChi] = useState(null);
+  const [userID, setUserID] = useState("");
+  const [ngayShip, setNgayShip] = useState("");
+  const [moneyShip, setMoneyShip] = useState("");
+  const [email, setEmail] = useState(null);
+  const [soLuongSPGH, setSoLuongSPGH] = useState(0);
+  const storedData = get("userData");
+    const [clickCountTM, setClickCountTM] = useState(1);
+    const [clickCountVNP, setClickCountVNP] = useState(0);
+      const [phuongThuc, setPhuongThuc] = useState(0);
+    const getButtonTMType = () => {
+      // Xác định loại button dựa trên giá trị biến đếm
+      return clickCountTM % 2 === 0 ? "default" : "primary";
+    };
+    const getButtonVNPType = () => {
+      // Xác định loại button dựa trên giá trị biến đếm
+      return clickCountVNP % 2 === 0 ? "default" : "primary";
+    };
+      const handleClickButtonVNP = () => {
+        setClickCountVNP((prevCount) => prevCount + 1);
+        setClickCountTM(0);
+        setPhuongThuc(1);
+      };
+        const handleClickButtonTM = () => {
+          setClickCountTM((prevCount) => prevCount + 1);
+          setClickCountVNP(0);
+          setPhuongThuc(0);
+        };
 
-       // load giỏ hàng mặc định
-         const loadDiaChiMacDinh = async () => {
-           let idHuyen = "";
-           let idXa = "";
-           if (storedData?.userID) {
-             await BanHangClientAPI.getDiaChiMacDinh(storedData.userID).then(
-               (res) => {
-                 setDiaChi(res.data);
+  useEffect(() => {
+    if (storedData) {
+      setKhachHang(storedData.userID);
+      setEmail(storedData.email);
+      setUserID(storedData.userID);
+      loadDiaChiMacDinh();
+    }
+    // loadGHCT();
+  }, []);
+  // load giỏ hàng mặc định
+  const loadDiaChiMacDinh = async () => {
+    let idHuyen = "";
+    let idXa = "";
+    if (storedData?.userID) {
+      await HomeAPI.getDiaChiMacDinhKHClient(storedData.userID).then((res) => {
+        setDiaChi(res.data);
+        idHuyen = res.data.idHuyen;
+        idXa = res.data.idXa;
+      });
+    }
+    if (idHuyen && idXa) {
+      setNgayShip(
+        await ShipAPI.fetchAllDayShip(idHuyen, idXa).then(
+          (res) => res.data.data.leadtime * 1000
+        )
+      );
+      setMoneyShip(
+        await ShipAPI.fetchAllMoneyShip(idHuyen, idXa, soLuongSPGH).then(
+          (res) => res.data.data.total
+        )
+      );
+    }
+  };
 
-                 idHuyen = res.data.idHuyen;
-                 idXa = res.data.idXa;
-               }
-             );
-           }
-           if (idHuyen && idXa) {
-             setNgayShip(
-               await ShipAPI.fetchAllDayShip(idHuyen, idXa).then(
-                 (res) => res.data.data.leadtime * 1000
-               )
-             );
-             setMoneyShip(
-               await ShipAPI.fetchAllMoneyShip(idHuyen, idXa, soLuongSPGH).then(
-                 (res) => res.data.data.total
-               )
-             );
-           }
-         };
-  
   return (
     <div className="container-fuild">
       <div className="banner-san-pham-shop mt-4">
@@ -123,6 +151,144 @@ export const GioHang = ({ children }) => {
       ) : (
         <></>
       )}
+      <div className="row mt-5">
+        {/* Bảng sản phẩm */}
+        <div className="col-md-8">
+          <table className="table mt-2">
+            <thead>
+              <tr>
+                <th scope="col">Sản phẩm</th>
+                <th scope="col">Giá</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Tổng</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Giày Nike Air</td>
+                <td>2,000,000 VND</td>
+                <td>1</td>
+                <td>2,000,000 VND</td>
+                <td>
+                  <a href="#">Xóa</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Áo Hoodie</td>
+                <td>500,000 VND</td>
+                <td>2</td>
+                <td>1,000,000 VND</td>
+                <td>
+                  <a href="#">Xóa</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Hóa đơn */}
+        <div className="col-md-4 donHangOL ">
+          <h4 className="text-center">Hóa đơn</h4>
+          <hr
+            style={{ height: 2, backgroundColor: "black", fontWeight: "bold" }}
+          />
+
+          <div className="row ps-2 pb-2 mt-3">
+            <div className="col-md-6" style={{ marginLeft: 30 }}>
+              <span>Đơn hàng</span>
+            </div>
+            <div className="col-md-5">
+              <span style={{ color: "blue" }}>3,000,000</span> <span>VND</span>
+            </div>
+          </div>
+
+          <div
+            className="row ps-2 pb-2 mt-3"
+            style={{ borderBottom: "1px dashed black" }}
+          >
+            <div className="col-md-6" style={{ marginLeft: 30 }}>
+              <span>Giảm</span>
+            </div>
+            <div className="col-md-5">
+              <span style={{ color: "blue" }}>200,000</span> <span>VND</span>
+            </div>
+          </div>
+
+          <div className="ps-2 pb-2 mt-3 d-flex align-items-end">
+            <h5 className="col-md-6" style={{ marginLeft: 30 }}>
+              <span>Tổng tiền</span>
+            </h5>
+            <h5 className="col-md-5">
+              <span style={{ color: "blue" }}>2,800,000 VND</span>
+            </h5>
+          </div>
+
+          {/* Nút thanh toán */}
+          <div className="text-center mt-3">
+            <button className="btn btn-primary w-75">Thanh toán</button>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <h5 className="col-md-3 d-flex align-items-center">
+          Phương thức thanh toán
+        </h5>
+        <div className="col-md-8">
+          <Button
+            style={{ width: 300, height: 50 }}
+            type={getButtonTMType()}
+            onClick={handleClickButtonTM}
+          >
+            Thanh toán khi nhận hàng
+          </Button>
+          <Button
+            className="ms-4"
+            style={{ width: 300, height: 50 }}
+            type={getButtonVNPType()}
+            onClick={handleClickButtonVNP}
+          >
+            Thanh toán VNP
+            <img
+              className="ms-2"
+              src={LogoVNP}
+              style={{ width: 20, height: 20 }}
+            ></img>
+          </Button>
+        </div>
+      </div>
+      <hr className="mt-5 mb-5" />
+
+      {/* Thông tin thanh toán */}
+      <div className="row">
+        <div className="col-md-7"></div>
+        <div className="col-md-5 fw-bold">
+          <div className="row">
+            <h5 className="col">Tổng tiền</h5>
+            <h5 className="col">: 3,000,000 VND</h5>
+          </div>
+
+          <div className="row mt-3">
+            <h5 className="col">Phí vận chuyển</h5>
+            <h5 className="col">: 30,000 VND</h5>
+          </div>
+
+          <div className="row mt-3" style={{ color: "red" }}>
+            <h5 className="col">Tổng thanh toán</h5>
+            <h5 className="col">: 2,830,000 VND</h5>
+          </div>
+
+          <hr className="mt-5 mb-5" />
+
+          <div className="d-flex flex-row-reverse bd-highlight mb-5">
+            <a href="#btnCheckout" className="checkout-button" id="btnCheckout">
+              Thanh toán ngay!
+            
+            </a>
+          </div>
+        </div>
+      </div>
+
       <ModalDiaChi
         openModalDiaChi={openModalDiaChi}
         setOpenModalDiaChi={setOpenModalDiaChi}

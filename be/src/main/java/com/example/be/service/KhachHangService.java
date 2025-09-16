@@ -147,6 +147,10 @@ public class KhachHangService {
         return diaChiRepository.save(diaChi);
     }
 
+    public DiaChi detailDiaChi(String id){
+        return diaChiRepository.findById(id).get();
+    }
+
     // khách hàng quên mật khẩu
     public NguoiDung QuenMatKhau(DangKyRequest dangKyRequest) {
         // Tạo mật khẩu ngẫu nhiên 8 ký tự gồm chữ và số

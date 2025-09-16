@@ -34,40 +34,58 @@ const ModalUpdateDiaChi = (props) => {
 
   const loadDataProvince = () => {
     AddressApi.fetchAllProvince()
-      .then((res) => {
-        setListProvince(res.data.data);
-      })
-      .catch(() => {
-        toast.error("Lỗi tải tỉnh/thành phố!");
-      });
+      .then((res) => setListProvince(res.data.data || []))
+      .catch(() => toast.error("Lỗi tải tỉnh/thành phố!"));
   };
 
-  const handleProvinceChange = (_, option) => {
-    form.setFieldsValue({ tenThanhPho: option.valueProvince });
-    AddressApi.fetchAllProvinceDistricts(option.valueProvince)
-      .then((res) => {
-        setListDistricts(res.data.data);
-      })
-      .catch(() => {
-        toast.error("Lỗi tải quận/huyện!");
-      });
+  const loadDistrictsByProvinceId = (provinceId) => {
+    if (!provinceId) return setListDistricts([]);
+    AddressApi.fetchAllProvinceDistricts(provinceId)
+      .then((res) => setListDistricts(res.data.data || []))
+      .catch(() => toast.error("Lỗi tải quận/huyện!"));
   };
 
-  const handleDistrictChange = (_, option) => {
-    form.setFieldsValue({ tenHuyen: option.valueDistrict });
-    AddressApi.fetchAllProvinceWard(option.valueDistrict)
-      .then((res) => {
-        setListWard(res.data.data);
-      })
-      .catch(() => {
-        toast.error("Lỗi tải xã/phường!");
-      });
+  const loadWardsByDistrictId = (districtId) => {
+    if (!districtId) return setListWard([]);
+    AddressApi.fetchAllProvinceWard(districtId)
+      .then((res) => setListWard(res.data.data || []))
+      .catch(() => toast.error("Lỗi tải xã/phường!"));
   };
 
-  const handleWardChange = (_, option) => {
-    form.setFieldsValue({ tenXa: option.valueWard });
+  // ===== ONCHANGE =====
+  const handleProvinceChange = (provinceId, option) => {
+    form.setFieldsValue({
+      idThanhPho: provinceId,
+      tenThanhPho: option.label,
+      idHuyen: undefined,
+      tenHuyen: undefined,
+      idXa: undefined,
+      tenXa: undefined,
+    });
+    setListDistricts([]);
+    setListWard([]);
+    loadDistrictsByProvinceId(provinceId);
   };
 
+  const handleDistrictChange = (districtId, option) => {
+    form.setFieldsValue({
+      idHuyen: districtId,
+      tenHuyen: option.label,
+      idXa: undefined,
+      tenXa: undefined,
+    });
+    setListWard([]);
+    loadWardsByDistrictId(districtId);
+  };
+
+  const handleWardChange = (wardCode, option) => {
+    form.setFieldsValue({
+      idXa: wardCode,
+      tenXa: option.label,
+    });
+  };
+
+  // ===== INIT =====
   useEffect(() => {
     if (diaChiUpdate) {
       form.setFieldsValue({
@@ -76,17 +94,38 @@ const ModalUpdateDiaChi = (props) => {
         diaChi: diaChiUpdate.diaChi,
         tenNguoiNhan: diaChiUpdate.tenNguoiNhan,
         soDienThoai: diaChiUpdate.soDienThoai,
-        tenThanhPho: diaChiUpdate.tenThanhPho,
-        tenHuyen: diaChiUpdate.tenHuyen,
-        tenXa: diaChiUpdate.tenXa,
         trangThai: diaChiUpdate.trangThai,
-        idXa: diaChiUpdate.idXa,
-        idHuyen: diaChiUpdate.idHuyen,
-        idThanhPho: diaChiUpdate.idThanhPho,
+
+        idThanhPho: String(diaChiUpdate.idThanhPho),
+        tenThanhPho: diaChiUpdate.tenThanhPho,
+
+        idHuyen: String(diaChiUpdate.idHuyen),
+        tenHuyen: diaChiUpdate.tenHuyen,
+
+        idXa: String(diaChiUpdate.idXa),
+        tenXa: diaChiUpdate.tenXa,
       });
+
       loadDataProvince();
+      if (diaChiUpdate.idThanhPho)
+        loadDistrictsByProvinceId(diaChiUpdate.idThanhPho);
+      if (diaChiUpdate.idHuyen) loadWardsByDistrictId(diaChiUpdate.idHuyen);
     }
   }, [diaChiUpdate]);
+
+  // options chuẩn: value = ID (string), label = Name
+  const provinceOptions = listProvince.map((p) => ({
+    value: String(p.ProvinceID),
+    label: p.ProvinceName,
+  }));
+  const districtOptions = listDistricts.map((d) => ({
+    value: String(d.DistrictID),
+    label: d.DistrictName,
+  }));
+  const wardOptions = listWard.map((w) => ({
+    value: String(w.WardCode),
+    label: w.WardName,
+  }));
 
   return (
     <Modal
@@ -98,19 +137,20 @@ const ModalUpdateDiaChi = (props) => {
       width={600}
     >
       <Form form={form} onFinish={handleUpdateDC} layout="vertical">
+        {/* hidden */}
         <Form.Item name="idNguoiDung" hidden>
           <Input />
         </Form.Item>
         <Form.Item name="trangThai" hidden>
           <Input />
         </Form.Item>
-        <Form.Item name="idXa" hidden>
+        <Form.Item name="tenThanhPho" hidden>
           <Input />
         </Form.Item>
-        <Form.Item name="idHuyen" hidden>
+        <Form.Item name="tenHuyen" hidden>
           <Input />
         </Form.Item>
-        <Form.Item name="idThanhPho" hidden>
+        <Form.Item name="tenXa" hidden>
           <Input />
         </Form.Item>
         <Form.Item name="id" hidden />
@@ -118,96 +158,55 @@ const ModalUpdateDiaChi = (props) => {
         <Form.Item
           name="tenNguoiNhan"
           label="Họ và tên"
-          tooltip="Họ tên đầy đủ của bạn là gì?"
-          rules={[
-            { required: true, message: "Vui lòng nhập họ và tên." },
-            {
-              pattern: /^[A-Za-zÀ-Ỹà-ỹ\s]+$/,
-              message: "Họ và tên chỉ được phép chứa chữ cái.",
-            },
-          ]}
-        >
-          <Input
-            onKeyPress={(e) => {
-              if (e.key === " " && e.target.selectionStart === 0)
-                e.preventDefault();
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="soDienThoai"
-          label="Số điện thoại"
-          tooltip="Số điện thoại của bạn là gì?"
-          rules={[
-            { required: true, message: "Vui lòng nhập số điện thoại." },
-            {
-              pattern: /^0\d{9}$/,
-              message: "Vui lòng nhập số điện thoại hợp lệ.",
-            },
-          ]}
+          rules={[{ required: true, message: "Vui lòng nhập họ và tên." }]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          name="tenThanhPho"
+          name="soDienThoai"
+          label="Số điện thoại"
+          rules={[{ required: true, message: "Vui lòng nhập số điện thoại." }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="idThanhPho"
           label="Tỉnh/Thành phố"
           rules={[{ required: true, message: "Vui lòng chọn Tỉnh/Thành phố." }]}
         >
           <Select
+            options={provinceOptions}
             onChange={handleProvinceChange}
             placeholder="--Chọn Tỉnh/Thành phố--"
-          >
-            {listProvince.map((item) => (
-              <Select.Option
-                key={item.ProvinceID}
-                value={item.ProvinceName}
-                valueProvince={item.ProvinceID}
-              >
-                {item.ProvinceName}
-              </Select.Option>
-            ))}
-          </Select>
+          />
         </Form.Item>
 
         <Form.Item
-          name="tenHuyen"
+          name="idHuyen"
           label="Quận/Huyện"
           rules={[{ required: true, message: "Vui lòng chọn Quận/Huyện." }]}
         >
           <Select
+            options={districtOptions}
             onChange={handleDistrictChange}
             placeholder="--Chọn Quận/Huyện--"
-          >
-            {listDistricts.map((item) => (
-              <Select.Option
-                key={item.DistrictID}
-                value={item.DistrictName}
-                valueDistrict={item.DistrictID}
-              >
-                {item.DistrictName}
-              </Select.Option>
-            ))}
-          </Select>
+            disabled={!form.getFieldValue("idThanhPho")}
+          />
         </Form.Item>
 
         <Form.Item
-          name="tenXa"
+          name="idXa"
           label="Xã/Phường"
           rules={[{ required: true, message: "Vui lòng chọn Xã/Phường." }]}
         >
-          <Select onChange={handleWardChange} placeholder="--Chọn Xã/Phường--">
-            {listWard.map((item) => (
-              <Select.Option
-                key={item.WardCode}
-                value={item.WardName}
-                valueWard={item.WardCode}
-              >
-                {item.WardName}
-              </Select.Option>
-            ))}
-          </Select>
+          <Select
+            options={wardOptions}
+            onChange={handleWardChange}
+            placeholder="--Chọn Xã/Phường--"
+            disabled={!form.getFieldValue("idHuyen")}
+          />
         </Form.Item>
 
         <Form.Item
