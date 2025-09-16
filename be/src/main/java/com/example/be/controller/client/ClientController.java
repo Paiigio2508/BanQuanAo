@@ -1,5 +1,6 @@
 package com.example.be.controller.client;
 
+import com.example.be.dto.request.admin.DiaChiRequest;
 import com.example.be.dto.request.admin.sanphamrequest.ChiTietSanPhamArraySearchRequest;
 import com.example.be.service.KhachHangService;
 import com.example.be.service.SanPham.HangService;
@@ -56,9 +57,29 @@ public class ClientController {
     public ResponseEntity<?> getALLMS(){
         return  ResponseEntity.ok(mauSacService.getALLMS());
     }
-
-    @GetMapping("/dia-chi-mac-dinh/{idKH}")
-    public  ResponseEntity<?> getDiaChiMacDinh(@PathVariable("idKH") String idKH){
+    @GetMapping("/khach-hang/dia-chi/{id}")
+    public ResponseEntity<?> getALLDCbyKH(@PathVariable("id") String idKH){
+        return ResponseEntity.ok(khachHangService.findDiaChiByKH(idKH));
+    }
+    @GetMapping("/khach-hang/dia-chi-mac-dinh/{id}")
+    public  ResponseEntity<?> getDiaChiMacDinh(@PathVariable("id") String idKH){
         return ResponseEntity.ok(khachHangService.findDiaChiMacDinh(idKH));
+    }
+    @PostMapping("/khach-hang/add-dia-chi")
+    public ResponseEntity<?> addDiaChi(@RequestBody DiaChiRequest request){
+        System.out.println(request);
+        return ResponseEntity.ok(khachHangService.addDiaChi(request));
+    }
+    @GetMapping("/khach-hang/detailDC/{id}")
+    public ResponseEntity<?> detailDiaChi(@PathVariable("id")String id){
+        return ResponseEntity.ok(khachHangService.detailDiaChi(id));
+    }
+    @PostMapping("/khach-hang/update-dia-chi/{id}")
+    public ResponseEntity<?> updateDiaChi(@PathVariable("id")String id,@RequestBody DiaChiRequest request){
+        return ResponseEntity.ok(khachHangService.updateDiaChi(id,request));
+    }
+    @PostMapping("/khach-hang/update-tt-dc/{id}")
+    public ResponseEntity<?> updateTTDC(@PathVariable("id")String id){
+        return ResponseEntity.ok(khachHangService.updateDiaChiMacDinh(id));
     }
 }

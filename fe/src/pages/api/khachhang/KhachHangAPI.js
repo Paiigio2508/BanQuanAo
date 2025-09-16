@@ -1,8 +1,7 @@
 import { getHeader, requestAdmin } from "../../helper/request";
 export class KhachHangAPI {
-  
   static getAll = () => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "GET",
       url: `/admin/khach-hang`,
@@ -14,7 +13,7 @@ export class KhachHangAPI {
   };
 
   static create = (data) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "POST",
       url: `/admin/khach-hang`,
@@ -26,7 +25,7 @@ export class KhachHangAPI {
   };
 
   static update = (data) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "PUT",
       url: `/admin/khach-hang`,
@@ -38,7 +37,7 @@ export class KhachHangAPI {
   };
 
   static updateStatus = (data) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "POST",
       url: `/admin/khach-hang/update`,
@@ -50,7 +49,7 @@ export class KhachHangAPI {
   };
 
   static getOneByIdUser = (id) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "GET",
       url: `/admin/khach-hang/${id}`,
@@ -60,7 +59,7 @@ export class KhachHangAPI {
     });
   };
   static timKiem = (data) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "POST",
       url: `/admin/khach-hang/search`,
@@ -71,7 +70,7 @@ export class KhachHangAPI {
     });
   };
   static getDiaChiByKH = (id) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "GET",
       url: `/admin/khach-hang/dia-chi/${id}`,
@@ -81,7 +80,7 @@ export class KhachHangAPI {
     });
   };
   static getDiaChiMacDinh = (id) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "GET",
       url: `/admin/khach-hang/dia-chi-mac-dinh/${id}`,
@@ -91,7 +90,7 @@ export class KhachHangAPI {
     });
   };
   static updateDiaChiMacDinh = (id) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "POST",
       url: `/admin/khach-hang/update-dia-chi-mac-dinh/${id}`,
@@ -102,7 +101,7 @@ export class KhachHangAPI {
   };
 
   static updateDiaChiByID = (id, data) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "POST",
       url: `/admin/khach-hang/update-dia-chi/${id}`,
@@ -114,7 +113,7 @@ export class KhachHangAPI {
   };
 
   static addDCKH = (data) => {
-     const getToken = getHeader();
+    const getToken = getHeader();
     return requestAdmin({
       method: "POST",
       url: `/admin/khach-hang/add-dia-chi`,
@@ -124,58 +123,8 @@ export class KhachHangAPI {
       },
     });
   };
-  // static getDiaChiByKHClient = (id) => {
-  //    const getToken = getHeader();
-  //   return requestClient({
-  //     method: "GET",
-  //     url: `/khach-hang/dia-chi/${id}`,
-  //     headers: {
-  //       Authorization: getToken,
-  //     },
-  //   });
-  // };
-  // static getDiaChiMacDinhKHClient = (id) => {
-  //    const getToken = getHeader();
-  //   return requestClient({
-  //     method: "GET",
-  //     url: `/khach-hang/dia-chi-mac-dinh/${id}`,
-  //     headers: {
-  //       Authorization: getToken,
-  //     },
-  //   });
-  // };
-  // static updateDiaChiMacDinhKHClient = (id) => {
-  //    const getToken = getHeader();
-  //   return requestClient({
-  //     method: "POST",
-  //     url: `/khach-hang/update-tt-dc/${id}`,
-  //     headers: {
-  //       Authorization: getToken,
-  //     },
-  //   });
-  // };
 
-  // static updateDiaChiByIDKHClient = (id, data) => {
-  //    const getToken = getHeader();
-  //   return requestClient({
-  //     method: "POST",
-  //     url: `/khach-hang/update-dia-chi/${id}`,
-  //     data: data,
-  //     headers: {
-  //       Authorization: getToken,
-  //     },
-  //   });
-  // };
 
-  // static addDCKHClient = (data) => {
-  //    const getToken = getHeader();
-  //   return requestClient({
-  //     method: "POST",
-  //     url: `/khach-hang/add-dia-chi`,
-  //     data: data,
-  //     headers: {
-  //       Authorization: getToken,
-  //     },
-  //   });
-  // };
+
+  
 }
