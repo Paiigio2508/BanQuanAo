@@ -41,6 +41,7 @@ import UpdateKhachHang from "../layouts/admin/khachhang/UpdateKhachHang";
 import { Login } from "../layouts/login/Login";
 import { QuenMatKhau } from "../layouts/login/QuenMatKhau";
 import { DangKy } from "../layouts/login/DangKy";
+import ThongKe from "../layouts/admin/thongke/ThongKe";
 
 function App() {
   return (
@@ -122,9 +123,9 @@ function App() {
             path="/tim-kiem/:ten"
             element={
               <GuestGuard>
-                  <DashboardClient>
-                    <TimKiemDashBoard />
-                  </DashboardClient>
+                <DashboardClient>
+                  <TimKiemDashBoard />
+                </DashboardClient>
               </GuestGuard>
             }
           />
@@ -276,6 +277,16 @@ function App() {
               <AdminGuard>
                 <DashboardAdmin>
                   <HoaDon />
+                </DashboardAdmin>
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin-thong-ke"
+            element={
+              <AdminGuard>
+                <DashboardAdmin>
+                  <ThongKe />
                 </DashboardAdmin>
               </AdminGuard>
             }
