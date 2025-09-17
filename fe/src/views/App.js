@@ -42,6 +42,7 @@ import { Login } from "../layouts/login/Login";
 import { QuenMatKhau } from "../layouts/login/QuenMatKhau";
 import { DangKy } from "../layouts/login/DangKy";
 import ThongKe from "../layouts/admin/thongke/ThongKe";
+import HoaDonDetail from "../layouts/admin/hoadon/HoaDonDetail";
 
 function App() {
   return (
@@ -277,6 +278,16 @@ function App() {
               <AdminGuard>
                 <DashboardAdmin>
                   <HoaDon />
+                </DashboardAdmin>
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin-detail-hoa-don/:id"
+            element={
+              <AdminGuard>
+                <DashboardAdmin>
+                  <HoaDonDetail />
                 </DashboardAdmin>
               </AdminGuard>
             }
