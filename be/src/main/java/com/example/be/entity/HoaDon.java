@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class HoaDon extends BaseEntity {
+    @JoinColumn(name = "id_nhan_vien")
+    private String nhanVien;
     @ManyToOne
-    @JoinColumn(name = "id_nhan_vien",referencedColumnName = "id")
-    private NguoiDung nhanVien;
-    @ManyToOne
-    @JoinColumn(name = "id_khach_hang",referencedColumnName = "id")
+    @JoinColumn(name = "id_khach_hang")
     private NguoiDung khachHang;
+    private String ma;
     private BigDecimal thanhTien;
     private LocalDateTime ngayMua;
     private String hinhThucThanhToan;
