@@ -16,6 +16,9 @@ public interface HoaDonRespon {
     String getNgayMua();
 
     String getThanhTien();
+    String getGhiChu();
+    String getLoaiHD();
+    String getTienVanChuyen();
 
     String getTrangThai();
 }

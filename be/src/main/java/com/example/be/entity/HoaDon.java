@@ -28,4 +28,7 @@ public class HoaDon extends BaseEntity {
     private BigDecimal thanhTien;
     private LocalDateTime ngayMua;
     private String hinhThucThanhToan;
+    private String ghiChu;
+    private String nguoiSua;
+    private BigDecimal tienVanChuyen;
 }
