@@ -1,6 +1,6 @@
 
 import "./DashboardAdmin.css";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaGithub, FaMoneyBills } from "react-icons/fa6";
@@ -56,8 +56,7 @@ const DashboardAdmin = ({ children }) => {
 
   const items = [
     { key: "1", label: <a onClick={DoiMatKhau}>Đổi mật khẩu</a> },
-    { key: "2", label: "Thông tin" },
-    { key: "3", label: <a onClick={dangXuat}>Đăng xuất</a> },
+    { key: "2", label: <a onClick={dangXuat}>Đăng xuất</a> },
   ];
 
   return (

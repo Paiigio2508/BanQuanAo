@@ -1,5 +1,6 @@
 package com.example.be.controller;
 
+import com.example.be.dto.request.admin.HoaDonRequet;
 import com.example.be.service.HoaDonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,5 +17,18 @@ public class HoaDonController {
     @GetMapping
     public ResponseEntity<?> getALLTT() {
         return ResponseEntity.ok(hoaDonService.getALLTT());
+    }
+    @GetMapping("/detail-hoa-don/{idHD}")
+    public ResponseEntity<?> detailHD(@PathVariable("idHD") String id){
+        return  ResponseEntity.ok(hoaDonService.getByID(id));
+    }
+    @PutMapping("/updateTT/{idHD}")
+    public  ResponseEntity<?> updateTrangThaiHoaDon(@RequestBody HoaDonRequet hoaDonRequet, @PathVariable("idHD") String id ){
+        System.out.println(hoaDonRequet);
+        return ResponseEntity.ok(hoaDonService.updateHoaDon(hoaDonRequet,id));
+    }
+    @GetMapping("/san-pham/{idHD}")
+    public ResponseEntity<?> SanPhamHoaDon(@PathVariable("idHD") String id){
+        return  ResponseEntity.ok(hoaDonService.detailHDSanPham(id));
     }
 }

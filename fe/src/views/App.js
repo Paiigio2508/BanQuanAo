@@ -43,6 +43,7 @@ import { QuenMatKhau } from "../layouts/login/QuenMatKhau";
 import { DangKy } from "../layouts/login/DangKy";
 import ThongKe from "../layouts/admin/thongke/ThongKe";
 import HoaDonDetail from "../layouts/admin/hoadon/HoaDonDetail";
+import DoiMatKhau from "../layouts/admin/doimatkhau/DoiMatKhau";
 
 function App() {
   return (
@@ -140,7 +141,16 @@ function App() {
               </AdminGuard>
             }
           />
-
+          <Route
+            path="/admin-doi-mat-khau"
+            element={
+              <AdminGuard>
+                <DashboardAdmin>
+                  <DoiMatKhau />
+                </DashboardAdmin>
+              </AdminGuard>
+            }
+          />
           <Route
             path="/admin-khach-hang"
             element={
