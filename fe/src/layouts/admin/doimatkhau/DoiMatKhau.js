@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Button, Col, Form, Input, Row, Select,Divider } from "antd";
+import { Button, Col, Form, Input, Row, Select, Divider } from "antd";
 import { TbLockPassword } from "react-icons/tb";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+
 export default function DoiMatKhau() {
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePasswordVisibility = () => setShowPassword((v) => !v);
   const [form] = Form.useForm();
+
   return (
     <div className="container-fluid">
       <Divider orientation="center">
@@ -31,12 +31,9 @@ export default function DoiMatKhau() {
                 iconRender={(visible) =>
                   visible ? <IoEyeOffOutline /> : <IoEyeOutline />
                 }
-                visibilityToggle={{
-                  visible: showPassword,
-                  onVisibleChange: togglePasswordVisibility,
-                }}
               />
             </Form.Item>
+
             <Form.Item
               name="matKhau"
               label="Mật khẩu mới"
@@ -52,10 +49,6 @@ export default function DoiMatKhau() {
                 iconRender={(visible) =>
                   visible ? <IoEyeOffOutline /> : <IoEyeOutline />
                 }
-                visibilityToggle={{
-                  visible: showPassword,
-                  onVisibleChange: togglePasswordVisibility,
-                }}
               />
             </Form.Item>
 
@@ -70,8 +63,9 @@ export default function DoiMatKhau() {
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    if (!value || getFieldValue("matKhau") === value)
+                    if (!value || getFieldValue("matKhau") === value) {
                       return Promise.resolve();
+                    }
                     return Promise.reject(
                       new Error("Mật khẩu nhập lại không khớp!")
                     );
@@ -84,10 +78,6 @@ export default function DoiMatKhau() {
                 iconRender={(visible) =>
                   visible ? <IoEyeOffOutline /> : <IoEyeOutline />
                 }
-                visibilityToggle={{
-                  visible: showPassword,
-                  onVisibleChange: togglePasswordVisibility,
-                }}
               />
             </Form.Item>
           </Col>
@@ -99,7 +89,6 @@ export default function DoiMatKhau() {
           </Button>
         </div>
       </Form>
-      {/* Bộ lọc */}
     </div>
   );
 }
