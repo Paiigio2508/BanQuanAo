@@ -13,6 +13,8 @@ export const DashboardClient = ({ children }) => {
   const [userName, setUserName] = useState("");
   const [linkAnh, setLinkAnh] = useState("");
   const [valueSearch, setValueSearchs] = useState('');
+
+
   const nav = useNavigate();
   const onSearch = (value) => {
     const keyword = value && value.trim() ? value.trim() : "allsanpham";
@@ -28,10 +30,15 @@ export const DashboardClient = ({ children }) => {
       setLinkAnh(userData.anh || "");
     }
   }, []);
-  const dangXuat = () => {
-    localStorage.clear();
+const dangXuat = () => {
+  localStorage.clear();
+  if (window.location.pathname === "/home") {
     window.location.reload();
-  };
+  } else {
+    window.location.assign("/home"); // hoặc: window.location.href = "/home";
+  }
+};
+
   const items = [
     { key: "1", label: <a >Đổi mật khẩu</a> },
     { key: "2", label: "Thông tin" },
@@ -132,19 +139,18 @@ export const DashboardClient = ({ children }) => {
 
                 <div className="entire-info-website">
                   <div className="mb-4">
-                    CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ 4S
+                    Shop quần áo thể thao TSPORT
                   </div>
 
                   <address>
                     <p>
-                      <i className="fa-solid fa-building" /> Tầng 4, Tòa nhà số
-                      97 - 99 Láng Hạ, Đống Đa, Hà Nội (Tòa nhà Petrowaco)
+                      <i className="fa-solid fa-building" /> Đại học penika
                     </p>
                     <p>
-                      <i className="fa-solid fa-phone" /> 0901191616
+                      <i className="fa-solid fa-phone" />
                     </p>
                     <p>
-                      <i className="fa-solid fa-envelope" /> contact@sm4s.vn
+                      <i className="fa-solid fa-envelope" /> TSPORT@gmail.com
                     </p>
                   </address>
                 </div>
@@ -152,7 +158,7 @@ export const DashboardClient = ({ children }) => {
             </div>
 
             {/* Cột 2 */}
-            <div className="col-md-3 col-12">
+            <div className="col-md-4 col-12">
               <div
                 data-nh-block="xydo397"
                 data-nh-block-cache="true"
@@ -164,29 +170,29 @@ export const DashboardClient = ({ children }) => {
                   </div>
                   <ul className="">
                     <li className="mb-4">
-                      <a className="text-white" href="/#">
+                   
                         Chính sách bảo mật
-                      </a>
+               
                     </li>
                     <li className="mb-4">
-                      <a className="text-white" href="/#">
+                   
                         Chính sách bán hàng
-                      </a>
+                  
                     </li>
                     <li className="mb-4">
-                      <a className="text-white" href="/#">
+                  
                         Chính sách vận chuyển
-                      </a>
+                 
                     </li>
                     <li className="mb-4">
-                      <a className="text-white" href="/#">
+                  
                         Chính sách bảo hành
-                      </a>
+                
                     </li>
                     <li className="mb-4">
-                      <a className="text-white" href="/#">
+                 
                         Chính sách đổi hàng
-                      </a>
+               
                     </li>
                   </ul>
                 </div>
@@ -194,7 +200,7 @@ export const DashboardClient = ({ children }) => {
             </div>
 
             {/* Cột 3 */}
-            <div className="col-md-2 col-12">
+            <div className="col-md-4 col-12">
               <div
                 data-nh-block="fyh8tms"
                 data-nh-block-cache="true"
@@ -206,29 +212,29 @@ export const DashboardClient = ({ children }) => {
                   </div>
                   <ul className="">
                     <li className="mb-4">
-                      <a className="text-white" href="/veston-cong-so">
-                        Vest công sở
-                      </a>
+                      
+                        Áo thun thể thao
+               
                     </li>
                     <li className="mb-4">
-                      <a className="text-white" href="/ao-poolo">
-                        Áo polo
-                      </a>
+                    
+                        Áo polo thể thao
+              
                     </li>
                     <li className="mb-4">
-                      <a className="text-white" href="/ao-so-mi-dai">
-                        Áo sơ mi
-                      </a>
+                 
+                        Quần short
+                  
                     </li>
                     <li className="mb-4">
-                      <a className="text-white" href="/phu-kien">
+                     
+                        Quần jogger
+                  
+                    </li>
+                    <li className="mb-4">
+               
                         Phụ kiện
-                      </a>
-                    </li>
-                    <li className="mb-4">
-                      <a className="text-white" href="/tin-tuc">
-                        Tin tức
-                      </a>
+                
                     </li>
                   </ul>
                 </div>
@@ -236,31 +242,7 @@ export const DashboardClient = ({ children }) => {
             </div>
 
             {/* Cột 4 */}
-            <div className="col-md-3 col-12">
-              <div
-                data-nh-block="6ksb32l"
-                data-nh-block-cache="true"
-                className=""
-              >
-                <div className="title-footer font-weight-bold text-uppercase mb-4">
-                  Fanpage
-                </div>
-
-                <div className="embed-responsive embed-responsive-1by1">
-                  <iframe
-                    title="facebook-page"
-                    data-nh-lazy="iframe"
-                    className="embed-responsive-item"
-                    style={{ border: "none", overflow: "hidden" }}
-                    scrolling="no"
-                    frameBorder="0"
-                    allowFullScreen={true}
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fweb4s&tabs=timeline&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=912588869433315"
-                  />
-                </div>
-              </div>
-            </div>
+     
           </div>
         </div>
       </div>

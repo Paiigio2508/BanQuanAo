@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaGithub, FaMoneyBills } from "react-icons/fa6";
-import { RiAccountCircleFill } from "react-icons/ri";
+import { FaUserPen } from "react-icons/fa6";
 import { BsBoxSeamFill } from "react-icons/bs";
 import { RxDashboard } from "react-icons/rx";
 import { Menu, MenuItem, SubMenu } from "react-pro-sidebar";
@@ -153,7 +153,7 @@ const DashboardAdmin = ({ children }) => {
                   active={location.pathname === "/admin-kich-thuoc"}
                   onClick={() => nav("/admin-kich-thuoc")}
                 >
-                 Kích Thước
+                  Kích Thước
                 </MenuItem>
 
                 <MenuItem
@@ -182,27 +182,20 @@ const DashboardAdmin = ({ children }) => {
                 </MenuItem>
               </SubMenu>
 
-              <SubMenu
-                icon={<RiAccountCircleFill size={24} />}
-                label="Tài khoản"
-                style={{ fontSize: "18px" }}
-                defaultOpen={
-                  location.pathname.startsWith("/admin-nhan-vien") ||
-                  location.pathname.startsWith("/admin-khach-hang")
-                }
-              >
-                <MenuItem
-                  active={location.pathname === "/admin-khach-hang"}
-                  onClick={() => nav("/admin-khach-hang")}
-                >
-                  Khách hàng
-                </MenuItem>
-              </SubMenu>
-
               <MenuItem
                 active={location.pathname === "/admin-khach-hang"}
+                onClick={() => nav("/admin-khach-hang")}
+                icon={<FaUserPen size={24} />}
+                style={{ fontSize: "18px" }}
+              >
+                Khách hàng
+              </MenuItem>
+
+              <MenuItem
+                active={location.pathname === "/admin-hoa-don"}
                 onClick={() => nav("/admin-hoa-don")}
                 icon={<FaMoneyBills size={24} />}
+                style={{ fontSize: "18px" }}
                 suffix={
                   !collapsed && (
                     <Badge count="New" style={{ background: "red" }} />

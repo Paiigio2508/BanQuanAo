@@ -75,7 +75,6 @@ public class KhachHangService {
         diaChi.setNguoiDung(add);
         diaChi.setTrangThai(0);
         diaChiRepository.save(diaChi);
-        emailService.sendEmailPasword(request.getEmail(), "Mật khẩu bạn là ", pass);
         return new NguoiDungResponseImplDTO(add, diaChi);
     }
     @Async
