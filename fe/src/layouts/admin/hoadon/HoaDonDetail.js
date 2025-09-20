@@ -6,7 +6,6 @@ import { GiNotebook } from "react-icons/gi";
 import { FaMoneyBillTrendUp, FaTruckFast } from "react-icons/fa6";
 import { ImCancelCircle } from "react-icons/im";
 import { Button, Form, Table, Modal, Input } from "antd";
-import moment from "moment";
 import { HoaDonAPI } from "../../../pages/api/hoadon/HoaDonAPI";
 import { get } from "local-storage";
 import { ToastContainer, toast } from "react-toastify";
@@ -22,7 +21,16 @@ export default function HoaDonDetail() {
   const { TextArea } = Input;
   const storedData = get("userData");
   const maNV = storedData?.ma || null;
+  // Helper format tiền VND
+  const fmtVND = (n) =>
+    new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(Number(n || 0));
 
+  const thanhTien = Number(hoaDonState?.thanhTien ?? 0);
+  const phiShip = Number(hoaDonState?.tienVanChuyen ?? 0);
+  const tong = thanhTien + phiShip;
   // Modal & Form
   const [isModalVanDon, setIsModalVanDon] = useState(false);
   const [formVanDon] = Form.useForm();
@@ -46,11 +54,10 @@ export default function HoaDonDetail() {
     });
   };
   useEffect(() => {
-      loadListSanPhams();
-         console.log(listSanPhams);
+    loadListSanPhams();
+    console.log(listSanPhams);
     if (!hoaDonState) fetchHoaDonById();
-  
- 
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -138,44 +145,72 @@ export default function HoaDonDetail() {
     nextBtn: null,
   };
 
-const columnsChiTietSanPham = [
-  {
-    title: "STT",
-    key: "stt",
-    render: (_val, _rec, index) => index + 1,
-    width: 70,
-  },
-  {
-    title: "Hình ảnh",
-    dataIndex: "linkAnh",
-    key: "linkAnh",
-    render: (src) =>
-      src ? (
-        <img
-          src={src}
-          alt="SP"
-          style={{ width: 60, height: 60, objectFit: "cover" }}
-        />
-      ) : (
-        "-"
+  const columnsChiTietSanPham = [
+    {
+      title: "STT",
+      key: "stt",
+      render: (_val, _rec, index) => index + 1,
+      width: 70,
+    },
+    {
+      title: "Hình ảnh",
+      dataIndex: "linkAnh",
+      key: "linkAnh",
+      render: (src) =>
+        src ? (
+          <img
+            src={src}
+            alt="SP"
+            style={{ width: 60, height: 60, objectFit: "cover" }}
+          />
+        ) : (
+          "-"
+        ),
+    },
+    {
+      title: "Thông tin sản phẩm",
+      key: "thongTinSP",
+      render: (_, record) => (
+        <>
+          <div>
+            {record.tenSP} {record.tenHang}, size:
+            <span className="text-danger">{record.tenKT}</span> <b>Màu sắc:</b>{" "}
+            {record.tenMS}
+          </div>
+
+          <div
+            style={{
+              backgroundColor: `${record.maMS}`,
+              borderRadius: 6,
+              width: 60,
+              height: 25,
+            }}
+            className="custom-div"
+          ></div>
+        </>
       ),
-  },
-  { title: "Sản phẩm", dataIndex: "tenSP", key: "tenSP" },
-  { title: "Kích thước", dataIndex: "tenKT", key: "tenKT", width: 120 },
-  { title: "Màu sắc", dataIndex: "tenMS", key: "tenMS", width: 120 },
-  { title: "Số lượng", dataIndex: "soLuong", key: "soLuong", width: 100 },
-  {
-    title: "Giá bán",
-    dataIndex: "giaBan",
-    key: "giaBan",
-    render: (v) =>
-      new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(v ?? 0),
-    width: 140,
-  },
-];
+    },
+    { title: "Số lượng", dataIndex: "soLuong", key: "soLuong", width: 100 },
+    {
+      title: "Giá bán",
+      dataIndex: "giaBan",
+      key: "giaBan",
+      render: (v) =>
+        new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(v ?? 0),
+      width: 140,
+    },
+    {
+      title: "Tổng tiền",
+      key: "tongTien",
+      render: (_, record) => {
+        const tong = record.soLuong * record.giaBan;
+        return tong.toLocaleString() + " ₫";
+      },
+    },
+  ];
 
   return (
     <div>
@@ -221,7 +256,6 @@ const columnsChiTietSanPham = [
         <Table
           columns={columnsChiTietSanPham}
           dataSource={listSanPhams} // ✅ NÊN CÓ
-     
           rowKey="id" // hoặc "idCTSP" nếu unique theo chi tiết
           style={{ marginTop: 25 }}
         />
@@ -289,13 +323,15 @@ const columnsChiTietSanPham = [
         <div className="col-md-9"></div>
         <div className="col-md-3">
           <h3>
-            Tiền đơn hàng : <span className="text-danger">200.000 VND</span>
+            Tiền đơn hàng:
+            <span className="text-danger">{fmtVND(thanhTien)}</span>
           </h3>
           <h3>
-            Tiền vẫn chuyển : <span className="text-danger">20.000 VND</span>
+            Tiền vận chuyển:
+            <span className="text-danger">{fmtVND(phiShip)}</span>
           </h3>
           <h3>
-            Tổng tiền : <span className="text-danger">220.000 VND</span>
+            Tổng tiền: <span className="text-danger">{fmtVND(tong)}</span>
           </h3>
         </div>
       </div>
