@@ -31,7 +31,6 @@ public interface SanPhamRepository extends JpaRepository<SanPham, String> {
             	ten,
             	a.trang_thai,
             	a.id
-            having SUM(coalesce(o.so_luong, 0))> 0
             order by
             	a.ngay_tao desc
             """, nativeQuery = true)
@@ -54,12 +53,13 @@ WHERE
         OR o.trang_thai = :#{#bangConSearch.trangThai})
 GROUP BY
     o.id, o.ma, o.ten, o.trang_thai
-HAVING SUM(coalesce(a.so_luong, 0)) > 0
 ORDER BY o.ma DESC
             """, nativeQuery = true)
     List<SanPhamRepo> tim(ThuocTinhSearchRequest bangConSearch);
     @Query(value = """
-            select distinct ms.ma  from mau_sac ms
+            select 
+            distinct ms.ma  
+            from mau_sac ms
             join chi_tiet_san_pham ctsp on ms.id = ctsp.mau_sac_id
             join san_pham sp on sp.id = ctsp.san_pham_id
             where sp.id =:id order by ms.ma ASC 

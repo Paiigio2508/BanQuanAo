@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  Slider,
-  Checkbox,
-  Collapse,
-  Space,
-} from "antd";
 import "./sanpham.css";
 import { ProductCard } from "./productCard";
 import { useParams } from 'react-router-dom';
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
 import { FileSearchOutlined} from "@ant-design/icons";
-import { ThuocTinhAPI } from "../../../pages/api/sanpham/ThuocTinh.api";
 export const TimKiemDashBoard = ({ children }) => {
   const { ten } = useParams();
   const [products, setProducts] = useState([]);

@@ -387,7 +387,7 @@ export default function ChatLieu() {
               centered
               open={openUpdate}
               onOk={() => form1.submit()}
-              onCancel={() => setOpen(false)}
+              onCancel={() => setOpenUpdate(false)}
               width={500}
             >
               <Form

@@ -1,5 +1,6 @@
 package com.example.be.repository.SanPham;
 
+import com.example.be.dto.repon.AddChiTietSanPhamRepo;
 import com.example.be.dto.repon.ChiTietSanPhamRepo;
 import com.example.be.dto.repon.DetailChiTietSanPhamRepo;
 import com.example.be.dto.request.admin.sanphamrequest.ChiTietSanPhamSearchRequest;
@@ -40,6 +41,19 @@ public interface ChiTietSanPhamRepository extends JpaRepository<ChiTietSanPham, 
                     GROUP BY o.id, sp.ten, kt.ten, ms.ten, ms.ma, o.so_luong, o.gia_ban, o.trang_thai
 """ ,nativeQuery = true)
     List<ChiTietSanPhamRepo> getALLCTSP(@Param("idSP") String idSP);
+
+    @Query(value = """
+					SELECT o.id AS idCTSP,
+                     sp.id AS idSP,
+                     kt.id AS idKT,
+                     ms.id AS idMS         
+                    FROM chi_tiet_san_pham o
+                    JOIN san_pham sp  ON o.san_pham_id = sp.id
+                    JOIN kich_thuoc kt ON o.kich_thuoc_id = kt.id
+                    JOIN mau_sac ms ON o.mau_sac_id = ms.id
+                    GROUP BY o.id, sp.id, kt.id, ms.id
+""" ,nativeQuery = true)
+    List<AddChiTietSanPhamRepo> getALL();
 
     @Query(value = """
             SELECT o.id AS id,sp.id AS sanPham ,kt.id AS kichThuoc,ms.id AS mauSac,cl.id AS chatLieu,dm.id AS danhMuc
