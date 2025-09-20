@@ -6,7 +6,7 @@ import loginImage from "../../assets/images/logo1.png";
 import bannerLogin from "../../assets/images/bannerLogin.png";
 import { LoginAPI } from "../../pages/api/login/LoginAPI";
 import ReCAPTCHA from "react-google-recaptcha";
-
+import { ToastContainer } from "react-toastify";
 export const QuenMatKhau = () => {
   const nav = useNavigate();
   const [form] = Form.useForm();
@@ -126,6 +126,17 @@ const forgotPass = async () => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };
