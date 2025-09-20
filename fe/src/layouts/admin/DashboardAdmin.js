@@ -153,7 +153,7 @@ const DashboardAdmin = ({ children }) => {
                   active={location.pathname === "/admin-kich-thuoc"}
                   onClick={() => nav("/admin-kich-thuoc")}
                 >
-                 Kích Thước
+                  Kích Thước
                 </MenuItem>
 
                 <MenuItem
@@ -200,7 +200,7 @@ const DashboardAdmin = ({ children }) => {
               </SubMenu>
 
               <MenuItem
-                active={location.pathname === "/admin-khach-hang"}
+                active={location.pathname === "/admin-hoa-don"}
                 onClick={() => nav("/admin-hoa-don")}
                 icon={<FaMoneyBills size={24} />}
                 suffix={
