@@ -6,9 +6,10 @@ import { FilterFilled } from "@ant-design/icons";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GiMaterialsScience } from 'react-icons/gi';
-import { BsFillEyeFill } from 'react-icons/bs';
+import { BsFillEyeFill} from 'react-icons/bs';
+import { TbListDetails } from 'react-icons/tb';
 import { ThuocTinhAPI } from '../../../pages/api/sanpham/ThuocTinh.api';
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 export default function SanPham() {
   //Form
   const [selectedValue, setSelectedValue] = useState('1');
@@ -25,7 +26,6 @@ export default function SanPham() {
   const [formTim] = Form.useForm();
   //Ấn Add
   const [open, setOpen] = useState(false);
-  const [bordered] = useState(false);
   const formItemLayout = {
     labelCol: {
       span: 4
@@ -70,11 +70,10 @@ export default function SanPham() {
   }
   //Update
   const [openUpdate, setOpenUpdate] = useState(false);
-  const [clUpdate, setClUpdate] = useState("");
+  const [spUpdate, setSpUpdate] = useState("");
   const [tenCheck, setTenCheck] = useState("");
-
   const showModal = async (idDetail) => {
-    await ThuocTinhAPI.detail("san-pham", idDetail)
+    await ThuocTinhAPI.detail("san-pham",idDetail)
       .then((res) => {
         form1.setFieldsValue({
           id: res.data.id,
@@ -83,21 +82,24 @@ export default function SanPham() {
           trangThai: res.data.trangThai,
           ngayTao: res.data.ngayTao,
           ngaySua: res.data.ngaySua,
+          nguoiTao: res.data.nguoiTao,
+          nguoiSua: res.data.nguoiSua,
         });
         setTenCheck(res.data.ten)
-        setClUpdate(res.data)
+        setSpUpdate(res.data)
       })
-    setOpenUpdate(true)
+      setOpenUpdate(true)
   };
+
   const updateSanPham = () => {
-    if (clUpdate.ten != tenCheck) {
+    if (spUpdate.ten !== tenCheck) {
       const checkTrung = (ten) => {
         return sanPham.some(x =>
           x.ten.trim().toLowerCase() === ten.trim().toLowerCase()
         );
       };
 
-      if (checkTrung(clUpdate.ten)) {
+      if (checkTrung(spUpdate.ten)) {
         toast.error('Sản phẩm trùng với sản phẩm khác !', {
           position: "top-right",
           autoClose: 5000,
@@ -111,7 +113,7 @@ export default function SanPham() {
         return;
       }
     }
-    ThuocTinhAPI.update("san-pham", clUpdate.id, clUpdate)
+    ThuocTinhAPI.update("san-pham", spUpdate.id, spUpdate)
       .then((res) => {
         toast('✔️ Sửa thành công!', {
           position: "top-right",
@@ -123,7 +125,7 @@ export default function SanPham() {
           progress: undefined,
           theme: "light",
         });
-        setClUpdate("");
+        setSpUpdate("");
         loadSanPham();
         setOpenUpdate(false);
       })
@@ -145,7 +147,7 @@ export default function SanPham() {
   const validateDateAdd = (_, value) => {
     const { getFieldValue } = form;
     const tenTim = getFieldValue("ten");
-    if (tenTim != undefined) {
+    if (tenTim !== undefined) {
       if (!tenTim.trim()) {
         return Promise.reject("Tên không được để trống");
       }
@@ -167,7 +169,7 @@ export default function SanPham() {
   const validateDateKichThuocUpdate = (_, value) => {
     const { getFieldValue } = form1;
     const tenTim = getFieldValue("ten");
-    if (tenTim != undefined) {
+    if (tenTim !== undefined) {
       if (!tenTim.trim()) {
         return Promise.reject("Tên không được để trống");
       }
@@ -224,6 +226,7 @@ export default function SanPham() {
   const [sanPham, setSanPhams] = useState([]);
   useEffect(() => {
     loadSanPham();
+
   }, []);
   const loadSanPham = () => {
     ThuocTinhAPI.getAll("san-pham")
@@ -235,7 +238,7 @@ export default function SanPham() {
         });
       })
   };
-
+  console.log(sanPham)
   const columns = [
     {
       title: "STT",
@@ -266,6 +269,9 @@ export default function SanPham() {
       width: 120,
       render: (record) => {
         const kichThuocList = listKT[record.id] || [];
+        if (kichThuocList.length === 0) {
+          return <span style={{ color: "#999" }}>Không có</span>;
+        }
         return (
           <div
             style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
@@ -279,7 +285,6 @@ export default function SanPham() {
                     height: 20,
                     backgroundColor: "white",
                     border: "1px solid #C6C5C5",
-                    borderColor: "#C6C5C5",
                   }}
                 >
                   {kt}
@@ -297,6 +302,9 @@ export default function SanPham() {
       width: 120,
       render: (record) => {
         const mauSacList = listMS[record.id] || [];
+        if (mauSacList.length === 0) {
+          return <span style={{ color: "#999" }}>Không có</span>;
+        }
         return (
           <div
             style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
@@ -308,10 +316,9 @@ export default function SanPham() {
                     width: 40,
                     height: 20,
                     border: "1px solid #C6C5C5",
-                    borderColor: "#C6C5C5",
                   }}
                   color={mau}
-                ></Tag>
+                />
               </div>
             ))}
           </div>
@@ -350,12 +357,13 @@ export default function SanPham() {
         <Space size="middle">
           <Link
             to={`/admin-chi-tiet-san-pham/${title}`}
-            className="btn btn-danger"
+            className="btn btn-info"
           >
-            <BsFillEyeFill />
+            <TbListDetails />
           </Link>
-          {/* <a className='btn btn-danger' onClick={() => showModal(`${title}`)}><BsFillEyeFill className='mb-1' /></a> */}
+          <a className='btn btn-danger' onClick={() => showModal(`${title}`) }><BsFillEyeFill className='mb-1' /></a>
         </Space>
+        
       ),
     },
   ]
@@ -489,7 +497,7 @@ export default function SanPham() {
               centered
               open={openUpdate}
               onOk={() => form1.submit()}
-              onCancel={() => setOpen(false)}
+              onCancel={() => setOpenUpdate(false)}
               width={500}
             >
               <Form
@@ -516,21 +524,21 @@ export default function SanPham() {
                   <Input
                     className="border"
                     maxLength={31}
-                    value={clUpdate.ten}
+                    value={spUpdate.ten}
                     onChange={(e) =>
-                      setClUpdate({ ...clUpdate, ten: e.target.value })
+                      setSpUpdate({ ...spUpdate, ten: e.target.value })
                     }
                   ></Input>
                 </Form.Item>
                 <Form.Item name="trangThai" label={<b>Trạng thái </b>}>
                   <Radio.Group
                     onChange={(e) =>
-                      setClUpdate({
-                        ...clUpdate,
+                      setSpUpdate({
+                        ...spUpdate,
                         trangThai: e.target.value,
                       })
                     }
-                    value={clUpdate.trangThai}
+                    value={spUpdate.trangThai}
                   >
                     <Radio value={0}>Còn bán</Radio>
                     <Radio value={1}>Dừng bán</Radio>

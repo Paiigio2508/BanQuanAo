@@ -26,6 +26,12 @@ public class ChiTietSanPhamController {
     public ResponseEntity<?> getALLCTSP(@PathVariable("idSP") String id) {
         return new ResponseEntity<>(chiTietSanPhamService.getCtspTheoIdSanPham(id), HttpStatus.OK);
     }
+
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAll() {
+        return new ResponseEntity<>(chiTietSanPhamService.getAllCtsp(), HttpStatus.OK);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<String> add(@RequestBody ChiTietSanPhamRequest request) {
         request.setGiaNhap(BigDecimal.valueOf(0));

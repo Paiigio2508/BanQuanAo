@@ -1,5 +1,6 @@
 package com.example.be.service.SanPham;
 
+import com.example.be.dto.repon.AddChiTietSanPhamRepo;
 import com.example.be.dto.repon.ChiTietSanPhamRepo;
 import com.example.be.dto.repon.DetailChiTietSanPhamRepo;
 import com.example.be.dto.request.admin.sanphamrequest.ChiTietSanPhamRequest;
@@ -19,6 +20,9 @@ public class ChiTietSanPhamService {
     ChiTietSanPhamRepository chiTietSanPhamRepository;
     public List<ChiTietSanPhamRepo> getCtspTheoIdSanPham(String id){
         return chiTietSanPhamRepository.getALLCTSP(id);
+    }
+    public List<AddChiTietSanPhamRepo> getAllCtsp(){
+        return chiTietSanPhamRepository.getALL();
     }
     public ChiTietSanPham add (ChiTietSanPhamRequest sp){
         ChiTietSanPham ct = sp.map(new ChiTietSanPham());

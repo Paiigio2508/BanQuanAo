@@ -19,6 +19,7 @@ public class SanPhamService {
     public List<SanPhamRepo> getAllSanPham() {
         return sanPhamRepository.getALLSP();
     }
+
     public SanPham update(String id, ThuocTinhRequest request) {
         SanPham sp = request.mapToEntity(new SanPham());
         sp.setId(id);

@@ -15,7 +15,6 @@ export default function AddChiTietSanPham() {
   const nav = useNavigate();
   const { TextArea } = Input;
   const { id } = useParams();
-
   const [imageUrl, setImageUrl] = useState("");
 
   //Load Combobox Danh Mục
@@ -97,8 +96,23 @@ export default function AddChiTietSanPham() {
         setMauSacs(res.data);
       })
   };
+  // Load CTSP
+  const [ctsp, setCTSPs] = useState([]);
+
+  useEffect(() => {
+    loadCTSP();
+  }, []);
+
+  const loadCTSP = () => {
+    ChiTietSanPhamAPI.getAllChiTietSanPham()
+      .then((res) => {
+        setCTSPs(res.data);
+      })
+  };
   const handleFileUpload = (cloudinaryUrl) => setImageUrl(cloudinaryUrl);
 
+  console.log(ctsp)
+  console.log(ctsp.length)
   // Submit form
   const handleFinish = (values) => {
     const data = {
@@ -107,6 +121,72 @@ export default function AddChiTietSanPham() {
         imageUrl ||
         "https://res.cloudinary.com/dm0w2qws8/image/upload/v1707054561/pryndkawgsxymspxkxcm.png",
     };
+
+    for (let i = 0; i < ctsp.length; i++) {
+      const item = ctsp[i];
+      if (
+        item.idSP === data.sanPham &&
+        item.idMS === data.mauSac &&
+        item.idKT === data.kichThuoc
+      ) {
+        toast.error(
+          "Sản phẩm có kích thước và màu sắc trùng với sản phẩm khác!",
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          }
+        );
+        return;
+      }
+    }
+
+    if (data.soLuong < 1) {
+      toast.error("Số lượng >= 1", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    if (data.giaBan < 0) {
+      toast.error("Giá bán > 0", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    if (data.moTa.length > 200) {
+      toast.error("Mô tả không quá 200 kí tự!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
 
     ChiTietSanPhamAPI.themChiTietSanPham(data)
       .then(() => {

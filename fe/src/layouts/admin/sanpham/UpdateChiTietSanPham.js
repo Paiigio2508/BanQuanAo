@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { AddressApi } from "../../../pages/api/address/AddressApi";
-import { useNavigate, useParams } from "react-router-dom";
+import { data, useNavigate, useParams } from "react-router-dom";
 import UpLoadImageUpdate from "../../uploadAnh/UpLoadImage";
 import { ChiTietSanPhamAPI } from "../../../pages/api/sanpham/ChiTietSanPham.api";
 import { ThuocTinhAPI } from "../../../pages/api/sanpham/ThuocTinh.api";
@@ -26,16 +26,18 @@ export default function UpdateChiTietSanPham() {
   const nav = useNavigate();
   const [fileImage, setFileImage] = useState(null);
   const [oldImage, setOldImage] = useState(""); // link ảnh cũ
-  const [listProvince, setListProvince] = useState([]);
-  const [listDistricts, setListDistricts] = useState([]);
-  const [listWard, setListWard] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [ktCheck, setKtCheck] = useState('');
+  const [msCheck, setMsCheck] = useState('');
+
 
   //Tạo nút back
   const [idSP, setIdSP] = useState("");
   useEffect(() => {
     ChiTietSanPhamAPI.detailChiTietSanPham(id).then((res) => {
-      setIdSP(res.data.sanPham); // cập nhật state
+      setIdSP(res.data.sanPham);
+      setMsCheck(res.data.mauSac)
+      setKtCheck(res.data.kichThuoc)
     });
   }, [id]);
   const back = () => {
@@ -124,6 +126,20 @@ export default function UpdateChiTietSanPham() {
       })
   };
 
+  // Load CTSP
+  const [ctsp, setCTSPs] = useState([]);
+
+  useEffect(() => {
+    loadCTSP();
+  }, []);
+
+  const loadCTSP = () => {
+    ChiTietSanPhamAPI.getAllChiTietSanPham()
+      .then((res) => {
+        setCTSPs(res.data);
+      })
+  };
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -164,6 +180,32 @@ export default function UpdateChiTietSanPham() {
         id: id,
         hinhAnh: fileImage ? fileImage : oldImage,
       };
+
+      if (dataUpdate.kichThuoc != ktCheck || dataUpdate.mauSac != msCheck) {
+        for (let i = 0; i < ctsp.length; i++) {
+          const item = ctsp[i];
+          if (
+            item.idSP === dataUpdate.sanPham &&
+            item.idMS === dataUpdate.mauSac &&
+            item.idKT === dataUpdate.kichThuoc
+          ) {
+            toast.error(
+              "Sản phẩm có kích thước và màu sắc trùng với sản phẩm khác!",
+              {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              }
+            );
+            return;
+          }
+        }
+      }
 
       ChiTietSanPhamAPI.updateChiTietSanPham(dataUpdate.id, dataUpdate)
         .then(() => {

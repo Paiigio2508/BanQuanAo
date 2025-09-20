@@ -12,6 +12,17 @@ export class ChiTietSanPhamAPI {
         });
     };
 
+    static getAllChiTietSanPham = () => {
+        const getToken = getHeader();
+        return requestAdmin({
+            method: "GET",
+            url: `/admin/chi-tiet-san-pham/getall`,
+            headers: {
+                Authorization: getToken,
+            },
+        });
+    };
+    
     static themChiTietSanPham = (data) => {
         const getToken = getHeader();
         return requestAdmin({
