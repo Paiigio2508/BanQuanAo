@@ -86,7 +86,6 @@ export const DangKy = () => {
  };
 
 const signUp = async (values) => {
-  console.log("SUBMIT VALUES:", values); // <- sẽ thấy log ngay khi submit pass
 
   // kiểm tra tuổi
   const birthDate = values.ngaySinh ? new Date(values.ngaySinh) : null;
@@ -151,7 +150,6 @@ const signUp = async (values) => {
   };
   const formData = new FormData();
   formData.append("request", JSON.stringify(data));
-  console.log("FORM DATA BUILT:", data); // <- log chắc chắn thấy
 
   await LoginAPI.signUp(formData);
   toast.success("Đăng ký thành công!");

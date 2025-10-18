@@ -12,14 +12,13 @@ export const DashboardClient = ({ children }) => {
   const [idUser, setIdUser] = useState(null);
   const [userName, setUserName] = useState("");
   const [linkAnh, setLinkAnh] = useState("");
-  const [valueSearch, setValueSearchs] = useState('');
-
+  const [valueSearch, setValueSearchs] = useState("");
 
   const nav = useNavigate();
   const onSearch = (value) => {
     const keyword = value && value.trim() ? value.trim() : "allsanpham";
     nav(`/tim-kiem/${keyword}`);
-    setValueSearchs('');
+    setValueSearchs("");
   };
   const isLoggedIn = !!userName?.trim();
   useEffect(() => {
@@ -30,18 +29,23 @@ export const DashboardClient = ({ children }) => {
       setLinkAnh(userData.anh || "");
     }
   }, []);
-const dangXuat = () => {
-  localStorage.clear();
-  if (window.location.pathname === "/home") {
-    window.location.reload();
-  } else {
-    window.location.assign("/home"); // hoặc: window.location.href = "/home";
-  }
-};
-
+  const dangXuat = () => {
+    localStorage.clear();
+    if (window.location.pathname === "/home") {
+      window.location.reload();
+    } else {
+      window.location.assign("/home"); // hoặc: window.location.href = "/home";
+    }
+  };
   const items = [
-    { key: "1", label: <a >Đổi mật khẩu</a> },
-    { key: "2", label: "Thông tin" },
+    {
+      key: "1",
+      label: <a onClick={() => nav("/doi-mat-khau")}>Đổi mật khẩu</a>,
+    },
+    {
+      key: "2",
+      label: <a onClick={() => nav("/lich-su-mua-hang")}>Đơn mua</a>,
+    },
     { key: "3", label: <a onClick={dangXuat}>Đăng xuất</a> },
   ];
 
@@ -138,9 +142,7 @@ const dangXuat = () => {
                 </div>
 
                 <div className="entire-info-website">
-                  <div className="mb-4">
-                    Shop quần áo thể thao TSPORT
-                  </div>
+                  <div className="mb-4">Shop quần áo thể thao TSPORT</div>
 
                   <address>
                     <p>
@@ -169,31 +171,11 @@ const dangXuat = () => {
                     Chính sách
                   </div>
                   <ul className="">
-                    <li className="mb-4">
-                   
-                        Chính sách bảo mật
-               
-                    </li>
-                    <li className="mb-4">
-                   
-                        Chính sách bán hàng
-                  
-                    </li>
-                    <li className="mb-4">
-                  
-                        Chính sách vận chuyển
-                 
-                    </li>
-                    <li className="mb-4">
-                  
-                        Chính sách bảo hành
-                
-                    </li>
-                    <li className="mb-4">
-                 
-                        Chính sách đổi hàng
-               
-                    </li>
+                    <li className="mb-4">Chính sách bảo mật</li>
+                    <li className="mb-4">Chính sách bán hàng</li>
+                    <li className="mb-4">Chính sách vận chuyển</li>
+                    <li className="mb-4">Chính sách bảo hành</li>
+                    <li className="mb-4">Chính sách đổi hàng</li>
                   </ul>
                 </div>
               </div>
@@ -211,38 +193,17 @@ const dangXuat = () => {
                     Danh mục
                   </div>
                   <ul className="">
-                    <li className="mb-4">
-                      
-                        Áo thun thể thao
-               
-                    </li>
-                    <li className="mb-4">
-                    
-                        Áo polo thể thao
-              
-                    </li>
-                    <li className="mb-4">
-                 
-                        Quần short
-                  
-                    </li>
-                    <li className="mb-4">
-                     
-                        Quần jogger
-                  
-                    </li>
-                    <li className="mb-4">
-               
-                        Phụ kiện
-                
-                    </li>
+                    <li className="mb-4">Áo thun thể thao</li>
+                    <li className="mb-4">Áo polo thể thao</li>
+                    <li className="mb-4">Quần short</li>
+                    <li className="mb-4">Quần jogger</li>
+                    <li className="mb-4">Phụ kiện</li>
                   </ul>
                 </div>
               </div>
             </div>
 
             {/* Cột 4 */}
-     
           </div>
         </div>
       </div>

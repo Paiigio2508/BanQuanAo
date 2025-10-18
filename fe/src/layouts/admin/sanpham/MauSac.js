@@ -36,7 +36,6 @@ export default function MauSac() {
     }
   };
   const doiMauUpdate = (e) => {
-    console.log(e.target.value);
     const ma = e.target.value;
     const hexCode = ma.replace("#", "").toUpperCase();
     const rgb = convert.hex.rgb(hexCode);

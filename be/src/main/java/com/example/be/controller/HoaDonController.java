@@ -24,7 +24,6 @@ public class HoaDonController {
     }
     @PutMapping("/updateTT/{idHD}")
     public  ResponseEntity<?> updateTrangThaiHoaDon(@RequestBody HoaDonRequet hoaDonRequet, @PathVariable("idHD") String id ){
-        System.out.println(hoaDonRequet);
         return ResponseEntity.ok(hoaDonService.updateHoaDon(hoaDonRequet,id));
     }
     @GetMapping("/san-pham/{idHD}")

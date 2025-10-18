@@ -2,6 +2,7 @@ package com.example.be.repository;
 
 import com.example.be.dto.repon.ChiTietSanPhamRepo;
 import com.example.be.dto.repon.HoaDonRespon;
+import com.example.be.dto.request.TrangThaiRequest;
 import com.example.be.entity.HoaDon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -43,4 +44,27 @@ chi_tiet_hoa_don hdct left join chi_tiet_san_pham ctsp on ctsp.id = hdct.id_chi_
                            	    """,
             nativeQuery = true)
     List<ChiTietSanPhamRepo> detailHDSanPham(String key);
+
+    @Query(value = """
+          SELECT hd.id as IdHD,hd.ma, hd.thanh_tien as thanhTien, hd.trang_thai as trangThai, (select group_concat(hdct.id) from chi_tiet_hoa_don hdct where hdct.id_hoa_don=hd.id) as hoaDonDetail
+            FROM hoa_don hd where id_khach_hang=:#{#req.id}  AND ( :#{#req.trangThai}  IS NULL
+          OR :#{#req.trangThai} LIKE ''OR hd.trang_thai Like (:#{#req.trangThai}))  order by hd.ngay_mua desc;   
+                     """, nativeQuery = true)
+    List<HoaDonRespon> getALLHDByIDKH(TrangThaiRequest req);
+    @Query(value = """
+      SELECT hd.ghi_chu AS ghiChuHD, hd.id AS idHD,hd.ma AS ma, hd.nhan_vien_id AS maNV, CASE
+       WHEN hd.khach_hang_id IS NULL  THEN N'Khách lẻ' ELSE kh.ten END  as tenKH ,CASE WHEN hd.so_dien_thoai
+       is  NULL THEN N''ELSE hd.so_dien_thoai END  as sdt,CASE WHEN hd.dia_chi IS  NULL THEN N''else hd.dia_chi
+       end as diaChi,ngay_mua as ngayMua,hd.thanh_tien as thanhTien,hd.trang_thai as trangThai,hd.loai_hoa_don
+       AS loaiHD, hd.tien_van_chuyen as tienVanChuyen,hd.tra_sau as traSau,
+       hd.voucher_id as voucher,hd.gia_giam_gia as giaGiam, hd.khach_hang_id as nguoiDung,
+       hd.gia_goc as giaGoc , hd.ten_nguoi_nhan as tenNguoiNhan,
+        tt.phuong_thuc_vnp as phuongThucVNP,
+        hd.tien_van_chuyen as tienVanChuyen,
+        hd.ngay_du_kien_nhan as ngayDuKienNhan
+       FROM  hoa_don hd
+       LEFT JOIN nguoi_dung kh ON kh.id = hd.khach_hang_id \s
+       left join thanh_toan tt ON hd.id= tt.hoa_don_id  where hd.ma=:ma                                                                                
+                     """, nativeQuery = true)
+    HoaDonRespon searchHDbyMa(String ma );
 }

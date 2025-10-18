@@ -2,6 +2,7 @@ package com.example.be.service;
 
 import com.example.be.dto.repon.ChiTietSanPhamRepo;
 import com.example.be.dto.repon.HoaDonRespon;
+import com.example.be.dto.request.TrangThaiRequest;
 import com.example.be.dto.request.admin.HoaDonRequet;
 import com.example.be.entity.HoaDon;
 import com.example.be.repository.HoaDonRepository;
@@ -42,5 +43,10 @@ public class HoaDonService {
     public List<ChiTietSanPhamRepo> detailHDSanPham(String  key){
         return  hoaDonRepository.detailHDSanPham(key);
     }
-
+    public List<HoaDonRespon> getALLHDByIDKH(TrangThaiRequest req){
+        return hoaDonRepository.getALLHDByIDKH( req);
+    }
+    public HoaDonRespon searchHDbyMa(String ma ){
+        return hoaDonRepository.searchHDbyMa(ma);
+    }
 }

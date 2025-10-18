@@ -210,7 +210,7 @@ export default function DanhMuc() {
       })
   };
 
-  console.log(danhMuc)
+
   const columns = [
     {
       title: "STT",
