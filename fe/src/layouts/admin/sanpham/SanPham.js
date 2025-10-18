@@ -200,7 +200,6 @@ export default function SanPham() {
   //Load Màu Sắc
   const [listMS, setListMs] = useState([]);
   const loadListMauSac = (id) => {
-    console.log("hihi")
     if (!listMS[id]) {
       ThuocTinhAPI.getListMauSacBySanPhamId(id).then((res) => {
         setListMs((prevListMS) => ({
@@ -238,7 +237,6 @@ export default function SanPham() {
         });
       })
   };
-  console.log(sanPham)
   const columns = [
     {
       title: "STT",

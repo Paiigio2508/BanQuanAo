@@ -55,7 +55,6 @@ export default function HoaDonDetail() {
   };
   useEffect(() => {
     loadListSanPhams();
-    console.log(listSanPhams);
     if (!hoaDonState) fetchHoaDonById();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

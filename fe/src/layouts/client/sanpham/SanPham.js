@@ -140,10 +140,8 @@ export const SanPhamClient = ({ children }) => {
   };
 
   const getTimMang = (data) => {
-    console.log(data);
     HomeAPI.timMang(data).then((res) => {
       setProducts(res.data);
-      console.log(products);
     });
   };
 

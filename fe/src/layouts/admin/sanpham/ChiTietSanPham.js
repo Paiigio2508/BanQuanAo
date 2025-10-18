@@ -151,14 +151,14 @@ export default function ChiTietSanPham() {
       updatedValues.giaBanKetThuc = 50000000;
     }
     timKiemCT(updatedValues)
-    console.log(updatedValues);
+
     
   }
   const timKiemCT = (dataSearch) => {
     ChiTietSanPhamAPI.searchChiTietSanPham(id, dataSearch)
       .then(response => {
         setChiTietSanPhams(response.data);
-        console.log(chiTietSanPham)
+
       })
       .catch(error => console.error('Error adding item:', error));
   }

@@ -21,8 +21,6 @@ const ModalUpdateDiaChi = (props) => {
   const handleClose = () => setOpenModalUpdateDiaChi(false);
 
   const handleUpdateDC = (value) => {
-    console.log(value);
-  
     HomeAPI.updateDiaChiByIDKHClient(value.id, value)
       .then(() => {
         toast.success("✔️ Cập nhật địa chỉ thành công!");

@@ -41,8 +41,6 @@ public class ClientController {
     public ResponseEntity<?> getTimSanPham(@PathVariable("tenTim") String tenTim) {
         return ResponseEntity.ok(clientService.getTim(tenTim));
     }
-
-
     @GetMapping("/kich-thuoc")
     public ResponseEntity<?> getALLKT(){
         return  ResponseEntity.ok(kichThuocService.getAllKichThuoc());

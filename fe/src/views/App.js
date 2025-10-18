@@ -44,6 +44,8 @@ import { DangKy } from "../layouts/login/DangKy";
 import ThongKe from "../layouts/admin/thongke/ThongKe";
 import HoaDonDetail from "../layouts/admin/hoadon/HoaDonDetail";
 import DoiMatKhau from "../layouts/admin/doimatkhau/DoiMatKhau";
+import ALLTabLichSuMuaHang from "../layouts/client/thongtin/ALLTabLichSuMuaHang";
+import DetailTraCuuDonHang from "../layouts/client/thongtin/DetailHoaDon";
 
 function App() {
   return (
@@ -88,6 +90,26 @@ function App() {
                 <DashboardClient>
                   <Home />
                 </DashboardClient>
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/lich-su-mua-hang"
+            element={
+              <GuestGuard>
+                <DashboardClient>
+                  <ALLTabLichSuMuaHang />
+                </DashboardClient>
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/home-hoa-don/:idHD"
+            element={
+              <GuestGuard>
+                  <DashboardClient>
+                    <DetailTraCuuDonHang />
+                  </DashboardClient>
               </GuestGuard>
             }
           />

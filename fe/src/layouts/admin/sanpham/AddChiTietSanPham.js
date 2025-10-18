@@ -110,9 +110,6 @@ export default function AddChiTietSanPham() {
       })
   };
   const handleFileUpload = (cloudinaryUrl) => setImageUrl(cloudinaryUrl);
-
-  console.log(ctsp)
-  console.log(ctsp.length)
   // Submit form
   const handleFinish = (values) => {
     const data = {

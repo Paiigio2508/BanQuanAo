@@ -1,5 +1,4 @@
-
-import "./DashboardAdmin.css";
+// DashboardAdmin.jsx
 import React, { useState, useEffect } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -21,7 +20,7 @@ import {
 import logoShop from "../../assets/images/logo.jpg";
 import bgsider from "../../assets/images/sidebar.png";
 import UserContext from "../admin/UserContext";
-
+import "./DashboardAdmin.css";
 const { Header, Sider, Content } = Layout;
 
 const DashboardAdmin = ({ children }) => {
@@ -55,17 +54,23 @@ const DashboardAdmin = ({ children }) => {
   const DoiMatKhau = () => nav("/admin-doi-mat-khau");
 
   const items = [
-    { key: "1", label: <a onClick={DoiMatKhau}>Đổi mật khẩu</a> },
-    { key: "2", label: <a onClick={dangXuat}>Đăng xuất</a> },
+    { key: "1", label: <span onClick={DoiMatKhau}>Đổi mật khẩu</span> },
+    { key: "2", label: <span onClick={dangXuat}>Đăng xuất</span> },
   ];
 
   return (
-    <Layout>
-      <Sider trigger={null} collapsible collapsed={collapsed} width={235}>
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        width={235}
+        style={{ minHeight: "100%" }}
+      >
         <div
           style={{
             position: "relative",
-            height: "100vh",
+            minHeight: "100%",
             backgroundColor: "#1f1f1f",
           }}
         >
@@ -73,10 +78,7 @@ const DashboardAdmin = ({ children }) => {
           <div
             style={{
               position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
+              inset: 0,
               backgroundImage: `url(${bgsider})`,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -84,13 +86,13 @@ const DashboardAdmin = ({ children }) => {
               opacity: 0.25,
               zIndex: 0,
             }}
-          ></div>
+          />
           {/* content */}
           <div
             style={{
               position: "relative",
               zIndex: 1,
-              height: "100%",
+              minHeight: "100%",
               display: "flex",
               flexDirection: "column",
             }}
@@ -110,7 +112,9 @@ const DashboardAdmin = ({ children }) => {
                   <img src={logoShop} width={100} alt="logo" />
                   <span
                     style={{ color: "white", marginTop: 5, fontSize: "24px" }}
-                  ></span>
+                  >
+                    {/* Tên shop nếu muốn */}
+                  </span>
                 </>
               ) : (
                 <img src={logoShop} width={40} alt="logo" />
@@ -126,6 +130,7 @@ const DashboardAdmin = ({ children }) => {
               >
                 Thống kê
               </MenuItem>
+
               <SubMenu
                 icon={<BsBoxSeamFill size={24} />}
                 label="Sản phẩm"
@@ -162,18 +167,21 @@ const DashboardAdmin = ({ children }) => {
                 >
                   Chất liệu
                 </MenuItem>
+
                 <MenuItem
                   active={location.pathname === "/admin-mau-sac"}
                   onClick={() => nav("/admin-mau-sac")}
                 >
                   Màu Sắc
                 </MenuItem>
+
                 <MenuItem
                   active={location.pathname === "/admin-danh-muc"}
                   onClick={() => nav("/admin-danh-muc")}
                 >
                   Danh mục
                 </MenuItem>
+
                 <MenuItem
                   active={location.pathname === "/admin-gioi-tinh"}
                   onClick={() => nav("/admin-gioi-tinh")}
@@ -263,7 +271,7 @@ const DashboardAdmin = ({ children }) => {
               />
               <span
                 className="text-light"
-                style={{ marginLeft: 4, fontWeight: "500" }}
+                style={{ marginLeft: 4, fontWeight: "500", color: "#fff" }}
               >
                 {userName}
               </span>
@@ -276,7 +284,8 @@ const DashboardAdmin = ({ children }) => {
             padding: 24,
             minHeight: 280,
             background: colorBgContainer,
-            overflowY: "auto",
+            // Quan trọng: để trang tự cao theo content, không cuộn cục bộ tại đây
+            overflow: "visible",
           }}
         >
           <UserContext.Provider
@@ -293,6 +302,7 @@ const DashboardAdmin = ({ children }) => {
           </UserContext.Provider>
         </Content>
       </Layout>
+
       <FloatButton.BackTop />
     </Layout>
   );
