@@ -33,7 +33,7 @@ export class ShipAPI {
     
       static fetchAllMoneyShip = (to_district_id, to_ward_code, quantity) => {
         let quantityProducts = 0;
-        if (quantity == "" || quantity == null || quantity == undefined) {
+        if (quantity === "" || quantity === null || quantity === undefined) {
           quantityProducts = 1;
         } else {
           quantityProducts = quantity;

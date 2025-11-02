@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import {
@@ -19,6 +19,8 @@ import "./giohang.css";
 import { get, set } from "local-storage";
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
 import { ShipAPI } from "../../../pages/api/ship/ShipAPI";
+import GioHangChiTiet from "./GioHangChiTiet";
+import { GioHangAPI } from "../../../pages/api/client/GioHangAPI";
 export const GioHang = ({ children }) => {
   const [openModalDiaChi, setOpenModalDiaChi] = useState(false);
   const [khachHang, setKhachHang] = useState(null);
@@ -27,11 +29,12 @@ export const GioHang = ({ children }) => {
   const [ngayShip, setNgayShip] = useState("");
   const [moneyShip, setMoneyShip] = useState("");
   const [email, setEmail] = useState(null);
-  const [soLuongSPGH, setSoLuongSPGH] = useState(0);
+  const [gioHangCT, setGioHangCT] = useState(0);
+  const [clickCountTM, setClickCountTM] = useState(1);
+  const [clickCountVNP, setClickCountVNP] = useState(0);
+  const [phuongThuc, setPhuongThuc] = useState(0);
   const storedData = get("userData");
-    const [clickCountTM, setClickCountTM] = useState(1);
-    const [clickCountVNP, setClickCountVNP] = useState(0);
-      const [phuongThuc, setPhuongThuc] = useState(0);
+  const storedGioHang = get("GioHang");
     const getButtonTMType = () => {
       // Xác định loại button dựa trên giá trị biến đếm
       return clickCountTM % 2 === 0 ? "default" : "primary";
@@ -71,20 +74,41 @@ export const GioHang = ({ children }) => {
         idXa = res.data.idXa;
       });
     }
-    if (idHuyen && idXa) {
-      setNgayShip(
-        await ShipAPI.fetchAllDayShip(idHuyen, idXa).then(
-          (res) => res.data.data.leadtime * 1000
-        )
-      );
-      setMoneyShip(
-        await ShipAPI.fetchAllMoneyShip(idHuyen, idXa, soLuongSPGH).then(
-          (res) => res.data.data.total
-        )
-      );
-    }
+    // if (idHuyen && idXa) {
+    //   setNgayShip(
+    //     await ShipAPI.fetchAllDayShip(idHuyen, idXa).then(
+    //       (res) => res.data.data.leadtime * 1000
+    //     )
+    //   );
+    //   setMoneyShip(
+    //     await ShipAPI.fetchAllMoneyShip(idHuyen, idXa, soLuongSPGH).then(
+    //       (res) => res.data.data.total
+    //     )
+    //   );
+    // }
   };
+  const ensureCartId = useCallback(async () => {
+    if (storedData?.userID) {
+      const r = await GioHangAPI.getByIDKH(storedData.userID);
+      return r?.data?.id || null;
+    }
+    return storedGioHang?.id || null;
+  }, [storedData, storedGioHang]);
 
+  const loadGHCT = useCallback(async () => {
+    try {
+      const cartId = await ensureCartId();
+      if (!cartId) {
+        setGioHangCT([]);
+        return;
+      }
+      const { data: items = [] } = await GioHangAPI.getAllGhctByIdGh(cartId);
+      setGioHangCT(items);
+    } catch (e) {
+      console.error("loadGHCT:", e);
+      setGioHangCT([]);
+    }
+  }, [ensureCartId]);
   return (
     <div className="container-fuild">
       <div className="banner-san-pham-shop mt-4">
@@ -154,37 +178,15 @@ export const GioHang = ({ children }) => {
       <div className="row mt-5">
         {/* Bảng sản phẩm */}
         <div className="col-md-8">
-          <table className="table mt-2">
-            <thead>
-              <tr>
-                <th scope="col">Sản phẩm</th>
-                <th scope="col">Giá</th>
-                <th scope="col">Số lượng</th>
-                <th scope="col">Tổng</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Giày Nike Air</td>
-                <td>2,000,000 VND</td>
-                <td>1</td>
-                <td>2,000,000 VND</td>
-                <td>
-                  <a href="#">Xóa</a>
-                </td>
-              </tr>
-              <tr>
-                <td>Áo Hoodie</td>
-                <td>500,000 VND</td>
-                <td>2</td>
-                <td>1,000,000 VND</td>
-                <td>
-                  <a href="#">Xóa</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        {gioHangCT?.length
+            ? gioHangCT.map((ghct) => (
+                <GioHangChiTiet
+                  key={ghct.idGH || ghct.idCTSP || ghct.id}
+                  product={ghct}
+                  loadghct={loadGHCT}
+                />
+              ))
+            : ""}
         </div>
 
         {/* Hóa đơn */}
