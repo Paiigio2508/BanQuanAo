@@ -1,42 +1,82 @@
 import { Button, Modal, Image, InputNumber } from "antd";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { get, set } from "local-storage";
+import { GioHangAPI } from "../../../pages/api/client/GioHangAPI";
 const ModalDetailSP = ({
   openModalDetailSP,
   setOpenModalDetailSP,
   productData,
 }) => {
   const [soLuong, setSoLuong] = useState(1);
-
+  const [adding, setAdding] = useState(false);
+  const storedData = get("userData");
+  const storedGioHang = get("GioHang");
   const handleClose = () => setOpenModalDetailSP(false);
 
   if (!productData) return null; // tránh lỗi khi chưa có dữ liệu
 
   const soLuongTon = Number(productData.soLuong) || 0;
-  /** Tìm variant theo màu + size */
+  /** Render mã giỏ hàng */
+  const taoMa = (n = 6, c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") =>
+  Array.from({ length: n }, () => c[(Math.random() * c.length) | 0]).join("");
 
-  const handleAddGioHang = async () => {
-    try {
-      if (!selectedVariant)
-        return toast.error("Vui lòng chọn màu & size hợp lệ!");
-
-      if (Number(soLuong) > Number(selectedVariant?.soLuong || 0))
-        return toast.error("Số lượng sản phẩm không đủ!");
-
-      const thanhTien = tinhTien(selectedVariant, soLuong);
-      await upsertGhct(gh.id, selectedVariant, soLuong, thanhTien);
-
-      toast.success("✔️ Thêm thành công!", { position: "top-right" });
-   
-    } catch (e) {
-      console.error(e);
-      toast.error("Thêm giỏ hàng thất bại. Vui lòng thử lại!");
+  //kiểm tra tồn tại giỏ hàng chưa, khách hàng đăng nhập hay không đăng nhập
+  const getOrCreateCart = async (khachHang, stored) => {
+    if (stored?.id) return stored;// nếu tồn tại giỏ hàng thì return về giỏ hàng
+    if (khachHang) {//kiểm tra nếu đăng nhập -> ktra khách có giỏ hàng chưa
+      const r = await GioHangAPI.getByIDKH(khachHang);
+    if (r?.data) return r.data;
+      return (await GioHangAPI.addGH({ ma: taoMa(), nguoiDung:{id:khachHang}})).data;
     }
-  };
+    const t = await GioHangAPI.addGH({ ma: taoMa(), nguoiDung: null });
+    set("GioHang", t?.data);
+    return t?.data;
+    };
+  //update số lượng giỏ hàng
+  const updateCartDetail = async (gioHangId, ctsp, soLuong, thanhTien) => {
+    const r = await GioHangAPI.getAllGhctByIdGh(gioHangId);
+    const cur = (r?.data||[]).find(x => x.idCTSP === ctsp.idCTSP);
+    const soLuongHienCo = Number(cur?.soLuong ?? 0);
+    const thanhTienHienCo = Number(cur?.thanhTien ?? 0);
+
+    const soLuongThem = Number(soLuong ?? 0);
+    const thanhTienThem = Number(thanhTien ?? 0);
+
+    const soLuongMoi = soLuongHienCo + soLuongThem;
+    const tienMoi = thanhTienHienCo + thanhTienThem;
+    const body = {
+      gioHang: {"id":cur ? cur.idGioHang : gioHangId},
+      chiTietSanPham: {"id":ctsp.idCTSP},
+      soLuong:soLuongMoi,
+      thanhTien:tienMoi,
+      ...(cur && { id: cur.idGhct })
+    };
+    return cur ? GioHangAPI.updateGHCT(body) : GioHangAPI.addGHCT(body);
+    };
+    //add sp vào giỏ hàng
+    const handleAddGioHang = async () => {
+      try {
+    
+        if (Number(soLuong) > Number(productData?.soLuong || 0))
+          return toast.error("Số lượng sản phẩm không đủ!");
+        const gh = await getOrCreateCart(storedData? storedData.userID:null, storedGioHang);
+        if (!gh?.id) throw new Error("Không xác định giỏ hàng.");
+    
+        const thanhTien = productData.giaBan*soLuong;
+        await updateCartDetail(gh.id, productData, soLuong, thanhTien);
+    
+        toast.success("✔️ Thêm thành công!", { position: "top-right" });
+      } catch (e) {
+        console.error(e);
+        toast.error("Thêm giỏ hàng thất bại. Vui lòng thử lại!");
+      }
+    };
+
   return (
     <Modal
       centered
-      open={openModalDetailSP} // ✅ AntD v5
+      open={openModalDetailSP} 
       onOk={handleClose}
       onCancel={handleClose}
       width={1000}

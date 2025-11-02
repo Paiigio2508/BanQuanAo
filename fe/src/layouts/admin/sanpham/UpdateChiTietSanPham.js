@@ -10,12 +10,10 @@ import {
   InputNumber
 } from "antd";
 import { useEffect, useState } from "react";
-import { AddressApi } from "../../../pages/api/address/AddressApi";
-import { data, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import UpLoadImageUpdate from "../../uploadAnh/UpLoadImage";
 import { ChiTietSanPhamAPI } from "../../../pages/api/sanpham/ChiTietSanPham.api";
 import { ThuocTinhAPI } from "../../../pages/api/sanpham/ThuocTinh.api";
-import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import { FaMoneyBills } from "react-icons/fa6";
 
