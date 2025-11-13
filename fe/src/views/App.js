@@ -46,6 +46,9 @@ import HoaDonDetail from "../layouts/admin/hoadon/HoaDonDetail";
 import DoiMatKhau from "../layouts/admin/doimatkhau/DoiMatKhau";
 import ALLTabLichSuMuaHang from "../layouts/client/thongtin/ALLTabLichSuMuaHang";
 import DetailTraCuuDonHang from "../layouts/client/thongtin/DetailHoaDon";
+import ThongTinTaiKhoan from "../layouts/client/thongtin/thongtintaikhoan/ThongTinTaiKhoan";
+import DoiMatKhauCLient from "../layouts/client/thongtin/thongtintaikhoan/DoiMatKhauCLient";
+import { TrangChuAdmin } from "../layouts/admin/trangchu/TrangChuAdmin";
 
 function App() {
   return (
@@ -104,12 +107,32 @@ function App() {
             }
           />
           <Route
+            path="/thong-tin-tai-khoan"
+            element={
+              <GuestGuard>
+                <DashboardClient>
+                  <ThongTinTaiKhoan />
+                </DashboardClient>
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/doi-mat-khau"
+            element={
+              <GuestGuard>
+                <DashboardClient>
+                  <DoiMatKhauCLient />
+                </DashboardClient>
+              </GuestGuard>
+            }
+          />
+          <Route
             path="/home-hoa-don/:idHD"
             element={
               <GuestGuard>
-                  <DashboardClient>
-                    <DetailTraCuuDonHang />
-                  </DashboardClient>
+                <DashboardClient>
+                  <DetailTraCuuDonHang />
+                </DashboardClient>
               </GuestGuard>
             }
           />
@@ -159,7 +182,9 @@ function App() {
             path="/admin"
             element={
               <AdminGuard>
-                <DashboardAdmin />
+                <DashboardAdmin>
+                  <TrangChuAdmin />
+                </DashboardAdmin>
               </AdminGuard>
             }
           />

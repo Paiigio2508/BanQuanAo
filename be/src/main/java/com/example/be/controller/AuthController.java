@@ -1,6 +1,7 @@
 package com.example.be.controller;
 import com.example.be.dto.login.LoginRequest;
 import com.example.be.dto.login.LoginRespon;
+import com.example.be.dto.request.ChangePasswordRequest;
 import com.example.be.dto.request.admin.DangKyRequest;
 import com.example.be.dto.request.admin.NguoiDungRequest;
 import com.example.be.entity.NguoiDung;
@@ -17,7 +18,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -75,5 +78,24 @@ public class AuthController {
     @GetMapping("/get-all")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(khachHangService.getAll());
+    }
+    @PostMapping("/doi-mat-khau")
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        // Lấy email từ user hiện tại (Spring Security lấy từ token)
+        String email = userDetails.getUsername(); // vì lúc login bạn dùng email làm username
+
+        try {
+            khachHangService.doiMatKhau(email,
+                    request.getMatKhauHienTai(),
+                    request.getMatKhau());
+
+            return ResponseEntity.ok("Đổi mật khẩu thành công");
+        } catch (RuntimeException ex) {
+            // Có thể custom message ở đây cho FE
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 }

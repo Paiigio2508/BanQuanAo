@@ -2,9 +2,38 @@ import React, { useState, useEffect } from "react";
 import { Button, Col, Form, Input, Row, Select, Divider } from "antd";
 import { TbLockPassword } from "react-icons/tb";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { LoginAPI } from "../../../pages/api/login/LoginAPI";
 export default function DoiMatKhau() {
   const [form] = Form.useForm();
+  const doiMatKhau = async (values) => {
+    const payload = {
+      // Đặt key đúng với BE đang nhận nhé
+      matKhauHienTai: values.matKhauHienTai,
+      matKhau: values.matKhau,
+    };
+
+    try {
+      await LoginAPI.doiMatKhau(payload);
+      toast.success("Đổi mật khẩu thành công!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+
+      form.resetFields();
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message ||
+        error?.response?.data ||
+        "Đổi mật khẩu thất bại, vui lòng thử lại!";
+
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 4000,
+      });
+    }
+  };
 
   return (
     <div className="container-fluid">
@@ -13,7 +42,8 @@ export default function DoiMatKhau() {
           <TbLockPassword /> Đổi mật khẩu
         </h2>
       </Divider>
-      <Form form={form} layout="vertical">
+      <ToastContainer />
+      <Form form={form} layout="vertical" onFinish={doiMatKhau}>
         <Row gutter={16} className="d-flex justify-content-center">
           <Col span={12}>
             <Form.Item
