@@ -3,17 +3,18 @@ import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logoShop from "../../assets/images/logo1.png";
-import { Avatar, Dropdown, Input, Button } from "antd";
+import { Avatar, Dropdown, Input, Button, Badge } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { TbShoppingCartHeart } from "react-icons/tb";
+import { useCart } from "./giohang/CartContext";
 export const DashboardClient = ({ children }) => {
   const { Search } = Input;
   const [idUser, setIdUser] = useState(null);
   const [userName, setUserName] = useState("");
   const [linkAnh, setLinkAnh] = useState("");
   const [valueSearch, setValueSearchs] = useState("");
-
+  const { totalQuantity } = useCart() ?? 0;
   const nav = useNavigate();
   const onSearch = (value) => {
     const keyword = value && value.trim() ? value.trim() : "allsanpham";
@@ -78,11 +79,6 @@ export const DashboardClient = ({ children }) => {
               </Link>
             </li>
             <li>
-              <Link to="/gio-hang" className="nav-link my-nav-link">
-                Giỏ hàng
-              </Link>
-            </li>
-            <li>
               <Search
                 placeholder="Tìm kiếm tên phẩm phẩm"
                 style={{ width: 240 }}
@@ -92,7 +88,13 @@ export const DashboardClient = ({ children }) => {
               />
             </li>
           </ul>
-
+          <div className="me-5">
+            <Link to="/gio-hang" className="cart-icon-link">
+              <Badge count={totalQuantity} offset={[8, 1]}>
+                <TbShoppingCartHeart size={30} className="cart-icon" />
+              </Badge>
+            </Link>
+          </div>
           <div className="nav-right">
             <div className="nav-right">
               {isLoggedIn ? (

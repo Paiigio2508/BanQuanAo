@@ -49,6 +49,7 @@ import DetailTraCuuDonHang from "../layouts/client/thongtin/DetailHoaDon";
 import ThongTinTaiKhoan from "../layouts/client/thongtin/thongtintaikhoan/ThongTinTaiKhoan";
 import DoiMatKhauCLient from "../layouts/client/thongtin/thongtintaikhoan/DoiMatKhauCLient";
 import { TrangChuAdmin } from "../layouts/admin/trangchu/TrangChuAdmin";
+import { CartProvider } from "../layouts/client/giohang/CartContext";
 
 function App() {
   return (
@@ -90,9 +91,11 @@ function App() {
             path="/home"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <Home />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <Home />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
@@ -100,9 +103,11 @@ function App() {
             path="/lich-su-mua-hang"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <ALLTabLichSuMuaHang />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <ALLTabLichSuMuaHang />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
@@ -110,9 +115,11 @@ function App() {
             path="/thong-tin-tai-khoan"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <ThongTinTaiKhoan />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <ThongTinTaiKhoan />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
@@ -120,9 +127,11 @@ function App() {
             path="/doi-mat-khau"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <DoiMatKhauCLient />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <DoiMatKhauCLient />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
@@ -130,9 +139,11 @@ function App() {
             path="/home-hoa-don/:idHD"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <DetailTraCuuDonHang />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <DetailTraCuuDonHang />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
@@ -140,19 +151,24 @@ function App() {
             path="/san-pham"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <SanPhamClient />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <SanPhamClient />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
+
           <Route
             path="/gio-hang"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <GioHang />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <GioHang />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
@@ -160,9 +176,11 @@ function App() {
             path="/lien-he"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <LienHe />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <LienHe />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
@@ -170,9 +188,11 @@ function App() {
             path="/tim-kiem/:ten"
             element={
               <GuestGuard>
-                <DashboardClient>
-                  <TimKiemDashBoard />
-                </DashboardClient>
+                <CartProvider>
+                  <DashboardClient>
+                    <TimKiemDashBoard />
+                  </DashboardClient>
+                </CartProvider>
               </GuestGuard>
             }
           />
