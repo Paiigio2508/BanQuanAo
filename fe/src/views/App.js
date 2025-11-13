@@ -50,6 +50,8 @@ import ThongTinTaiKhoan from "../layouts/client/thongtin/thongtintaikhoan/ThongT
 import DoiMatKhauCLient from "../layouts/client/thongtin/thongtintaikhoan/DoiMatKhauCLient";
 import { TrangChuAdmin } from "../layouts/admin/trangchu/TrangChuAdmin";
 import { CartProvider } from "../layouts/client/giohang/CartContext";
+import ThanhToanThanhCong from "../layouts/client/thongbaothanhtoan/ThanhToanThanhCong";
+import ThanhToanThatBai from "../layouts/client/thongbaothanhtoan/ThanhToanThatBai";
 
 function App() {
   return (
@@ -179,6 +181,30 @@ function App() {
                 <CartProvider>
                   <DashboardClient>
                     <LienHe />
+                  </DashboardClient>
+                </CartProvider>
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/thanh-toan-thanh-cong"
+            element={
+              <GuestGuard>
+                <CartProvider>
+                  <DashboardClient>
+                    <ThanhToanThanhCong />
+                  </DashboardClient>
+                </CartProvider>
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/thanh-toan-that-bai"
+            element={
+              <GuestGuard>
+                <CartProvider>
+                  <DashboardClient>
+                    <ThanhToanThatBai />
                   </DashboardClient>
                 </CartProvider>
               </GuestGuard>
