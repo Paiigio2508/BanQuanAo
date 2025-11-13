@@ -34,5 +34,11 @@ export class GioHangAPI {
       data: data,
     });
   };
+  static deleteGHCT = (id) => {
+    return requestClient({
+      method: "DELETE",
+      url: `/gio-hang-chi-tiet/deleteGHCT/${id}`,
+    });
+  };
   
 }

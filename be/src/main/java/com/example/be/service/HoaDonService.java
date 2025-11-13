@@ -31,7 +31,6 @@ public class HoaDonService {
         // Giả sử trạng thái chỉ chạy từ 0 -> 4
         if (trangThaiHienTai < 4) {
             hoaDon.setGhiChu(hoaDonRequet.getGhiChu());
-            hoaDon.setNguoiSua(hoaDonRequet.getMaNV());
             hoaDon.setNgaySua(LocalDateTime.now());
             hoaDon.setTrangThai(trangThaiHienTai + 1);
             return hoaDonRepository.save(hoaDon);

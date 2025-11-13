@@ -32,12 +32,10 @@ export class ShipAPI {
       };
     
       static fetchAllMoneyShip = (to_district_id, to_ward_code, quantity) => {
-        let quantityProducts = 0;
-        if (quantity === "" || quantity === null || quantity === undefined) {
-          quantityProducts = 1;
-        } else {
-          quantityProducts = quantity;
-        }
+        const q = Number(quantity);
+
+        // nếu q không phải số, hoặc <= 0 thì lấy 1
+        const quantityProducts = !q || q <= 0 ? 1 : q;
     
         return requestAdress({
           method: "GET",

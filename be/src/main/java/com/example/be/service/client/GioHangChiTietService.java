@@ -28,4 +28,9 @@ public class GioHangChiTietService {
         ghct.setThanhTien(request.getThanhTien());
         return gioHangChiTietRepository.save(ghct);
     }
+    public GioHangChiTiet deleteGHCT(String id){
+        GioHangChiTiet ghct=gioHangChiTietRepository.findById(id).get();
+        gioHangChiTietRepository.delete(ghct);
+        return ghct;
+    }
 }
