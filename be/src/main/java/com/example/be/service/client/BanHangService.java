@@ -43,6 +43,7 @@ public class BanHangService {
         }
 
         HoaDon hoaDon = HoaDon.builder()
+                .ma(hoaDonRequest.getMa())
                 .nguoiDung(kh)
                 .diaChi(hoaDonRequest.getDiaChi())
                 .tenNguoiNhan(hoaDonRequest.getTenNguoiNhan())
