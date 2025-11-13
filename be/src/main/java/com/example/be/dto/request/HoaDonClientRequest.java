@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HoaDonClientRequest {
+    private String ma;
     private BigDecimal tongTien;
     private BigDecimal tienShip;
     private String idUser;

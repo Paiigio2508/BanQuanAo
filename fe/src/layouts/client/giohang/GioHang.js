@@ -10,7 +10,7 @@ import LogoVNP from "../../../assets/images/vnp.png";
 import Moment from "moment";
 import ModalDiaChi from "./modalDiaChi";
 import "./giohang.css";
-import localStorage, { get, set } from "local-storage";
+import  { get, set } from "local-storage";
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
 import { ShipAPI } from "../../../pages/api/ship/ShipAPI";
 import GioHangChiTiet from "./GioHangChiTiet";
@@ -126,6 +126,23 @@ export const GioHang = ({ children }) => {
     autoClose: 1000,
     theme: "light",
   });
+  // random ma hóa đơn
+  function generateInvoiceCode() {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const MM = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    const HH = String(now.getHours()).padStart(2, "0");
+    const mm = String(now.getMinutes()).padStart(2, "0");
+    const ss = String(now.getSeconds()).padStart(2, "0");
+  
+    const timePart = `${yyyy}${MM}${dd}${HH}${mm}${ss}`; 
+    const rand = Math.floor(Math.random() * 10_000)      // 0–9999
+      .toString()
+      .padStart(4, "0");
+  
+    return `HD${timePart}-${rand}`;
+  }
   // ====== Thanh toán ======
   const handleMuaHang = async (
     total,
@@ -155,6 +172,7 @@ export const GioHang = ({ children }) => {
       : dataVanChuyen?.diaChi;
 
     const hoaDon = {
+      ma:generateInvoiceCode(),
       idPayMethod: phuongThuc,
       maGiaoDich: "",
       idUser: userID,
@@ -184,11 +202,6 @@ export const GioHang = ({ children }) => {
 
         const maGiaoDich = Object.keys(data)[0];
         const url = data[maGiaoDich];
-
-        localStorage.setItem(
-          "formData",
-          JSON.stringify({ ...hoaDon, maGiaoDich })
-        );
         window.location.href = url;
         return;
       }
