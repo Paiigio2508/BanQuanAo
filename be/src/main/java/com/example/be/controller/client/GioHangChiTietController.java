@@ -25,4 +25,8 @@ public class GioHangChiTietController {
     public ResponseEntity<?> updateGHCT(@RequestBody GioHangChiTiet request){
         return ResponseEntity.ok(gioHangChiTietService.updateGHCT(request));
     }
+    @DeleteMapping("/deleteGHCT/{id}")
+    public ResponseEntity<?> deleteGHCT(@PathVariable("id") String id){
+        return ResponseEntity.ok(gioHangChiTietService.deleteGHCT(id));
+    }
 }

@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,16 +20,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 public class HoaDon extends BaseEntity {
-    @JoinColumn(name = "id_nhan_vien")
-    private String nhanVien;
     @ManyToOne
-    @JoinColumn(name = "id_khach_hang")
-    private NguoiDung khachHang;
-    private String ma;
-    private BigDecimal thanhTien;
+    @JoinColumn(name = "khach_hang_id")
+    private NguoiDung nguoiDung;
     private LocalDateTime ngayMua;
-    private String hinhThucThanhToan;
+    private BigDecimal thanhTien;
+    private String tenNguoiNhan;
+    private String soDienThoai;
+    private String email;
+    private String diaChi;
     private String ghiChu;
-    private String nguoiSua;
+    private Date ngayDuKienNhan;
+    private Date ngayNhanHang;
     private BigDecimal tienVanChuyen;
 }

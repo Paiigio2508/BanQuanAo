@@ -35,4 +35,6 @@ public interface GioHangChiTietRepository extends JpaRepository<GioHangChiTiet, 
 
     @Query(value = BASE_SELECT_GHCT+"WHERE ghct.id_gio_hang = :idGH", nativeQuery = true)
     List<GioHangChiTietRespon> getAllGHCTByIDGH(@Param("idGH") String idGH);
+    @Query("Select pt from GioHangChiTiet pt where pt.gioHang.id=:id and pt.chiTietSanPham.id=:idctsp")
+    GioHangChiTiet listGHCTByIdGioHangAndSanPham(String id, String idctsp);
 }

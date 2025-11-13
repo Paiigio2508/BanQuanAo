@@ -1,26 +1,23 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import {
-  Slider,
-  Checkbox,
-  Card,
-  Col,
-  Collapse,
-  Row,
-  Space,
   Tag,
   Button,
+  Modal,
 } from "antd";
 import LogoVNP from "../../../assets/images/vnp.png";
 import Moment from "moment";
 import ModalDiaChi from "./modalDiaChi";
 import "./giohang.css";
-import { get, set } from "local-storage";
+import localStorage, { get, set } from "local-storage";
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
 import { ShipAPI } from "../../../pages/api/ship/ShipAPI";
 import GioHangChiTiet from "./GioHangChiTiet";
 import { GioHangAPI } from "../../../pages/api/client/GioHangAPI";
+import { BanHangClientAPI } from "../../../pages/api/client/BanHangClientAPI";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 export const GioHang = ({ children }) => {
   const [openModalDiaChi, setOpenModalDiaChi] = useState(false);
   const [khachHang, setKhachHang] = useState(null);
@@ -29,12 +26,14 @@ export const GioHang = ({ children }) => {
   const [ngayShip, setNgayShip] = useState("");
   const [moneyShip, setMoneyShip] = useState("");
   const [email, setEmail] = useState(null);
-  const [gioHangCT, setGioHangCT] = useState(0);
+  const [gioHangCT, setGioHangCT] = useState([]);
   const [clickCountTM, setClickCountTM] = useState(1);
   const [clickCountVNP, setClickCountVNP] = useState(0);
   const [phuongThuc, setPhuongThuc] = useState(0);
   const storedData = get("userData");
   const storedGioHang = get("GioHang");
+  const [dataVanChuyen, setDataVanchuyen] = useState("");
+  const router = useNavigate();
     const getButtonTMType = () => {
       // Xác định loại button dựa trên giá trị biến đếm
       return clickCountTM % 2 === 0 ? "default" : "primary";
@@ -61,8 +60,18 @@ export const GioHang = ({ children }) => {
       setUserID(storedData.userID);
       loadDiaChiMacDinh();
     }
-    // loadGHCT();
+    loadGHCT();
   }, []);
+  //tính số lượng sp trong giỏ hàng
+  const soLuongSPGH = useMemo(
+    () => gioHangCT.reduce((sum, gh) => sum + Number(gh?.soLuong || 0), 0),
+    [gioHangCT]
+  );
+  //tính tổng tiền
+  const total = useMemo(
+    () => gioHangCT.reduce((sum, gh) => sum + Number(gh?.thanhTien || 0), 0),
+    [gioHangCT]
+  );
   // load giỏ hàng mặc định
   const loadDiaChiMacDinh = async () => {
     let idHuyen = "";
@@ -74,19 +83,20 @@ export const GioHang = ({ children }) => {
         idXa = res.data.idXa;
       });
     }
-    // if (idHuyen && idXa) {
-    //   setNgayShip(
-    //     await ShipAPI.fetchAllDayShip(idHuyen, idXa).then(
-    //       (res) => res.data.data.leadtime * 1000
-    //     )
-    //   );
-    //   setMoneyShip(
-    //     await ShipAPI.fetchAllMoneyShip(idHuyen, idXa, soLuongSPGH).then(
-    //       (res) => res.data.data.total
-    //     )
-    //   );
-    // }
+    if (idHuyen && idXa) {
+      setNgayShip(
+        await ShipAPI.fetchAllDayShip(idHuyen, idXa).then(
+          (res) => res.data.data.leadtime * 1000
+        )
+      );
+      setMoneyShip(
+        await ShipAPI.fetchAllMoneyShip(idHuyen, idXa, soLuongSPGH).then(
+          (res) => res.data.data.total
+        )
+      );
+    }
   };
+  // lấy thông tin giỏ hàng
   const ensureCartId = useCallback(async () => {
     if (storedData?.userID) {
       const r = await GioHangAPI.getByIDKH(storedData.userID);
@@ -94,7 +104,7 @@ export const GioHang = ({ children }) => {
     }
     return storedGioHang?.id || null;
   }, [storedData, storedGioHang]);
-
+// hiển thị giỏ hàng chi tiết
   const loadGHCT = useCallback(async () => {
     try {
       const cartId = await ensureCartId();
@@ -109,6 +119,94 @@ export const GioHang = ({ children }) => {
       setGioHangCT([]);
     }
   }, [ensureCartId]);
+  // khi lỗi thì hiển thị message
+  const showErr = (msg) =>
+  toast.error(msg, {
+    position: "top-right",
+    autoClose: 1000,
+    theme: "light",
+  });
+  // ====== Thanh toán ======
+  const handleMuaHang = async (
+    total,
+    gioHangCT,
+    userID,
+    diaChi,
+    phuongThuc, // 0 = COD, 1 = VNPAY
+    dataVanChuyen
+  ) => {
+    if (!gioHangCT?.length) return showErr("Giỏ hàng trống!");
+    if (total >= 15000000)
+      return showErr("Vui lòng không mua quá 15.000.000 VND!");
+
+    if (!diaChi && !dataVanChuyen) {
+      return showErr("Vui lòng nhập địa chỉ giao hàng!");
+    }
+
+    const hdct = gioHangCT.map(({ idCTSP, thanhTien, soLuong, idGioHang }) => ({
+      idCTSP,
+      donGia: thanhTien,
+      soLuong,
+      idGioHang,
+    }));
+
+    const diaChiText = diaChi
+      ? `${diaChi.diaChi}/${diaChi.tenXa}/${diaChi.tenHuyen}/${diaChi.tenThanhPho}`
+      : dataVanChuyen?.diaChi;
+
+    const hoaDon = {
+      idPayMethod: phuongThuc,
+      maGiaoDich: "",
+      idUser: userID,
+      tongTien: total,
+      diaChi: diaChiText,
+      email: email ?? dataVanChuyen?.email ,
+      tenNguoiNhan:
+        diaChi?.tenNguoiNhan ??
+        dataVanChuyen?.tenNguoiNhan ,
+      tienShip: moneyShip,
+      ngayDuKienNhan: ngayShip,
+      sdt:
+        diaChi?.soDienThoai ??
+        dataVanChuyen?.soDienThoai ,
+      listHDCT: hdct,
+    };
+
+    const tongThanhToan = total + moneyShip;
+
+    try {
+      if (phuongThuc === 1) {
+        const res = await BanHangClientAPI.getLinkVnpay(tongThanhToan);
+        const data = res?.data;
+        if (!data) {
+          return showErr("Không lấy được link thanh toán VNPAY");
+        }
+
+        const maGiaoDich = Object.keys(data)[0];
+        const url = data[maGiaoDich];
+
+        localStorage.setItem(
+          "formData",
+          JSON.stringify({ ...hoaDon, maGiaoDich })
+        );
+        window.location.href = url;
+        return;
+      }
+
+      const check = await BanHangClientAPI.checkout(hoaDon);
+      if (check?.data) {
+        setMoneyShip(0);
+        router("/thanh-toan-thanh-cong");
+      } else {
+        showErr("Số lượng sản phẩm không đủ!");
+        return;
+      }
+    } catch (e) {
+      console.error(e);
+      showErr("Có lỗi khi xử lý thanh toán. Vui lòng thử lại!");
+    } finally {
+    }
+  };
   return (
     <div className="container-fuild">
       <div className="banner-san-pham-shop mt-4">
@@ -121,7 +219,7 @@ export const GioHang = ({ children }) => {
       {/* địa chỉ */}
       <div className="xBNaac"></div>
       {khachHang !== null && diaChi !== null ? (
-        <div className="mt-4 row">
+        <div className="mt-4 row ps-5 fs-5">
           {/* địa chỉ  */}
           <h5 style={{ color: "red" }}>
             <FaMapMarkerAlt size={25} className="text-danger" />
@@ -175,7 +273,7 @@ export const GioHang = ({ children }) => {
       ) : (
         <></>
       )}
-      <div className="row mt-5">
+      <div className="row mt-5 ps-5 pe-5">
         {/* Bảng sản phẩm */}
         <div className="col-md-8">
         {gioHangCT?.length
@@ -190,53 +288,65 @@ export const GioHang = ({ children }) => {
         </div>
 
         {/* Hóa đơn */}
-        <div className="col-md-4 donHangOL ">
-          <h4 className="text-center">Hóa đơn</h4>
+        <div className="col-md-4 donHangOL pt-4 pb-4">
+          <h4 className="text-center fw-bold fs-2">Hóa đơn</h4>
           <hr
             style={{ height: 2, backgroundColor: "black", fontWeight: "bold" }}
           />
 
-          <div className="row ps-2 pb-2 mt-3">
+          <div className="row ps-2 pb-2 mt-3 fs-3">
             <div className="col-md-6" style={{ marginLeft: 30 }}>
               <span>Đơn hàng</span>
             </div>
             <div className="col-md-5">
-              <span style={{ color: "blue" }}>3,000,000</span> <span>VND</span>
+              <span style={{ color: "blue" }}>{Intl.NumberFormat("en-US").format(total)}</span> <span>VND</span>
             </div>
           </div>
 
           <div
-            className="row ps-2 pb-2 mt-3"
-            style={{ borderBottom: "1px dashed black" }}
+            className="row ps-2 pb-2 mt-3 fs-3"
           >
             <div className="col-md-6" style={{ marginLeft: 30 }}>
-              <span>Giảm</span>
+              <span>Phí ship</span>
             </div>
             <div className="col-md-5">
-              <span style={{ color: "blue" }}>200,000</span> <span>VND</span>
+              <span style={{ color: "blue" }}>{Intl.NumberFormat("en-US").format(moneyShip)}</span> <span>VND</span>
             </div>
           </div>
-
-          <div className="ps-2 pb-2 mt-3 d-flex align-items-end">
-            <h5 className="col-md-6" style={{ marginLeft: 30 }}>
+          <hr
+            style={{ height: 2, backgroundColor: "black", fontWeight: "bold" }}
+          />
+          <div className="ps-2 pb-2 mt-3 d-flex align-items-end fs-3 fw-bold">
+            <div className="col-md-6" style={{ marginLeft: 30 }}>
               <span>Tổng tiền</span>
-            </h5>
-            <h5 className="col-md-5">
-              <span style={{ color: "blue" }}>2,800,000 VND</span>
-            </h5>
+            </div>
+            <div className="col-md-5">
+              <span style={{ color: "red", fontWeight:"bolder" }}>{Intl.NumberFormat("en-US").format(total+moneyShip)} VND</span> 
+            </div>
           </div>
 
           {/* Nút thanh toán */}
           <div className="text-center mt-3">
-            <button className="btn btn-primary w-75">Thanh toán</button>
+            <button className="btn btn-primary w-50 fs-4"
+            onClick={()=>{handleMuaHang(
+              total,
+              gioHangCT,
+              userID,
+              diaChi,
+              phuongThuc,
+              dataVanChuyen
+            );}}
+            >
+              {phuongThuc === 0 ? "Đặt hàng" : "Thanh toán"}
+            </button>
           </div>
         </div>
       </div>
-      <div className="row">
-        <h5 className="col-md-3 d-flex align-items-center">
-          Phương thức thanh toán
+      <div className="row ps-5">
+        <h5 className="col-md-2 d-flex align-items-center">
+          Phương thức thanh toán:
         </h5>
-        <div className="col-md-8">
+        <div className="col-md-6 ps-5">
           <Button
             style={{ width: 300, height: 50 }}
             type={getButtonTMType()}
@@ -260,36 +370,6 @@ export const GioHang = ({ children }) => {
         </div>
       </div>
       <hr className="mt-5 mb-5" />
-
-      {/* Thông tin thanh toán */}
-      <div className="row">
-        <div className="col-md-7"></div>
-        <div className="col-md-5 fw-bold">
-          <div className="row">
-            <h5 className="col">Tổng tiền</h5>
-            <h5 className="col">: 3,000,000 VND</h5>
-          </div>
-
-          <div className="row mt-3">
-            <h5 className="col">Phí vận chuyển</h5>
-            <h5 className="col">: 30,000 VND</h5>
-          </div>
-
-          <div className="row mt-3" style={{ color: "red" }}>
-            <h5 className="col">Tổng thanh toán</h5>
-            <h5 className="col">: 2,830,000 VND</h5>
-          </div>
-
-          <hr className="mt-5 mb-5" />
-
-          <div className="d-flex flex-row-reverse bd-highlight mb-5">
-            <a href="#btnCheckout" className="checkout-button" id="btnCheckout">
-              Thanh toán ngay!
-            
-            </a>
-          </div>
-        </div>
-      </div>
 
       <ModalDiaChi
         openModalDiaChi={openModalDiaChi}

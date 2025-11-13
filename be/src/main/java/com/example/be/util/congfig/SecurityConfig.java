@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/home/**").permitAll()
                         .requestMatchers("/gio-hang/**").permitAll()
                         .requestMatchers("/gio-hang-chi-tiet/**").permitAll()
+                        .requestMatchers("/ban-hang-client/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("NHANVIEN")
                         .anyRequest().authenticated()
                 )

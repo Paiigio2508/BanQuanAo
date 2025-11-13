@@ -113,7 +113,6 @@ public class KhachHangService {
     public NguoiDungDiaChiRepository getByID(String id) {
         NguoiDungDiaChiRepository optional = nguoiDungRepository.findByIdAndChucVu(id,"KHACHHANG");
         return optional;
-
     }
 
     //tìm địa chỉ mặc định khách hàng
