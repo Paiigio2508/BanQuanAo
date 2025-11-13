@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+
 import { useNavigate } from "react-router";
 import { BsShop } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
@@ -10,16 +9,10 @@ import {
 import { get } from "local-storage";
 import { RiLockPasswordLine } from "react-icons/ri";
 const ProfileMenu = (props) => {
-  const storedData = get("userData");
-  const [userName, setUserName] = useState("");
-  const [AnhUser, setLinkAnhUser] = useState("");
+  const storedData = get("userData") || {}; // tránh null
+  const userName = storedData.ten || ""; // lấy thẳng ra
+  const AnhUser = storedData.anh || "";
   const nav = useNavigate();
-
-  useEffect(() => {
-    setUserName(storedData.ten);
-    setLinkAnhUser(storedData.anh);
-  }, []);
-
   const donMua = () => {
     nav("/lich-su-mua-hang");
   };

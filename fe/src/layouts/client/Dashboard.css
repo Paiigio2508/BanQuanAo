@@ -107,3 +107,10 @@
   text-decoration: underline; /* nếu muốn hover mới có gạch chân */
   color: #ffd700;             /* ví dụ: đổi màu vàng khi hover */
 }
+  .cart-icon {
+            color: #000;              /* màu đen mặc định */
+            transition: color 0.2s;
+          }
+          .cart-icon-link:hover .cart-icon {
+            color: #1677ff;           /* xanh dương khi hover */
+          }
