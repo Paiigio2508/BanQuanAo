@@ -6,6 +6,7 @@ import { FaGithub, FaMoneyBills } from "react-icons/fa6";
 import { FaUserPen } from "react-icons/fa6";
 import { BsBoxSeamFill } from "react-icons/bs";
 import { RxDashboard } from "react-icons/rx";
+import { FaHome } from "react-icons/fa";
 import { Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import {
   Avatar,
@@ -85,6 +86,7 @@ const DashboardAdmin = ({ children }) => {
               backgroundPosition: "center",
               opacity: 0.25,
               zIndex: 0,
+              minHeight: "100vh",
             }}
           />
           {/* content */}
@@ -122,6 +124,14 @@ const DashboardAdmin = ({ children }) => {
             </div>
 
             <Menu>
+              <MenuItem
+                icon={<FaHome size={24} />}
+                style={{ fontSize: "18px" }}
+                active={location.pathname === "/admin"}
+                onClick={() => nav("/admin")}
+              >
+                Trang chủ
+              </MenuItem>
               <MenuItem
                 icon={<RxDashboard size={24} />}
                 style={{ fontSize: "18px" }}

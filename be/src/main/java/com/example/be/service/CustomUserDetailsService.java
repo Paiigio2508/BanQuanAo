@@ -15,6 +15,7 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
     private final NguoiDungRepository nguoiDungRepository;
 
+
     public CustomUserDetailsService(NguoiDungRepository nguoiDungRepository) {
         this.nguoiDungRepository = nguoiDungRepository;
     }
@@ -34,8 +35,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 authorities   // ✅ PHẢI TRẢ AUTHORITIES Ở ĐÂY!
         );
     }
+
     // Phương thức để lấy đối tượng NguoiDung
     public NguoiDung getNguoiDungByEmail(String email) {
         return nguoiDungRepository.findByEmail(email).orElse(null);
     }
+
+
 }

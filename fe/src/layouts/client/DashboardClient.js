@@ -40,7 +40,7 @@ export const DashboardClient = ({ children }) => {
   const items = [
     {
       key: "1",
-      label: <a onClick={() => nav("/doi-mat-khau")}>Đổi mật khẩu</a>,
+      label: <a onClick={() => nav("/thong-tin-tai-khoan")}>Thông tin tài khoản</a>,
     },
     {
       key: "2",

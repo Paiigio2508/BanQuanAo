@@ -29,4 +29,11 @@ export class LoginAPI {
       url: `/api/get-all`,
     });
   };
+  static doiMatKhau = (data) => {
+    return requestAdmin({
+      method: "POST",
+      url: `/api/doi-mat-khau`,
+      data: data,
+    });
+  };
 }

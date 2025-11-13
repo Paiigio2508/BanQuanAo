@@ -173,5 +173,22 @@ public class KhachHangService {
             throw new RuntimeException("Không tìm thấy người dùng với email: " + dangKyRequest.getEmail());
         }
     }
+    public void doiMatKhau(String email, String currentPassword, String newPassword) {
+        NguoiDung nguoiDung = nguoiDungRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
 
+        // 1) Kiểm tra mật khẩu hiện tại
+        if (!passwordEncoder.matches(currentPassword, nguoiDung.getMatKhau())) {
+            throw new RuntimeException("Mật khẩu hiện tại không đúng");
+        }
+
+        // (tuỳ chọn) không cho trùng mật khẩu cũ
+        if (passwordEncoder.matches(newPassword, nguoiDung.getMatKhau())) {
+            throw new RuntimeException("Mật khẩu mới không được trùng mật khẩu cũ");
+        }
+
+        // 2) Mã hoá & lưu mật khẩu mới
+        nguoiDung.setMatKhau(passwordEncoder.encode(newPassword));
+        nguoiDungRepository.save(nguoiDung);
+    }
 }

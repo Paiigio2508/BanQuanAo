@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { get } from "local-storage";
 import { HoaDonClientAPI } from "../../../pages/api/client/HoaDonClientAPI";
 import TabHistoryClient from "./TabHistoryClient";
-import ProfileMenu from "./ProfileMenu";
+import ProfileMenu from "./thongtintaikhoan/ProfileMenu";
 import { Link } from "react-router-dom";
 
 const ALLTabLichSuMuaHang = () => {
@@ -51,7 +51,7 @@ const ALLTabLichSuMuaHang = () => {
   const onChange = (k) => setKey(k);
 
   return (
-    <>
+    <div className="container">
       <Breadcrumb
         style={{
           marginBottom: 10,
@@ -65,12 +65,12 @@ const ALLTabLichSuMuaHang = () => {
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link to="/tai-khoan-cua-toi" className="no-underline text-dark">
+          <Link to="/thong-tin-tai-khoan" className="no-underline text-dark">
             Thông tin tài khoản
           </Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link to="/history" className="no-underline text-dark">
+          <Link to="/lich-su-mua-hang" className="no-underline text-dark">
             <b>Đơn mua</b>
           </Link>
         </Breadcrumb.Item>
@@ -78,7 +78,7 @@ const ALLTabLichSuMuaHang = () => {
 
       <div className="row mt-4 mb-5">
         <ProfileMenu />
-        <div className="col-md-10" style={{ padding: 20 }}>
+        <div className="col-md-9" style={{ padding: 20 }}>
           <Tabs onChange={onChange} type="card">
             <Tabs.TabPane tab="Tất cả" key="10">
               <TabHistoryClient listBill={listBill} />
@@ -104,7 +104,7 @@ const ALLTabLichSuMuaHang = () => {
           </Tabs>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

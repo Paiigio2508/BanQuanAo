@@ -17,48 +17,59 @@ export const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const login = (data) => {
-    const { email } = data;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const login = (data) => {
+  const { email, password } = data;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!email || email.trim() === "") {
-      toast.warning("Vui lòng nhập email!", { autoClose: 2000 });
-      return;
-    }
-    if (!emailRegex.test(email)) {
-      toast.warning("Email không đúng định dạng!", { autoClose: 2000 });
-      return;
-    }
-    if (!password || password.trim() === "") {
-      toast.warning("Vui lòng nhập mật khẩu!", { autoClose: 2000 });
-      return;
-    }
+  if (!email || email.trim() === "") {
+    toast.warning("Vui lòng nhập email!", { autoClose: 2000 });
+    return;
+  }
+  if (!emailRegex.test(email)) {
+    toast.warning("Email không đúng định dạng!", { autoClose: 2000 });
+    return;
+  }
+  if (!password || password.trim() === "") {
+    toast.warning("Vui lòng nhập mật khẩu!", { autoClose: 2000 });
+    return;
+  }
 
-    LoginAPI.login(data)
-      .then((response) => {
-        // Lưu token accessToken vào localStorage
-        localStorage.clear();
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("userData", JSON.stringify(response.data));
-        if (response.data.chucVu === "KHACHHANG") {
-          nav("/home");
-        } else {
-          nav("/admin");
-        }
-      })
-      .catch(() => {
-        toast.error("Sai tên đăng nhập hoặc mật khẩu!", {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+  LoginAPI.login(data)
+    .then((response) => {
+      // Lưu token trước
+      localStorage.clear();
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("userData", JSON.stringify(response.data));
+
+      const isKhachHang = response.data.chucVu === "KHACHHANG";
+
+      // ✅ Hiện toast thành công rồi mới chuyển trang
+      toast.success("Đăng nhập thành công!", {
+        position: "top-right",
+        autoClose: 1000, // thời gian hiển thị
+        onClose: () => {
+          // chạy sau khi toast đóng
+          if (isKhachHang) {
+            nav("/home");
+          } else {
+            nav("/admin");
+          }
+        },
       });
-  };
+    })
+    .catch(() => {
+      toast.error("Sai tên đăng nhập hoặc mật khẩu!", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    });
+};
+
 
   return (
     <div
