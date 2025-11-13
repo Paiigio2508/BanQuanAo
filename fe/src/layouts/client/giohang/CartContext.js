@@ -10,13 +10,13 @@ export function CartProvider({ children }) {
     const storedData = get("userData");
     if (storedData !== null) {
       GioHangAPI.getByIDKH(storedData.userID).then((res) => {
-        GioHangAPI.getAllGHCTByIDGH(res.data.id).then((res) => {
+        GioHangAPI.getAllGhctByIdGh(res.data.id).then((res) => {
           setTotalQuantity(res.data.length);
         });
       });
     } else {
       if (storedGioHang !== null) {
-        GioHangAPI.getAllGHCTByIDGH(storedGioHang.id).then((res) => {
+        GioHangAPI.getAllGhctByIdGh(storedGioHang.id).then((res) => {
           setTotalQuantity(res.data.length);
         });
       }

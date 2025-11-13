@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Pie } from "@ant-design/plots";
-import { Button, Card, Divider, Table, Carousel } from "antd";
+import { Button, Card, Divider, Table, Carousel,Image } from "antd";
 import { RxDashboard } from "react-icons/rx";
 import { Column } from "@ant-design/plots";
-import { Image } from "cloudinary-react";
-import axios from "axios";
-import { json } from "react-router-dom";
 import { ExportOutlined } from "@ant-design/icons";
 import {
     RiBillFill,
