@@ -21,4 +21,9 @@ public interface HoaDonRespon {
     String getTienVanChuyen();
 
     String getTrangThai();
+    String getDiaChi();
+    String getEmail();
+    String getTenNguoiNhan();
+    String getNgayDuKienNhan();
+    String getPhuongThuc();
 }

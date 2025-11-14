@@ -19,12 +19,13 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, String> {
             nativeQuery = true)
     List<HoaDonRespon> getALLHDTT();
     @Query(value = """
-
-     SELECT  hd.id AS idHD,hd.ma AS ma, hd.nhan_vien as maNV, CASE
-       WHEN hd.id_khach_hang IS NULL  THEN N'Khách lẻ' ELSE kh.ten END  as tenKH, kh.so_dien_thoai AS sdt ,ngay_mua as ngayMua,hd.thanh_tien as thanhTien,hd.trang_thai as trangThai,hd.hinh_thuc_thanh_toan
-       AS loaiHD, hd.id_khach_hang as nguoiDung,hd.ghi_chu AS ghiChu,hd.tien_van_chuyen as tienVanChuyen,
-       hd.thanh_tien FROM  hoa_don hd
+     SELECT  hd.id AS idHD,hd.ma AS ma, CASE
+       WHEN hd.id_khach_hang IS NULL  THEN N'Khách lẻ' ELSE kh.ten END  as tenKH ,ngay_mua as ngayMua,hd.thanh_tien as thanhTien,hd.trang_thai as trangThai,\s
+       hd.id_khach_hang as nguoiDung,hd.ghi_chu AS ghiChu,hd.tien_van_chuyen as tienVanChuyen,hd.dia_chi as diaChi, hd.so_dien_thoai as sdt,hd.email as email,hd.ten_nguoi_nhan as tenNguoiNhan,
+       hd.ngay_du_kien_nhan as ngayDuKienNhan,
+       hd.thanh_tien,tt.phuong_thuc as phuongThuc FROM  hoa_don hd
        LEFT JOIN nguoi_dung kh ON kh.id = hd.id_khach_hang
+       left join thanh_toan tt on tt.id_hoa_don = hd.id
        where hd.id=:key
             	    """,
             nativeQuery = true)
@@ -52,19 +53,14 @@ chi_tiet_hoa_don hdct left join chi_tiet_san_pham ctsp on ctsp.id = hdct.id_chi_
                      """, nativeQuery = true)
     List<HoaDonRespon> getALLHDByIDKH(TrangThaiRequest req);
     @Query(value = """
-      SELECT hd.ghi_chu AS ghiChuHD, hd.id AS idHD,hd.ma AS ma, hd.nhan_vien_id AS maNV, CASE
-       WHEN hd.khach_hang_id IS NULL  THEN N'Khách lẻ' ELSE kh.ten END  as tenKH ,CASE WHEN hd.so_dien_thoai
-       is  NULL THEN N''ELSE hd.so_dien_thoai END  as sdt,CASE WHEN hd.dia_chi IS  NULL THEN N''else hd.dia_chi
-       end as diaChi,ngay_mua as ngayMua,hd.thanh_tien as thanhTien,hd.trang_thai as trangThai,hd.loai_hoa_don
-       AS loaiHD, hd.tien_van_chuyen as tienVanChuyen,hd.tra_sau as traSau,
-       hd.voucher_id as voucher,hd.gia_giam_gia as giaGiam, hd.khach_hang_id as nguoiDung,
-       hd.gia_goc as giaGoc , hd.ten_nguoi_nhan as tenNguoiNhan,
-        tt.phuong_thuc_vnp as phuongThucVNP,
-        hd.tien_van_chuyen as tienVanChuyen,
-        hd.ngay_du_kien_nhan as ngayDuKienNhan
-       FROM  hoa_don hd
-       LEFT JOIN nguoi_dung kh ON kh.id = hd.khach_hang_id \s
-       left join thanh_toan tt ON hd.id= tt.hoa_don_id  where hd.ma=:ma                                                                                
+     SELECT  hd.id AS idHD,hd.ma AS ma, CASE
+       WHEN hd.id_khach_hang IS NULL  THEN N'Khách lẻ' ELSE kh.ten END  as tenKH ,ngay_mua as ngayMua,hd.thanh_tien as thanhTien,hd.trang_thai as trangThai,\s
+       hd.id_khach_hang as nguoiDung,hd.ghi_chu AS ghiChu,hd.tien_van_chuyen as tienVanChuyen,hd.dia_chi as diaChi, hd.so_dien_thoai as sdt,hd.email as email,hd.ten_nguoi_nhan as tenNguoiNhan,
+       hd.ngay_du_kien_nhan as ngayDuKienNhan,
+       hd.thanh_tien,tt.phuong_thuc as phuongThuc FROM  hoa_don hd
+       LEFT JOIN nguoi_dung kh ON kh.id = hd.id_khach_hang
+       left join thanh_toan tt on tt.id_hoa_don = hd.id
+       where hd.ma=:ma                                                                                
                      """, nativeQuery = true)
     HoaDonRespon searchHDbyMa(String ma );
 }

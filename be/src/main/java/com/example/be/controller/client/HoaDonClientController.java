@@ -19,7 +19,10 @@ public class HoaDonClientController {
     public ResponseEntity<?> getALLHoaDonOL(@RequestBody TrangThaiRequest request) {
         return ResponseEntity.ok(hoaDonService.getALLHDByIDKH(request));
     }
-
+    @GetMapping("/detail-hoa-don/{idHD}")
+    public ResponseEntity<?> detailHD33(@PathVariable("idHD") String id){
+        return  ResponseEntity.ok(hoaDonService.getByID(id));
+    }
     @GetMapping("/hoa-don/san-pham/{idHD}")
     public ResponseEntity<?> SanPhamHoaDon(@PathVariable("idHD") String id){
         return  ResponseEntity.ok(hoaDonService.detailHDSanPham(id));

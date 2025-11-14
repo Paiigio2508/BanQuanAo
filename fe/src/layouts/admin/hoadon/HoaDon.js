@@ -155,7 +155,7 @@ export default function HoaDon() {
       dataIndex: "ma",
       sorter: (a, b) => String(a.ma).localeCompare(String(b.ma)),
     },
-    { title: "Mã NV", dataIndex: "maNV" },
+
     { title: "Khách hàng", dataIndex: "tenKH" },
     { title: "SDT KH", dataIndex: "sdt" },
     {

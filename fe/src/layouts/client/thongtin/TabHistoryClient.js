@@ -63,6 +63,20 @@ const TabHistoryClient = ({ listBill = [] }) => {
       toast.error("Hủy hóa đơn thất bại!");
     }
   };
+const TAG_COLOR_MAP = {
+  "-2": "#595959", // ví dụ: Thất bại / Hết hạn
+  "-1": "#ff4d4f", // Đã hủy
+  0: "#faad14", // Chờ xác nhận
+  1: "#1890ff", // Đã xác nhận
+  2: "#13c2c2", // Đang giao
+  3: "#52c41a", // Hoàn thành
+  10: "#722ed1", // Hoàn tiền / Trả hàng
+};
+
+const getTagColor = (status) => {
+  const t = String(status);
+  return TAG_COLOR_MAP[t] || "#108ee9"; // màu default
+};
 
   const labelTrangThai = (st) => {
     const t = String(st);
@@ -73,8 +87,6 @@ const TabHistoryClient = ({ listBill = [] }) => {
     if (t === "4") return "Đã thanh toán";
     if (t === "5") return "Thành công";
     if (t === "-1") return "Đã hủy";
-    if (t === "-2") return "Hoàn tiền";
-    if (t === "10") return "Trả hàng";
     return "Chưa rõ";
   };
 
@@ -83,7 +95,7 @@ const TabHistoryClient = ({ listBill = [] }) => {
       <div className="row pt-3 ">
         {listBill.map((item, index) => {
           const t = String(item.trangThai);
-          const tagColor = t === "-1" || t === "10" ? "#cd201f" : "#108ee9";
+          const tagColor = getTagColor(t);
 
           return (
             <div
@@ -116,36 +128,24 @@ const TabHistoryClient = ({ listBill = [] }) => {
                       <div className="col-md-2 mt-3 ps-4">
                         <img
                           style={{ width: 130, height: 140 }}
-                          src={d.urlHA}
+                          src={d.linkAnh}
                           alt="Product"
                         />
                       </div>
 
                       <div className="col-md-6 ms-5 mt-3">
-                        <h5>{d.tenSP} </h5>
-
-                        <h6 className="text-danger">
-                          {Number(d.giaGiam) > 0 ? (
-                            <del>
-                              {Intl.NumberFormat("vi-VN").format(
-                                Number(d.giaBanSP) || 0
-                              )}
-                              {" VND"}
-                            </del>
-                          ) : null}
-                        </h6>
-
+                        <h5>{d.tenSP}</h5>
                         <h6 className="text-danger">
                           {Intl.NumberFormat("vi-VN").format(
-                            Number(d.thanhTienSP) || 0
+                            Number(d.giaBan) || 0
                           )}
                           {" VND"}
                         </h6>
 
                         <h6>
-                          {d.tenKichThuoc}-[{d.tenMauSac}]
+                          {d.tenKT}-[{d.tenMS}]
                         </h6>
-                        <h6>x{d.soLuongSP}</h6>
+                        <h6>x{d.soLuong}</h6>
                       </div>
 
                       <div className="col-md-3" style={{ marginTop: 65 }}>
@@ -154,8 +154,8 @@ const TabHistoryClient = ({ listBill = [] }) => {
                             <div>
                               <FormattedNumber
                                 value={
-                                  (Number(d.thanhTienSP) || 0) *
-                                  (Number(d.soLuongSP) || 0)
+                                  (Number(d.giaBan) || 0) *
+                                  (Number(d.soLuong) || 0)
                                 }
                                 currency="VND"
                                 minimumFractionDigits={0}
@@ -168,9 +168,9 @@ const TabHistoryClient = ({ listBill = [] }) => {
                     </div>
                   ))}
 
-                  {/* thành tiền */}
+                  {/* Thành tiền */}
                   <div
-                    className=" mt-4 d-flex justify-content-end"
+                    className="mt-4 d-flex justify-content-end"
                     style={{ borderTop: "1px solid #000" }}
                   >
                     <h5 className="mt-4">Thành tiền :</h5>
@@ -188,8 +188,8 @@ const TabHistoryClient = ({ listBill = [] }) => {
                     </h5>
                   </div>
 
-                  {/* nút */}
-                  <div className=" mt-4 d-flex justify-content-end  ">
+                  {/* Nút */}
+                  <div className="mt-4 d-flex justify-content-end">
                     {(t === "0" || t === "1") && (
                       <Button
                         style={{

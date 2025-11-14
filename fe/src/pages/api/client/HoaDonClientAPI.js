@@ -11,9 +11,12 @@ export class HoaDonClientAPI {
     return requestClient({
       method: "GET",
       url: `/home/detail-lich-su-hoa-don/${id}`,
-      headers: {
-        Authorization: this.getToken,
-      },
+    });
+  };
+  static detailHD = (id) => {
+    return requestClient({
+      method: "GET",
+      url: `/home/detail-hoa-don/${id}`,
     });
   };
   static detailSanPham = (id) => {
