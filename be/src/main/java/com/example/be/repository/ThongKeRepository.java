@@ -130,7 +130,7 @@ order by sum(chi_tiet_hoa_don.so_luong) desc limit 5
     List<SanPhamBanChayRepo> getSPBanChayTuan();
 
     @Query(value = """
-select sum(chi_tiet_hoa_don.so_luong) as soLuong,chi_tiet_hoa_don.id_chi_tiet_san_pham as idSP,\s
+select sum(chi_tiet_hoa_don.so_luong) as soLuong,chi_tiet_hoa_don.id_chi_tiet_san_pham as idSP,
 chi_tiet_san_pham.gia_ban as giaBan,chi_tiet_san_pham.hinh_anh as linkAnh,san_pham.ten as tenSp,
 mau_sac.ten as mauSac,kich_thuoc.ten as kichThuoc,hang.ten as hang
 from chi_tiet_hoa_don join hoa_don on hoa_don.id = chi_tiet_hoa_don.id_hoa_don

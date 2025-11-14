@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Pie } from "@ant-design/plots";
-import { Button, Card, Divider, Table, Carousel,Image } from "antd";
+import { Button, Card, Divider, Table, Carousel, Image } from "antd";
 import { RxDashboard } from "react-icons/rx";
 import { Column } from "@ant-design/plots";
 import { ExportOutlined } from "@ant-design/icons";
@@ -299,11 +299,18 @@ export default function ThongKe() {
     const contentStyle = {
         height: "160px",
         color: "black",
-        lineHeight: "160px",
         textAlign: "center",
         background: "#d0aa73",
         marginTop: "10px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",   // căn giữa theo chiều dọc
+        alignItems: "center",        // căn giữa theo chiều ngang
+        gap: 8,
+        margin: 0,                   // bỏ margin mặc định của h6
     };
+
+
 
 
     const raw = trangThaiData.length ? trangThaiData : [{ type: 'Default', value: 1 }];
@@ -797,152 +804,191 @@ export default function ThongKe() {
                             Trưởng Cửa Hàng
                         </h6>
                         <div className="border rounded shadow">
-                            <Carousel autoplay autoplaySpeed={1000}>
+                            <Carousel autoplay autoplaySpeed={4000}>
                                 <div>
                                     <h6 style={contentStyle}>
-                                        <RiMoneyDollarCircleFill
-                                            size={25}
-                                            style={{ marginBottom: 5 }}
-                                        />{" "}
-                                        Doanh Thu Ngày : {Intl.NumberFormat("en-US").format(tienTheoNgay)} VNĐ{" "}
-                                        {tienNgayTruoc === 0 ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {tienTheoNgay === 0 ? "0%" : "N/A"}
-                                            </span>
-                                        ) : tienTheoNgay >= tienNgayTruoc ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {(((tienTheoNgay - tienNgayTruoc) / tienNgayTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        ) : (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineDownBold size={35} color="black" />
-                                                {(((tienNgayTruoc - tienTheoNgay) / tienNgayTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        )}
-
+                                        <span>
+                                            <RiMoneyDollarCircleFill
+                                                size={25}
+                                                style={{ marginBottom: 5 }}
+                                            />{" "}
+                                            Doanh Thu Ngày : {Intl.NumberFormat("en-US").format(tienTheoNgay)} VNĐ{" "}
+                                        </span>
+                                        <span>
+                                            {tienNgayTruoc === 0 ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {tienTheoNgay === 0
+                                                        ? "0 VNĐ"
+                                                        : `+${Intl.NumberFormat("en-US").format(tienTheoNgay)} VNĐ so với hôm qua`}
+                                                </span>
+                                            ) : tienTheoNgay >= tienNgayTruoc ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {`+${Intl.NumberFormat("en-US").format(
+                                                        tienTheoNgay - tienNgayTruoc
+                                                    )} VNĐ so với hôm qua`}
+                                                </span>
+                                            ) : (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineDownBold size={35} color="black" />
+                                                    {`-${Intl.NumberFormat("en-US").format(
+                                                        tienNgayTruoc - tienTheoNgay
+                                                    )} VNĐ so với hôm qua`}
+                                                </span>
+                                            )}
+                                        </span>
                                     </h6>
                                 </div>
                                 <div>
                                     <h6 style={contentStyle}>
-                                        <RiMoneyDollarCircleFill
-                                            size={25}
-                                            style={{ marginBottom: 5 }}
-                                        />{" "}
-                                        Doanh Thu Tháng : {Intl.NumberFormat("en-US").format(tienTheoThang)} VNĐ{" "}
-                                        {tienThangTruoc === 0 ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {tienTheoThang === 0 ? "0%" : "N/A"}
-                                            </span>
-                                        ) : tienTheoThang >= tienThangTruoc ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {(((tienTheoThang - tienThangTruoc) / tienThangTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        ) : (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineDownBold size={35} color="black" />
-                                                {(((tienThangTruoc - tienTheoThang) / tienThangTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        )}
 
+                                        <span>
+                                            <RiMoneyDollarCircleFill
+                                                size={25}
+                                                style={{ marginBottom: 5 }}
+                                            />{" "}
+                                            Doanh Thu Tháng : {Intl.NumberFormat("en-US").format(tienTheoThang)} VNĐ{" "}
+                                        </span>
+                                        <span>
+                                            {tienThangTruoc === 0 ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {tienTheoThang === 0
+                                                        ? "0 VNĐ"
+                                                        : `+${Intl.NumberFormat("en-US").format(tienTheoThang)} VNĐ so với tháng trước`}
+                                                </span>
+                                            ) : tienTheoThang >= tienThangTruoc ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {`+${Intl.NumberFormat("en-US").format(
+                                                        tienTheoThang - tienThangTruoc
+                                                    )} VNĐ so với tháng trước`}
+                                                </span>
+                                            ) : (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineDownBold size={35} color="black" />
+                                                    {`-${Intl.NumberFormat("en-US").format(
+                                                        tienThangTruoc - tienTheoThang
+                                                    )} VNĐ so với tháng trước`}
+                                                </span>
+                                            )}
+                                        </span>
                                     </h6>
                                 </div>
                                 <div>
                                     <h6 style={contentStyle}>
-                                        <RiMoneyDollarCircleFill
-                                            size={25}
-                                            style={{ marginBottom: 5 }}
-                                        />{" "}
-                                        Doanh Thu Năm : {Intl.NumberFormat("en-US").format(tienTheoNam)} VNĐ{" "}
-                                        {tienNamTruoc === 0 ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {tienTheoNam === 0 ? "0%" : "N/A"}
-                                            </span>
-                                        ) : tienTheoNam >= tienNamTruoc ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {(((tienTheoNam - tienNamTruoc) / tienNamTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        ) : (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineDownBold size={35} color="black" />
-                                                {(((tienNamTruoc - tienTheoNam) / tienNamTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        )}
-
+                                        <span>
+                                            <RiMoneyDollarCircleFill
+                                                size={25}
+                                                style={{ marginBottom: 5 }}
+                                            />{" "}
+                                            Doanh Thu Năm : {Intl.NumberFormat("en-US").format(tienTheoNam)} VNĐ{" "}
+                                        </span>
+                                        <span>
+                                            {tienNamTruoc === 0 ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {tienTheoNam === 0
+                                                        ? "0 VNĐ"
+                                                        : `+${Intl.NumberFormat("en-US").format(tienTheoNam)} VNĐ so với năm trước`}
+                                                </span>
+                                            ) : tienTheoNam >= tienNamTruoc ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {`+${Intl.NumberFormat("en-US").format(tienTheoNam - tienNamTruoc)} VNĐ so với năm trước`}
+                                                </span>
+                                            ) : (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineDownBold size={35} color="black" />
+                                                    {`-${Intl.NumberFormat("en-US").format(tienNamTruoc - tienTheoNam)} VNĐ so với năm trước`}
+                                                </span>
+                                            )}
+                                        </span>
                                     </h6>
                                 </div>
                                 <div>
                                     <h6 style={contentStyle}>
-                                        <RiProductHuntFill size={25} style={{ marginBottom: 5 }} />{" "}
-                                        Sản Phẩm Ngày: {sanPhamTheoNgay} sản phẩm
-                                        {sanPhamTheoNgayTruoc === 0 ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {sanPhamTheoNgay === 0 ? "0%" : "N/A"}
-                                            </span>
-                                        ) : sanPhamTheoNgay >= sanPhamTheoNgayTruoc ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {(((sanPhamTheoNgay - sanPhamTheoNgayTruoc) / sanPhamTheoNgayTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        ) : (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineDownBold size={35} color="black" />
-                                                {(((sanPhamTheoNgayTruoc - sanPhamTheoNgay) / sanPhamTheoNgayTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        )}
-
+                                        <span>
+                                            <RiProductHuntFill size={25} style={{ marginBottom: 5 }} />{" "}
+                                            Sản Phẩm Ngày: {sanPhamTheoNgay} sản phẩm{" "}
+                                        </span>
+                                        <span>
+                                            {sanPhamTheoNgayTruoc === 0 ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {sanPhamTheoNgay === 0
+                                                        ? "0 sản phẩm"
+                                                        : `+${sanPhamTheoNgay} sản phẩm so với hôm qua`}
+                                                </span>
+                                            ) : sanPhamTheoNgay >= sanPhamTheoNgayTruoc ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {`+${sanPhamTheoNgay - sanPhamTheoNgayTruoc} sản phẩm so với hôm qua`}
+                                                </span>
+                                            ) : (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineDownBold size={35} color="black" />
+                                                    {`-${sanPhamTheoNgayTruoc - sanPhamTheoNgay} sản phẩm so với hôm qua`}
+                                                </span>
+                                            )}
+                                        </span>
                                     </h6>
                                 </div>
                                 <div>
                                     <h6 style={contentStyle}>
-                                        <RiBillFill size={25} style={{ marginBottom: 5 }} /> Hóa Đơn
-                                        Ngày : {hoaDonTheoNgay} Hóa đơn{" "}
-                                        {hoaDonNgayTruoc === 0 ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {hoaDonTheoNgay === 0 ? "0%" : "N/A"}
-                                            </span>
-                                        ) : hoaDonTheoNgay >= hoaDonNgayTruoc ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {(((hoaDonTheoNgay - hoaDonNgayTruoc) / hoaDonNgayTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        ) : (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineDownBold size={35} color="black" />
-                                                {(((hoaDonNgayTruoc - hoaDonTheoNgay) / hoaDonNgayTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        )}
-
+                                        <span>
+                                            <RiBillFill size={25} style={{ marginBottom: 5 }} /> Hóa Đơn
+                                            Ngày : {hoaDonTheoNgay} Hóa đơn{" "}
+                                        </span>
+                                        <span>
+                                            {hoaDonNgayTruoc === 0 ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {hoaDonTheoNgay === 0
+                                                        ? "0 đơn"
+                                                        : `+${hoaDonTheoNgay} đơn so với hôm qua`}
+                                                </span>
+                                            ) : hoaDonTheoNgay >= hoaDonNgayTruoc ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {`+${hoaDonTheoNgay - hoaDonNgayTruoc} đơn so với hôm qua`}
+                                                </span>
+                                            ) : (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineDownBold size={35} color="black" />
+                                                    {`-${hoaDonNgayTruoc - hoaDonTheoNgay} đơn so với hôm qua`}
+                                                </span>
+                                            )}
+                                        </span>
                                     </h6>
                                 </div>
                                 <div>
                                     <h6 style={contentStyle}>
-                                        <RiBillFill size={25} style={{ marginBottom: 5 }} /> Hóa Đơn
-                                        Tháng : {hoaDonTheoThang} Hóa đơn{" "}
-                                        {hoaDonThangTruoc === 0 ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {hoaDonTheoThang === 0 ? "0%" : "N/A"}
-                                            </span>
-                                        ) : hoaDonTheoThang >= hoaDonThangTruoc ? (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineUpBold size={35} color="black" />
-                                                {(((hoaDonTheoThang - hoaDonThangTruoc) / hoaDonThangTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        ) : (
-                                            <span style={{ color: "black" }}>
-                                                <PiChartLineDownBold size={35} color="black" />
-                                                {(((hoaDonThangTruoc - hoaDonTheoThang) / hoaDonThangTruoc) * 100).toFixed(2)}%
-                                            </span>
-                                        )}
-
+                                        <span>
+                                            <RiBillFill size={25} style={{ marginBottom: 5 }} /> Hóa Đơn
+                                            Tháng : {hoaDonTheoThang} Hóa đơn{" "}
+                                        </span>
+                                        <span>
+                                            {hoaDonThangTruoc === 0 ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {hoaDonTheoThang === 0
+                                                        ? "0 đơn"
+                                                        : `+${hoaDonTheoThang} đơn so với tháng trước`}
+                                                </span>
+                                            ) : hoaDonTheoThang >= hoaDonThangTruoc ? (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineUpBold size={35} color="black" />
+                                                    {`+${hoaDonTheoThang - hoaDonThangTruoc} đơn so với tháng trước`}
+                                                </span>
+                                            ) : (
+                                                <span style={{ color: "black" }}>
+                                                    <PiChartLineDownBold size={35} color="black" />
+                                                    {`-${hoaDonThangTruoc - hoaDonTheoThang} đơn so với tháng trước`}
+                                                </span>
+                                            )}
+                                        </span>
                                     </h6>
                                 </div>
                             </Carousel>

@@ -19,6 +19,7 @@ import { SanPhamClient } from "../layouts/client/sanpham/SanPham";
 import { GioHang } from "../layouts/client/giohang/GioHang";
 import { LienHe } from "../layouts/client/lienhe/lienhe";
 import { TimKiemDashBoard } from "../layouts/client/sanpham/TimKiemSanPham";
+import TraCuuDonHangClient from "../layouts/client/tracuudonhang/TraCuuDonHangClient";
 
 // Admin layouts/pages
 import DashboardAdmin from "../layouts/admin/DashboardAdmin";
@@ -52,6 +53,7 @@ import { TrangChuAdmin } from "../layouts/admin/trangchu/TrangChuAdmin";
 import { CartProvider } from "../layouts/client/giohang/CartContext";
 import ThanhToanThanhCong from "../layouts/client/thongbaothanhtoan/ThanhToanThanhCong";
 import ThanhToanThatBai from "../layouts/client/thongbaothanhtoan/ThanhToanThatBai";
+
 
 function App() {
   return (
@@ -161,7 +163,30 @@ function App() {
               </GuestGuard>
             }
           />
-
+          <Route
+            path="/tra-cuu-don-hang"
+            element={
+              <GuestGuard>
+                <CartProvider>
+                  <DashboardClient>
+                    <TraCuuDonHangClient />
+                  </DashboardClient>
+                </CartProvider>
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/home-hoa-don/:idHD"
+            element={
+              <GuestGuard>
+                <CartProvider>
+                  <DashboardClient>
+                    <DetailTraCuuDonHang />
+                  </DashboardClient>
+                </CartProvider>
+              </GuestGuard>
+            }
+          />
           <Route
             path="/gio-hang"
             element={
