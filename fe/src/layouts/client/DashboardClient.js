@@ -74,6 +74,11 @@ export const DashboardClient = ({ children }) => {
               </Link>
             </li>
             <li>
+              <Link to="/tra-cuu-don-hang" className="nav-link my-nav-link">
+                Tra cứu đơn hàng
+              </Link>
+            </li>
+            <li>
               <Link to="/lien-he" className="nav-link my-nav-link">
                 Liên hệ
               </Link>
@@ -148,7 +153,7 @@ export const DashboardClient = ({ children }) => {
 
                   <address>
                     <p>
-                      <i className="fa-solid fa-building" /> Đại học penika
+                      <i className="fa-solid fa-building" /> Đại học Phenika
                     </p>
                     <p>
                       <i className="fa-solid fa-phone" />
