@@ -17,7 +17,7 @@ export default function ThanhToanThanhCong() {
   //   }
   // };
   const backHome = (res) => {
-    nav("/");
+    nav("/home");
   };
   return (
     <div className="resultContainer">

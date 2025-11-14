@@ -19,35 +19,40 @@ const ALLTabLichSuMuaHang = () => {
     2: "1",
     3: "2",
     4: "3",
-    5: "5",
+    5: "4",
     6: "-1",
     10: "",
   };
 
-  useEffect(() => {
-    setUserName(storedData?.ten || "");
-    setLinkAnhUser(storedData?.anh || "");
-    const trangThai = keyToStatusMapping[key] ?? "";
+useEffect(() => {
+  setUserName(storedData?.ten || "");
+  setLinkAnhUser(storedData?.anh || "");
+  const trangThai = keyToStatusMapping[key] ?? "";
 
-    const payload = { id, trangThai };
+  const payload = { id, trangThai };
 
-    HoaDonClientAPI.getALLHoaDonOnlineByIdKH(payload).then((res) => {
-      const data = Array.isArray(res?.data) ? res.data : [];
-
-      const promises = data.map((item) =>
-        HoaDonClientAPI.detailSanPham(item.idHD).then((resSP) => ({
+  HoaDonClientAPI.getALLHoaDonOnlineByIdKH(payload).then((res) => {
+    const data = Array.isArray(res?.data) ? res.data : [];
+    const promises = data.map((item) =>
+      HoaDonClientAPI.detailSanPham(item.idHD).then((resSP) => {
+        // Tùy cấu trúc backend: resSP.data hay resSP.data.data
+        const hoaDonDetail = Array.isArray(resSP?.data) ? resSP.data : [];
+        return {
           id: item.idHD,
           ma: item.ma,
           thanhTien: item.thanhTien,
           trangThai: item.trangThai,
-          hoaDonDetail: Array.isArray(resSP?.data) ? resSP.data : [],
-        }))
-      );
+          hoaDonDetail,
+        };
+      })
+    );
 
-      Promise.all(promises).then((results) => setListBill(results));
+    Promise.all(promises).then((results) => {
+      setListBill(results);
+    
     });
-  }, [key, id, storedData?.ten, storedData?.anh]);
-
+  });
+}, [key, id, storedData?.ten, storedData?.anh]);
   const onChange = (k) => setKey(k);
 
   return (

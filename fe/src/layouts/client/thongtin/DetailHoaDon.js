@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
@@ -33,42 +32,31 @@ const showTitle = (trangThai) => {
   if (t === "3") return "Đang vận chuyển";
   if (t === "4") return "Đã thanh toán";
   if (t === "5") return "Thành công";
-  if (t === "10") return "Trả hàng";
   if (t === "-1") return "Hủy";
-  if (t === "-2") return "Hoàn tiền";
   return "Không xác định";
 };
 
 const DetailTraCuuDonHang = () => {
-  const { idHD } = useParams(); // route: /home-hoa-don/:idHD
-  const location = useLocation();
- 
-
-  // LẤY hoaDon TỪ TRANG TRƯỚC (nav(..., { state: { hoaDon: res.data } }))
-  const initialBill = location.state?.hoaDon ?? null;
-  const [bill] = useState(initialBill ?? {});
+  const { idHD } = useParams();
+  const [hoaDonState, setHoaDonState] = useState([]);
   const [listSanPhams, setListSanPhams] = useState([]);
-  const [listTimeLine, setListTimeLine] = useState([]);
-  // Nếu bạn muốn refresh bill khi open trực tiếp (không dùng state),
-  // uncomment đoạn fetchBill và gọi HoaDonClientAPI.DetailHoaDonClient(idHD)
-useEffect(() => {
-  if (!idHD) return;
-
-  const load = async () => {
-    try {
-      // fetch sản phẩm
-      const resSP = await HoaDonClientAPI.detailSanPham(idHD);
-      setListSanPhams(Array.isArray(resSP?.data) ? resSP.data : []);
-    } catch (e) {
-      console.error("detailSanPham error:", e);
-      setListSanPhams([]);
-    }
-
-
+  const fetchHoaDonById = () => {
+    HoaDonClientAPI.detailHD(idHD).then((res) => {
+      setHoaDonState(res.data);
+          console.log(res.data);
+    });
   };
+    const detailHD = () => {
+      HoaDonClientAPI.detailSanPham(idHD).then((res) => {
+        setListSanPhams(res.data);
+      });
+    };
+  useEffect(() => {
+    if (!idHD) return;
+    fetchHoaDonById();
+    detailHD();
 
-  load();
-}, [idHD]);
+  }, [idHD]);
 
   // helper định dạng VND
   const formatVND = (value) => {
@@ -78,11 +66,10 @@ useEffect(() => {
     if (isNaN(n)) return "0 VND";
     return n.toLocaleString("vi-VN") + " VND";
   };
-  const calcThanhTien = (bill) => {
-    const giaGoc = Number(bill.giaGoc) ;
-    const tienVanChuyen = Number(bill.tienVanChuyen);
-    const giaGiam = Number(bill.giaGiam) ;
-    return giaGoc + tienVanChuyen - giaGiam;
+  const calcThanhTien = (hoaDonState) => {
+    const giaGoc = Number(hoaDonState.thanhTien);
+    const tienVanChuyen = Number(hoaDonState.tienVanChuyen);
+    return giaGoc + tienVanChuyen ;
   };
   return (
     <>
@@ -93,72 +80,30 @@ useEffect(() => {
             className="d-flex fw-bold fs-6 justify-content-end"
             style={{ borderBottom: "1px solid #000" }}
           >
-            <p className="me-4 ">Mã đơn hàng : {bill.ma}</p> |
+            <p className="me-4 ">Mã đơn hàng : {hoaDonState.ma}</p> |
             <span className="text-danger ms-4">
-              {bill.trangThai === "0"
+              {hoaDonState.trangThai === "0"
                 ? "Chờ xác nhận"
-                : bill.trangThai === "1"
+                : hoaDonState.trangThai === "1"
                 ? "Xác nhận"
-                : bill.trangThai === "2"
+                : hoaDonState.trangThai === "2"
                 ? "Chờ vận chuyển"
-                : bill.trangThai === "3"
+                : hoaDonState.trangThai === "3"
                 ? "Đang vận chuyển"
-                : bill.trangThai === "4"
+                : hoaDonState.trangThai === "4"
                 ? "Đã thanh toán"
-                : bill.trangThai === "5"
+                : hoaDonState.trangThai === "5"
                 ? "Thành công"
-                : bill.trangThai === "6"
+                : hoaDonState.trangThai === "6"
                 ? "Trả hàng"
-                : bill.trangThai === "-1"
+                : hoaDonState.trangThai === "-1"
                 ? "Đã hủy"
-                : bill.trangThai === "-2"
+                : hoaDonState.trangThai === "-2"
                 ? "Hoàn Tiền"
-                : bill.trangThai === "10"
+                : hoaDonState.trangThai === "10"
                 ? "Trả hàng"
                 : "Đã"}
             </span>
-          </div>
-
-          {/* timeline */}
-          <div className="scroll-hoa-don mt-5 mb-4">
-            <div className="hoa-don-cuon-ngang">
-              {/* <Timeline
-                minEvents={6}
-                style={{ borderBottom: "1px solid rgb(224, 224, 224)" }}
-                placeholder
-              >
-                {(listTimeLine.length
-                  ? listTimeLine
-                  : [
-                      { trangThai: "0", ngayTao: null },
-                      { trangThai: "1", ngayTao: null },
-                      { trangThai: "2", ngayTao: null },
-                      { trangThai: "3", ngayTao: null },
-                      { trangThai: "4", ngayTao: null },
-                      { trangThai: "5", ngayTao: null },
-                    ]
-                ).map((item, index) => (
-                  <TimelineEvent
-                    minEvents={6}
-                    key={`${item.trangThai}-${item.ngayTao ?? index}-${index}`}
-                    color={
-                      item.trangThai == -1 || item.trangThai == 10
-                        ? "#520808"
-                        : "#3d874d"
-                    }
-                    icon={showIcon(item.trangThai)}
-                    values={showTitle(item.trangThai)}
-                    isOpenEnding={true}
-                    title={showTitle(item.trangThai)}
-                    subtitle={
-                      item.ngayTao
-                        ? moment(item.ngayTao).format("hh:mm:ss DD/MM/YYYY")
-                        : ""
-                    }
-                  />
-                ))}
-              </Timeline> */}
-            </div>
           </div>
 
           {/* sản phẩm */}
@@ -168,7 +113,7 @@ useEffect(() => {
                 {/* Cột ảnh */}
                 <div className="col-md-3 d-flex justify-content-center">
                   <img
-                    src={sp.urlHA}
+                    src={sp.linkAnh}
                     alt={sp.tenSP || "image"}
                     width={150}
                     height={150}
@@ -182,26 +127,17 @@ useEffect(() => {
                     {sp.tenHang} {sp.tenSP}
                   </h6>
 
-                  {/* Giá gốc (nếu có giảm) */}
-                  {Number(sp.giaGiam) > 0 && (
-                    <div className="text-muted">
-                      <del>
-                        {formatVND(Number(sp.thanhTienSP) + Number(sp.giaGiam))}
-                      </del>
-                    </div>
-                  )}
-
                   {/* Giá sau giảm */}
                   <div className="text-danger fw-bold">
-                    {formatVND(sp.thanhTienSP)}
+                    {formatVND(sp.giaBan)}
                   </div>
 
-                  <h6 className="mt-2">Size: {sp.tenKichThuoc}</h6>
+                  <h6 className="mt-2">Size: {sp.tenKT}</h6>
 
                   {/* Màu sắc */}
                   <div
                     style={{
-                      backgroundColor: sp.tenMauSac,
+                      backgroundColor: sp.maMS,
                       borderRadius: 6,
                       width: 60,
                       height: 25,
@@ -209,13 +145,13 @@ useEffect(() => {
                     }}
                   ></div>
 
-                  <h6 className="mt-2">x{sp.soLuongSP}</h6>
+                  <h6 className="mt-2">x{sp.soLuong}</h6>
                 </div>
 
                 {/* Thành tiền */}
                 <div className="col-md-2 text-danger fw-bold text-center">
                   {formatVND(
-                    (Number(sp.thanhTienSP) || 0) * (Number(sp.soLuongSP) || 0)
+                    (Number(sp.giaBan) || 0) * (Number(sp.soLuong) || 0)
                   )}
                 </div>
               </div>
@@ -226,9 +162,9 @@ useEffect(() => {
           {/* địa chỉ */}
           <div className="ms-4">
             <h4>Địa chỉ nhận hàng</h4>
-            <p>{bill.tenNguoiNhan}</p>
-            <p>{bill.sdt}</p>
-            <p>{bill.diaChi}</p>
+            <p>{hoaDonState.tenNguoiNhan}</p>
+            <p>{hoaDonState.sdt}</p>
+            <p>{hoaDonState.diaChi}</p>
           </div>
 
           <hr className="mt-5 mb-3"></hr>
@@ -242,25 +178,20 @@ useEffect(() => {
                 {/* Tổng tiền hàng */}
                 <div className="row">
                   <div className="col">Tổng tiền hàng:</div>
-                  <div className="col">{formatVND(bill?.giaGoc || 0)}</div>
+                  <div className="col">
+                    {formatVND(hoaDonState?.thanhTien || 0)}
+                  </div>
                 </div>
 
                 {/* Phí vận chuyển */}
                 <div className="row mt-3">
                   <div className="col">Phí vận chuyển:</div>
                   <div className="col">
-                    {formatVND(bill?.tienVanChuyen || 0)}
+                    {formatVND(hoaDonState?.tienVanChuyen || 0)}
                   </div>
                 </div>
 
                 {/* Voucher */}
-                <div
-                  className="row mt-3"
-                  style={{ borderBottom: "1px solid #000" }}
-                >
-                  <div className="col">Voucher cửa hàng:</div>
-                  <div className="col">-{formatVND(bill?.giaGiam || 0)}</div>
-                </div>
 
                 {/* Thành tiền */}
                 <div className="row mt-3">
@@ -269,7 +200,7 @@ useEffect(() => {
                   </div>
                   <div className="col text-danger fs-5">
                     <b>
-                      <b>{formatVND(calcThanhTien(bill))}</b>
+                      <b>{formatVND(calcThanhTien(hoaDonState))}</b>
                     </b>
                   </div>
                 </div>
@@ -288,8 +219,8 @@ useEffect(() => {
             <p className="mt-4 ms-5 fs-5 text-danger ">
               <b>
                 {" "}
-                {bill.ngayDuKienNhan
-                  ? moment(bill.ngayDuKienNhan).format("DD/MM/YYYY")
+                {hoaDonState.ngayDuKienNhan
+                  ? moment(hoaDonState.ngayDuKienNhan).format("DD/MM/YYYY")
                   : "-"}
               </b>
             </p>
@@ -302,9 +233,7 @@ useEffect(() => {
             <h5 className=" mt-1">Phương thức thanh toán :</h5>
             <p className="ms-5 fs-5 mt-1 text-danger">
               <b>
-                {bill.phuongThucVNP === null
-                  ? "Thanh toán khi nhận hàng"
-                  : "Thanh toán VNP"}
+                {hoaDonState.phuongThuc}
               </b>
             </p>
           </div>
@@ -313,6 +242,5 @@ useEffect(() => {
     </>
   );
 };
-
 
 export default DetailTraCuuDonHang;

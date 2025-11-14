@@ -99,11 +99,11 @@ public class BanHangService {
         if (hoaDonRequest.getIdPayMethod() == 0) {
             System.out.println("Vào 0");
             thanhToanRequest.setTienMat(saveHoaDon.getThanhTien().add(saveHoaDon.getTienVanChuyen()));
-            thanhToanRequest.setPhuongThuc("COD");
+            thanhToanRequest.setPhuongThuc("Tiền mặt");
         } else {
             System.out.println("Vào 1");
             thanhToanRequest.setTongTien(saveHoaDon.getThanhTien().add(saveHoaDon.getTienVanChuyen()));
-            thanhToanRequest.setPhuongThuc("VNP");
+            thanhToanRequest.setPhuongThuc("Chuyển khoản");
             thanhToanRequest.setPhuongThucVNP(hoaDonRequest.getMaGiaoDich());
         }
 
