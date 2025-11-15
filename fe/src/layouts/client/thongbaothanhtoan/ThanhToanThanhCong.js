@@ -1,10 +1,21 @@
 import React, { useEffect } from "react";
 import { Button, Result } from "antd";
 import { useNavigate } from "react-router-dom";
+import { BanHangClientAPI } from "../../../pages/api/client/BanHangClientAPI";
 export default function ThanhToanThanhCong() {
   const nav = useNavigate();
   useEffect(() => {
+    checkOut();
   }, []);
+
+  const checkOut = () => {
+    const storedFormString = localStorage.getItem('formData');
+    const storedForm = JSON.parse(storedFormString);
+    if(storedForm !== null){
+      BanHangClientAPI.checkout(storedForm);
+      localStorage.removeItem('formData');
+    }
+  };
 
   const backHome = (res) => {
     nav("/home");
