@@ -59,7 +59,7 @@ function GioHangChiTiet({ product, loadghct }) {
             ? (await GioHangAPI.getByIDKH(storedData.userID))?.data?.id
             : storedGioHang?.id;
           if (!cartId) return updateTotalQuantity(0);
-          const items = (await GioHangAPI.getAllGHCTByIDGH(cartId))?.data ?? [];
+          const items = (await GioHangAPI.getAllGhctByIdGh(cartId))?.data ?? [];
           updateTotalQuantity(
             items.reduce((sum, it) => sum + (Number(it.soLuong) || 0), 0)
           );
