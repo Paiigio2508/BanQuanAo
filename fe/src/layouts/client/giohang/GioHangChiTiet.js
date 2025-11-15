@@ -2,10 +2,13 @@ import { Image } from "antd";
 import { useState } from "react";
 import { GioHangAPI } from "../../../pages/api/client/GioHangAPI";
 import { FaRegTrashAlt } from "react-icons/fa";
-
+import { useCart } from "../../client/giohang/CartContext";
+import { get } from "local-storage";
 function GioHangChiTiet({ product, loadghct }) {
     const [quantity, setQuantity] = useState(product?.soLuong ?? 0);
-
+    const { updateTotalQuantity } = useCart();
+      const storedData = get("userData");
+      const storedGioHang = get("GioHang");
     const handleUpdateGHCT = async (nextQty) => {
       const maxQty = product.soLuongTon ?? Infinity;
       const newQty = Math.max(0, Math.min(nextQty, maxQty));
@@ -30,6 +33,7 @@ function GioHangChiTiet({ product, loadghct }) {
     const handleDecrease = () => {
       if (quantity > 1) {
         handleUpdateGHCT(quantity - 1);
+         loadCountGioHang();
       } else {
         handleDeleteGHCT();
       }
@@ -38,6 +42,7 @@ function GioHangChiTiet({ product, loadghct }) {
     const handleIncrease = () => {
       if (quantity < (product.soLuongTon ?? Infinity)) {
         handleUpdateGHCT(quantity + 1);
+         loadCountGioHang();
       }
     };
   
@@ -45,8 +50,24 @@ function GioHangChiTiet({ product, loadghct }) {
       try {
         await GioHangAPI.deleteGHCT(product.idGhct);
         await Promise.all([loadghct?.()]);
+        loadCountGioHang();
       } catch {}
     };
+      const loadCountGioHang = async () => {
+        try {
+          const cartId = storedData?.userID
+            ? (await GioHangAPI.getByIDKH(storedData.userID))?.data?.id
+            : storedGioHang?.id;
+          if (!cartId) return updateTotalQuantity(0);
+          const items = (await GioHangAPI.getAllGHCTByIDGH(cartId))?.data ?? [];
+          updateTotalQuantity(
+            items.reduce((sum, it) => sum + (Number(it.soLuong) || 0), 0)
+          );
+        } catch (e) {
+          console.error("loadCountGioHang:", e);
+          updateTotalQuantity(0);
+        }
+      };
   return (
     <tr className="align-middle mt-5">
       {/* Ảnh + thông tin */}

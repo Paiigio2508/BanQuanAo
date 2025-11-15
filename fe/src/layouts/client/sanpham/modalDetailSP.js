@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { get, set } from "local-storage";
 import { GioHangAPI } from "../../../pages/api/client/GioHangAPI";
+import { useCart } from "../../client/giohang/CartContext";
 const ModalDetailSP = ({
   openModalDetailSP,
   setOpenModalDetailSP,
@@ -13,7 +14,7 @@ const ModalDetailSP = ({
   const storedData = get("userData");
   const storedGioHang = get("GioHang");
   const handleClose = () => setOpenModalDetailSP(false);
-
+  const { updateTotalQuantity } = useCart();
   if (!productData) return null; // tránh lỗi khi chưa có dữ liệu
 
   const soLuongTon = Number(productData.soLuong) || 0;
@@ -65,14 +66,28 @@ const ModalDetailSP = ({
     
         const thanhTien = productData.giaBan*soLuong;
         await updateCartDetail(gh.id, productData, soLuong, thanhTien);
-    
+      loadCountGioHang();
         toast.success("✔️ Thêm thành công!", { position: "top-right" });
       } catch (e) {
         console.error(e);
         toast.error("Thêm giỏ hàng thất bại. Vui lòng thử lại!");
       }
     };
-
+  const loadCountGioHang = async () => {
+    try {
+      const cartId = storedData?.userID
+        ? (await GioHangAPI.getByIDKH(storedData.userID))?.data?.id
+        : storedGioHang?.id;
+      if (!cartId) return updateTotalQuantity(0);
+      const items = (await GioHangAPI.getAllGHCTByIDGH(cartId))?.data ?? [];
+      updateTotalQuantity(
+        items.reduce((sum, it) => sum + (Number(it.soLuong) || 0), 0)
+      );
+    } catch (e) {
+      console.error("loadCountGioHang:", e);
+      updateTotalQuantity(0);
+    }
+  };
   return (
     <Modal
       centered

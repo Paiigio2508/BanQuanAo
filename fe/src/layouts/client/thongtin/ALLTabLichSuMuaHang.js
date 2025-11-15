@@ -9,12 +9,11 @@ import { Link } from "react-router-dom";
 const ALLTabLichSuMuaHang = () => {
   const [listBill, setListBill] = useState([]);
   const storedData = get("userData") || {};
-  const [userName, setUserName] = useState("");
-  const [AnhUser, setLinkAnhUser] = useState("");
   const id = storedData?.userID;
   const [key, setKey] = useState("10");
 
-  const keyToStatusMapping = {
+  // 👇 ĐỂ NGOÀI COMPONENT
+  const KEY_TO_STATUS_MAPPING = {
     1: "0",
     2: "1",
     3: "2",
@@ -24,35 +23,37 @@ const ALLTabLichSuMuaHang = () => {
     10: "",
   };
 
-useEffect(() => {
-  setUserName(storedData?.ten || "");
-  setLinkAnhUser(storedData?.anh || "");
-  const trangThai = keyToStatusMapping[key] ?? "";
+ 
 
-  const payload = { id, trangThai };
+    useEffect(() => {
+      if (!id) return; // tránh call API khi chưa có id
 
-  HoaDonClientAPI.getALLHoaDonOnlineByIdKH(payload).then((res) => {
-    const data = Array.isArray(res?.data) ? res.data : [];
-    const promises = data.map((item) =>
-      HoaDonClientAPI.detailSanPham(item.idHD).then((resSP) => {
-        // Tùy cấu trúc backend: resSP.data hay resSP.data.data
-        const hoaDonDetail = Array.isArray(resSP?.data) ? resSP.data : [];
-        return {
-          id: item.idHD,
-          ma: item.ma,
-          thanhTien: item.thanhTien,
-          trangThai: item.trangThai,
-          hoaDonDetail,
-        };
-      })
-    );
+      const trangThai = KEY_TO_STATUS_MAPPING[key] ?? "";
 
-    Promise.all(promises).then((results) => {
-      setListBill(results);
-    
-    });
-  });
-}, [key, id, storedData?.ten, storedData?.anh]);
+      const payload = { id, trangThai };
+
+      HoaDonClientAPI.getALLHoaDonOnlineByIdKH(payload).then((res) => {
+        const data = Array.isArray(res?.data) ? res.data : [];
+
+        const promises = data.map((item) =>
+          HoaDonClientAPI.detailSanPham(item.idHD).then((resSP) => {
+            const hoaDonDetail = Array.isArray(resSP?.data) ? resSP.data : [];
+            return {
+              id: item.idHD,
+              ma: item.ma,
+              thanhTien: item.thanhTien,
+              trangThai: item.trangThai,
+              hoaDonDetail,
+            };
+          })
+        );
+
+        Promise.all(promises).then((results) => {
+          setListBill(results);
+        });
+      });
+    }, [key, id]); // ✅ không còn thiếu keyToStatusMapping nữa
+
   const onChange = (k) => setKey(k);
 
   return (
