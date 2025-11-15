@@ -1,61 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { FaCheckCircle } from "react-icons/fa";
-import { GiNotebook, GiPiggyBank, GiReturnArrow } from "react-icons/gi";
-import { SlNotebook } from "react-icons/sl";
-import { RiTruckFill } from "react-icons/ri";
-import { FaMoneyBillTrendUp, FaTruckFast } from "react-icons/fa6";
-import { ImCancelCircle } from "react-icons/im";
+import { useParams } from "react-router-dom";
 import LogoGHN from "../../../assets/images/LogoGHN.png";
 import { HoaDonClientAPI } from "../../../pages/api/client/HoaDonClientAPI"; // chỉnh đúng path của bạn
 import moment from "moment";
 
-const showIcon = (trangThai) => {
-  const t = String(trangThai);
-  if (t === "0") return GiNotebook;
-  if (t === "1") return SlNotebook;
-  if (t === "2") return RiTruckFill;
-  if (t === "3") return FaTruckFast;
-  if (t === "4") return GiPiggyBank;
-  if (t === "5") return FaCheckCircle;
-  if (t === "10") return GiReturnArrow;
-  if (t === "-1") return ImCancelCircle;
-  if (t === "-2") return FaMoneyBillTrendUp;
-  return GiNotebook;
-};
-
-const showTitle = (trangThai) => {
-  const t = String(trangThai);
-  if (t === "0") return "Chờ xác nhận";
-  if (t === "1") return "Đã xác nhận";
-  if (t === "2") return "Chờ vận chuyển";
-  if (t === "3") return "Đang vận chuyển";
-  if (t === "4") return "Đã thanh toán";
-  if (t === "5") return "Thành công";
-  if (t === "-1") return "Hủy";
-  return "Không xác định";
-};
-
 const DetailTraCuuDonHang = () => {
   const { idHD } = useParams();
-  const [hoaDonState, setHoaDonState] = useState([]);
+  const [hoaDonState, setHoaDonState] = useState({});
   const [listSanPhams, setListSanPhams] = useState([]);
-  const fetchHoaDonById = () => {
-    HoaDonClientAPI.detailHD(idHD).then((res) => {
-      setHoaDonState(res.data);
-          console.log(res.data);
-    });
-  };
-    const detailHD = () => {
-      HoaDonClientAPI.detailSanPham(idHD).then((res) => {
-        setListSanPhams(res.data);
-      });
-    };
+
   useEffect(() => {
     if (!idHD) return;
-    fetchHoaDonById();
-    detailHD();
 
+    const fetchData = async () => {
+      try {
+        const [resHD, resSP] = await Promise.all([
+          HoaDonClientAPI.detailHD(idHD),
+          HoaDonClientAPI.detailSanPham(idHD),
+        ]);
+
+        setHoaDonState(resHD.data);
+        setListSanPhams(resSP.data);
+        console.log(resHD.data);
+      } catch (error) {
+        console.error("Lỗi khi load chi tiết đơn hàng:", error);
+      }
+    };
+
+    fetchData();
   }, [idHD]);
 
   // helper định dạng VND
@@ -66,14 +38,36 @@ const DetailTraCuuDonHang = () => {
     if (isNaN(n)) return "0 VND";
     return n.toLocaleString("vi-VN") + " VND";
   };
-  const calcThanhTien = (hoaDonState) => {
-    const giaGoc = Number(hoaDonState.thanhTien);
-    const tienVanChuyen = Number(hoaDonState.tienVanChuyen);
-    return giaGoc + tienVanChuyen ;
+
+  const calcThanhTien = (hd) => {
+    if (!hd) return 0;
+    const giaGoc = Number(hd.thanhTien || 0);
+    const tienVanChuyen = Number(hd.tienVanChuyen || 0);
+    return giaGoc + tienVanChuyen;
   };
+
+  const trangThaiStr = String(hoaDonState.trangThai ?? "");
+
+  const labelTrangThai =
+    trangThaiStr === "0"
+      ? "Chờ xác nhận"
+      : trangThaiStr === "1"
+      ? "Xác nhận"
+      : trangThaiStr === "2"
+      ? "Chờ vận chuyển"
+      : trangThaiStr === "3"
+      ? "Đang vận chuyển"
+      : trangThaiStr === "4"
+      ? "Đã thanh toán"
+      : trangThaiStr === "5"
+      ? "Thành công"
+      : trangThaiStr === "-1"
+      ? "Đã hủy"
+      : "Đã";
+
   return (
     <>
-      <div className="container-fuild d-flex justify-content-center">
+      <div className="container-fluid d-flex justify-content-center">
         {/* Tab */}
         <div className="col-md-10 ">
           <div
@@ -81,29 +75,7 @@ const DetailTraCuuDonHang = () => {
             style={{ borderBottom: "1px solid #000" }}
           >
             <p className="me-4 ">Mã đơn hàng : {hoaDonState.ma}</p> |
-            <span className="text-danger ms-4">
-              {hoaDonState.trangThai === "0"
-                ? "Chờ xác nhận"
-                : hoaDonState.trangThai === "1"
-                ? "Xác nhận"
-                : hoaDonState.trangThai === "2"
-                ? "Chờ vận chuyển"
-                : hoaDonState.trangThai === "3"
-                ? "Đang vận chuyển"
-                : hoaDonState.trangThai === "4"
-                ? "Đã thanh toán"
-                : hoaDonState.trangThai === "5"
-                ? "Thành công"
-                : hoaDonState.trangThai === "6"
-                ? "Trả hàng"
-                : hoaDonState.trangThai === "-1"
-                ? "Đã hủy"
-                : hoaDonState.trangThai === "-2"
-                ? "Hoàn Tiền"
-                : hoaDonState.trangThai === "10"
-                ? "Trả hàng"
-                : "Đã"}
-            </span>
+            <span className="text-danger ms-4">{labelTrangThai}</span>
           </div>
 
           {/* sản phẩm */}
@@ -157,6 +129,7 @@ const DetailTraCuuDonHang = () => {
               </div>
             ))}
           </div>
+
           <hr className="mt-5 mb-3" />
 
           {/* địa chỉ */}
@@ -167,7 +140,7 @@ const DetailTraCuuDonHang = () => {
             <p>{hoaDonState.diaChi}</p>
           </div>
 
-          <hr className="mt-5 mb-3"></hr>
+          <hr className="mt-5 mb-3" />
 
           {/* thanh toán */}
           <div className="ms-4">
@@ -191,34 +164,29 @@ const DetailTraCuuDonHang = () => {
                   </div>
                 </div>
 
-                {/* Voucher */}
-
                 {/* Thành tiền */}
                 <div className="row mt-3">
                   <div className="col">
                     <b>Thành tiền</b>
                   </div>
                   <div className="col text-danger fs-5">
-                    <b>
-                      <b>{formatVND(calcThanhTien(hoaDonState))}</b>
-                    </b>
+                    <b>{formatVND(calcThanhTien(hoaDonState))}</b>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <hr className="mt-5 mb-3"></hr>
+          <hr className="mt-5 mb-3" />
 
           {/* ngày dự kiến */}
-          <div className="ms-4 d-flex justify-content-start">
-            <h5 className=" mt-4">Ngày dự kiến:</h5>
+          <div className="ms-4 d-flex justify-content-start align-items-center">
+            <h5 className="mt-4">Ngày dự kiến:</h5>
             <p className="ms-5 mt-1">
               <img src={LogoGHN} style={{ width: 200, height: 70 }} alt="GHN" />
             </p>
             <p className="mt-4 ms-5 fs-5 text-danger ">
               <b>
-                {" "}
                 {hoaDonState.ngayDuKienNhan
                   ? moment(hoaDonState.ngayDuKienNhan).format("DD/MM/YYYY")
                   : "-"}
@@ -226,15 +194,13 @@ const DetailTraCuuDonHang = () => {
             </p>
           </div>
 
-          <hr className="mt-5 mb-3"></hr>
+          <hr className="mt-5 mb-3" />
 
           {/* phương thức thanh toán */}
           <div className="ms-4 d-flex justify-content-start">
-            <h5 className=" mt-1">Phương thức thanh toán :</h5>
+            <h5 className="mt-1">Phương thức thanh toán :</h5>
             <p className="ms-5 fs-5 mt-1 text-danger">
-              <b>
-                {hoaDonState.phuongThuc}
-              </b>
+              <b>{hoaDonState.phuongThuc}</b>
             </p>
           </div>
         </div>

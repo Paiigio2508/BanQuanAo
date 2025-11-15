@@ -97,18 +97,15 @@ public class BanHangService {
         thanhToanRequest.setTongTien(saveHoaDon.getThanhTien().add(saveHoaDon.getTienVanChuyen()));
         System.out.println("Thanh toán requesst "+thanhToanRequest);
         if (hoaDonRequest.getIdPayMethod() == 0) {
-            System.out.println("Vào 0");
             thanhToanRequest.setTienMat(saveHoaDon.getThanhTien().add(saveHoaDon.getTienVanChuyen()));
             thanhToanRequest.setPhuongThuc("Tiền mặt");
         } else {
-            System.out.println("Vào 1");
             thanhToanRequest.setTongTien(saveHoaDon.getThanhTien().add(saveHoaDon.getTienVanChuyen()));
             thanhToanRequest.setPhuongThuc("Chuyển khoản");
             thanhToanRequest.setPhuongThucVNP(hoaDonRequest.getMaGiaoDich());
         }
 
         thanhToanService.thanhToan(thanhToanRequest);
-        System.out.println("Hoàn thành");
         return true;
     }
     //xử lý số lượng sản phẩm

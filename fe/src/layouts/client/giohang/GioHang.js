@@ -10,7 +10,7 @@ import LogoVNP from "../../../assets/images/vnp.png";
 import Moment from "moment";
 import ModalDiaChi from "./modalDiaChi";
 import "./giohang.css";
-import  { get, set } from "local-storage";
+import  { get } from "local-storage";
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
 import { ShipAPI } from "../../../pages/api/ship/ShipAPI";
 import GioHangChiTiet from "./GioHangChiTiet";
@@ -18,6 +18,7 @@ import { GioHangAPI } from "../../../pages/api/client/GioHangAPI";
 import { BanHangClientAPI } from "../../../pages/api/client/BanHangClientAPI";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../client/giohang/CartContext";
 export const GioHang = ({ children }) => {
   const [openModalDiaChi, setOpenModalDiaChi] = useState(false);
   const [khachHang, setKhachHang] = useState(null);
@@ -33,6 +34,7 @@ export const GioHang = ({ children }) => {
   const storedData = get("userData");
   const storedGioHang = get("GioHang");
   const [dataVanChuyen, setDataVanchuyen] = useState("");
+    const { updateTotalQuantity } = useCart();
   const router = useNavigate();
     const getButtonTMType = () => {
       // Xác định loại button dựa trên giá trị biến đếm
@@ -209,6 +211,7 @@ export const GioHang = ({ children }) => {
       const check = await BanHangClientAPI.checkout(hoaDon);
       if (check?.data) {
         setMoneyShip(0);
+        loadCountGioHang();
         router("/thanh-toan-thanh-cong");
       } else {
         showErr("Số lượng sản phẩm không đủ!");
@@ -218,6 +221,21 @@ export const GioHang = ({ children }) => {
       console.error(e);
       showErr("Có lỗi khi xử lý thanh toán. Vui lòng thử lại!");
     } finally {
+    }
+  }; 
+   const loadCountGioHang = async () => {
+    try {
+      const cartId = storedData?.userID
+        ? (await GioHangAPI.getByIDKH(storedData.userID))?.data?.id
+        : storedGioHang?.id;
+      if (!cartId) return updateTotalQuantity(0);
+      const items = (await GioHangAPI.getAllGHCTByIDGH(cartId))?.data ?? [];
+      updateTotalQuantity(
+        items.reduce((sum, it) => sum + (Number(it.soLuong) || 0), 0)
+      );
+    } catch (e) {
+      console.error("loadCountGioHang:", e);
+      updateTotalQuantity(0);
     }
   };
   return (

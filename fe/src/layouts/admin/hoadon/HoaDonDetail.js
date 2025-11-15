@@ -21,16 +21,14 @@ export default function HoaDonDetail() {
   const { TextArea } = Input;
   const storedData = get("userData");
   const maNV = storedData?.ma || null;
-  // Helper format tiền VND
-  const fmtVND = (n) =>
-    new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(Number(n || 0));
+
+  // Helper format tiền VND dạng "1.000.000 VND"
+  const fmtVND = (n) => `${Number(n || 0).toLocaleString("vi-VN")} VND`;
 
   const thanhTien = Number(hoaDonState?.thanhTien ?? 0);
   const phiShip = Number(hoaDonState?.tienVanChuyen ?? 0);
   const tong = thanhTien + phiShip;
+
   // Modal & Form
   const [isModalVanDon, setIsModalVanDon] = useState(false);
   const [formVanDon] = Form.useForm();
@@ -48,15 +46,16 @@ export default function HoaDonDetail() {
       toast.error("Không tải được chi tiết đơn hàng.");
     }
   };
+
   const loadListSanPhams = () => {
     HoaDonAPI.detailSanPham(id).then((res) => {
       setlistSanPhams(res.data);
     });
   };
+
   useEffect(() => {
     loadListSanPhams();
     if (!hoaDonState) fetchHoaDonById();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -112,18 +111,13 @@ export default function HoaDonDetail() {
       if (!maNV)
         return toast.error("Thiếu mã nhân viên. Vui lòng đăng nhập lại.");
 
-      // Tuỳ BE: nếu có endpoint riêng hãy dùng, còn không có thể tái dùng updateTTHoaDon
-      // ví dụ thêm trangThai=-1 + ghi chú hủy:
       const payload = {
         ...values, // { lyDoHuy: "..."} hoặc { ghiChu: "..."} tuỳ bạn đặt name
         maNV,
-        trangThai: -1, // gợi ý: BE đọc và set -1
-        action: "CANCEL", // nếu BE cần phân biệt hành động
+        trangThai: -1,
+        action: "CANCEL",
       };
 
-      // Nếu bạn có API riêng:
-      // await HoaDonAPI.huyHoaDon(id, payload);
-      // Nếu tái dùng update:
       await HoaDonAPI.updateTTHoaDon(id, payload);
 
       closeHuy();
@@ -144,72 +138,101 @@ export default function HoaDonDetail() {
     nextBtn: null,
   };
 
-  const columnsChiTietSanPham = [
-    {
-      title: "STT",
-      key: "stt",
-      render: (_val, _rec, index) => index + 1,
-      width: 70,
-    },
-    {
-      title: "Hình ảnh",
-      dataIndex: "linkAnh",
-      key: "linkAnh",
-      render: (src) =>
-        src ? (
-          <img
-            src={src}
-            alt="SP"
-            style={{ width: 60, height: 60, objectFit: "cover" }}
-          />
-        ) : (
-          "-"
-        ),
-    },
-    {
-      title: "Thông tin sản phẩm",
-      key: "thongTinSP",
-      render: (_, record) => (
-        <>
-          <div>
-            {record.tenSP} {record.tenHang}, size:
-            <span className="text-danger">{record.tenKT}</span> <b>Màu sắc:</b>{" "}
-            {record.tenMS}
-          </div>
-
-          <div
-            style={{
-              backgroundColor: `${record.maMS}`,
-              borderRadius: 6,
-              width: 60,
-              height: 25,
-            }}
-            className="custom-div"
-          ></div>
-        </>
+const columnsChiTietSanPham = [
+  {
+    title: "STT",
+    key: "stt",
+    render: (_val, _rec, index) => index + 1,
+    width: 60,
+    align: "center",
+    onHeaderCell: () => ({
+      style: { textAlign: "center" },
+    }),
+  },
+  {
+    title: "Hình ảnh",
+    dataIndex: "linkAnh",
+    key: "linkAnh",
+    width: 130,
+    align: "center",
+    onHeaderCell: () => ({
+      style: { textAlign: "center" },
+    }),
+    render: (src) =>
+      src ? (
+        <img
+          src={src}
+          alt="SP"
+          style={{ width: 100, height: 100, objectFit: "cover" }}
+        />
+      ) : (
+        "-"
       ),
+  },
+  {
+    title: "Thông tin sản phẩm",
+    key: "thongTinSP",
+    width: 300,
+    align: "center",
+    onHeaderCell: () => ({
+      style: { textAlign: "center" },
+    }),
+    render: (_, record) => (
+      <div style={{ textAlign: "center" }}>
+        <div>
+          {record.tenSP} {record.tenHang}, size:
+          <span className="text-danger fw-bold ms-1">{record.tenKT}</span>
+        </div>
+
+        <div
+          style={{
+            backgroundColor: `${record.maMS}`,
+            borderRadius: 6,
+            width: 60,
+            height: 25,
+            margin: "6px auto 0", // cho khối màu nằm giữa
+          }}
+          className="custom-div"
+        ></div>
+      </div>
+    ),
+  },
+  {
+    title: "Số lượng",
+    dataIndex: "soLuong",
+    key: "soLuong",
+    width: 100,
+    align: "center",
+    onHeaderCell: () => ({
+      style: { textAlign: "center" },
+    }),
+  },
+  {
+    title: "Giá bán",
+    dataIndex: "giaBan",
+    key: "giaBan",
+    width: 150,
+    align: "center",
+    onHeaderCell: () => ({
+      style: { textAlign: "center" },
+    }),
+    render: (v) => <span>{Number(v || 0).toLocaleString("vi-VN")} VND</span>,
+  },
+  {
+    title: "Tổng tiền",
+    key: "tongTien",
+    width: 170,
+    align: "center",
+    onHeaderCell: () => ({
+      style: { textAlign: "center" },
+    }),
+    render: (_, record) => {
+      const tong = Number(record.soLuong || 0) * Number(record.giaBan || 0);
+      return <span>{tong.toLocaleString("vi-VN")} VND</span>;
     },
-    { title: "Số lượng", dataIndex: "soLuong", key: "soLuong", width: 100 },
-    {
-      title: "Giá bán",
-      dataIndex: "giaBan",
-      key: "giaBan",
-      render: (v) =>
-        new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(v ?? 0),
-      width: 140,
-    },
-    {
-      title: "Tổng tiền",
-      key: "tongTien",
-      render: (_, record) => {
-        const tong = record.soLuong * record.giaBan;
-        return tong.toLocaleString() + " ₫";
-      },
-    },
-  ];
+  },
+];
+
 
   return (
     <div>
@@ -223,14 +246,12 @@ export default function HoaDonDetail() {
           <h5>Tên khách hàng : {hoaDonState.tenKH}</h5>
           <h5>Số điện thoại : {hoaDonState.sdt}</h5>
           <h5>Ngày mua: {hoaDonState.ngayMua}</h5>
-          <div>
             <h5>
-              Trạng thái: {statusInfo.label}{" "}
-              <span className="text-success" style={{ fontSize: 30 }}>
+              Trạng thái: {statusInfo.label}
+              <span className="text-success" >
                 {statusInfo.icon}
               </span>
             </h5>
-          </div>
           <h5>Ghi chú: {hoaDonState.ghiChu}</h5>
         </div>
 
@@ -254,7 +275,7 @@ export default function HoaDonDetail() {
         </h3>
         <Table
           columns={columnsChiTietSanPham}
-          dataSource={listSanPhams} // ✅ NÊN CÓ
+          dataSource={listSanPhams}
           rowKey="id" // hoặc "idCTSP" nếu unique theo chi tiết
           style={{ marginTop: 25 }}
         />
@@ -289,7 +310,7 @@ export default function HoaDonDetail() {
         </Form>
       </Modal>
 
-      {/* Modal hủy đơn — KHÔNG onOk, KHÔNG Modal.confirm */}
+      {/* Modal hủy đơn */}
       <Modal
         title="Nhập lý do hủy hóa đơn"
         footer={null}
@@ -300,7 +321,7 @@ export default function HoaDonDetail() {
         <Form form={formHuy} layout="vertical" onFinish={submitHuy}>
           <Form.Item
             label="Lý do hủy"
-            name="lyDoHuy" // bạn đổi tên theo BE (ghiChu/moTaHoatDong đều được)
+            name="lyDoHuy"
             hasFeedback
             rules={[
               { required: true, message: "Vui lòng không để trống lý do!" },
@@ -318,20 +339,17 @@ export default function HoaDonDetail() {
         </Form>
       </Modal>
 
-      <div className="row mt-4">
-        <div className="col-md-9"></div>
-        <div className="col-md-3">
-          <h3>
-            Tiền đơn hàng:
-            <span className="text-danger">{fmtVND(thanhTien)}</span>
-          </h3>
-          <h3>
-            Tiền vận chuyển:
-            <span className="text-danger">{fmtVND(phiShip)}</span>
-          </h3>
-          <h3>
-            Tổng tiền: <span className="text-danger">{fmtVND(tong)}</span>
-          </h3>
+      <div className="row mt-5">
+        <div className="col-md-8"></div>
+        <div className="col-md-2">
+          <h3>Tiền đơn hàng:</h3>
+          <h3>Tiền vận chuyển:</h3>
+          <h3>Tổng tiền:</h3>
+        </div>
+        <div className="col-md-2 text-danger">
+          <h3>{fmtVND(thanhTien)}</h3>
+          <h3>{fmtVND(phiShip)}</h3>
+          <h3>{fmtVND(tong)}</h3>
         </div>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />
