@@ -19,6 +19,7 @@ import { BanHangClientAPI } from "../../../pages/api/client/BanHangClientAPI";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../client/giohang/CartContext";
+import DiaChiGiaoHang from "./GiaoHang";
 export const GioHang = ({ children }) => {
   const [openModalDiaChi, setOpenModalDiaChi] = useState(false);
   const [khachHang, setKhachHang] = useState(null);
@@ -311,15 +312,19 @@ export const GioHang = ({ children }) => {
       <div className="row mt-5 ps-5 pe-5">
         {/* Bảng sản phẩm */}
         <div className="col-md-8">
-        {gioHangCT?.length
-            ? gioHangCT.map((ghct) => (
-                <GioHangChiTiet
-                  key={ghct.idGH || ghct.idCTSP || ghct.id}
-                  product={ghct}
-                  loadghct={loadGHCT}
-                />
-              ))
-            : ""}
+          <table className="table">
+            <tbody>
+              {gioHangCT?.length
+                ? gioHangCT.map((ghct) => (
+                    <GioHangChiTiet
+                      key={ghct.idGH || ghct.idCTSP || ghct.id}
+                      product={ghct}
+                      loadghct={loadGHCT}
+                    />
+                  ))
+                : null}
+            </tbody>
+          </table>
         </div>
 
         {/* Hóa đơn */}
@@ -334,18 +339,22 @@ export const GioHang = ({ children }) => {
               <span>Đơn hàng</span>
             </div>
             <div className="col-md-5">
-              <span style={{ color: "blue" }}>{Intl.NumberFormat("en-US").format(total)}</span> <span>VND</span>
+              <span style={{ color: "blue" }}>
+                {Intl.NumberFormat("en-US").format(total)}
+              </span>{" "}
+              <span>VND</span>
             </div>
           </div>
 
-          <div
-            className="row ps-2 pb-2 mt-3 fs-3"
-          >
+          <div className="row ps-2 pb-2 mt-3 fs-3">
             <div className="col-md-6" style={{ marginLeft: 30 }}>
               <span>Phí ship</span>
             </div>
             <div className="col-md-5">
-              <span style={{ color: "blue" }}>{Intl.NumberFormat("en-US").format(moneyShip)}</span> <span>VND</span>
+              <span style={{ color: "blue" }}>
+                {Intl.NumberFormat("en-US").format(moneyShip)}
+              </span>{" "}
+              <span>VND</span>
             </div>
           </div>
           <hr
@@ -356,21 +365,26 @@ export const GioHang = ({ children }) => {
               <span>Tổng tiền</span>
             </div>
             <div className="col-md-5">
-              <span style={{ color: "red", fontWeight:"bolder" }}>{Intl.NumberFormat("en-US").format(total+moneyShip)} VND</span> 
+              <span style={{ color: "red", fontWeight: "bolder" }}>
+                {Intl.NumberFormat("en-US").format(total + moneyShip)} VND
+              </span>
             </div>
           </div>
 
           {/* Nút thanh toán */}
           <div className="text-center mt-3">
-            <button className="btn btn-primary w-50 fs-4"
-            onClick={()=>{handleMuaHang(
-              total,
-              gioHangCT,
-              userID,
-              diaChi,
-              phuongThuc,
-              dataVanChuyen
-            );}}
+            <button
+              className="btn btn-primary w-50 fs-4"
+              onClick={() => {
+                handleMuaHang(
+                  total,
+                  gioHangCT,
+                  userID,
+                  diaChi,
+                  phuongThuc,
+                  dataVanChuyen
+                );
+              }}
             >
               {phuongThuc === 0 ? "Đặt hàng" : "Thanh toán"}
             </button>
@@ -405,6 +419,16 @@ export const GioHang = ({ children }) => {
         </div>
       </div>
       <hr className="mt-5 mb-5" />
+      <div>
+        {khachHang === null && !storedData?.userID && (
+          <div className="col-md-4 mx-auto">
+            <DiaChiGiaoHang
+              money={setMoneyShip}
+              thongTinVanChuyen={setDataVanchuyen}
+            />
+          </div>
+        )}
+      </div>
 
       <ModalDiaChi
         openModalDiaChi={openModalDiaChi}
