@@ -43,7 +43,7 @@ public class EmailServiceImpl {
                 + "</head>"
                 + "<body>"
                 + "<div class='container'>"
-                + "<h1> MISHOES</h1>"
+                + "<h1> TSPORT</h1>"
                 + "<form>"
                 + "<div class='form-group'>"
                 + "<label for='username'>Tài khoản :&nbsp;" + to + " </label>"
