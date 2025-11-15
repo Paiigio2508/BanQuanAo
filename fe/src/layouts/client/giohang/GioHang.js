@@ -205,7 +205,6 @@ export const GioHang = ({ children }) => {
         const maGiaoDich = Object.keys(data)[0];
         const url = data[maGiaoDich];
         window.location.href = url;
-        return;
       }
 
       const check = await BanHangClientAPI.checkout(hoaDon);
