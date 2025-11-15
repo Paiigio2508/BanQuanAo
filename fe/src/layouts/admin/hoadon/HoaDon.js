@@ -171,7 +171,7 @@ export default function HoaDon() {
       sorter: (a, b) => (a.thanhTien ?? 0) - (b.thanhTien ?? 0),
       align: "right",
     },
-    { title: "Hình thức", dataIndex: "hinhThucThanhToan" },
+    { title: "Hình thức", dataIndex: "phuongThuc" },
     {
       title: "Trạng thái",
       dataIndex: "trangThai",

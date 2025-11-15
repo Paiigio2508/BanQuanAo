@@ -11,9 +11,10 @@ import java.util.List;
 
 public interface HoaDonRepository extends JpaRepository<HoaDon, String> {
     @Query(value = """
-            SELECT hd.id AS idHD, hd.ma AS ma, hd.nhan_vien AS maNV, kh.ten AS tenKH, kh.so_dien_thoai AS sdt,thanh_tien AS thanhTien,hd.trang_thai AS trangThai,hd.hinh_thuc_thanh_toan as hinhThucThanhToan,
+            SELECT hd.id AS idHD, hd.ma AS ma, kh.ten AS tenKH, kh.so_dien_thoai AS sdt,thanh_tien AS thanhTien,hd.trang_thai AS trangThai,  hd.thanh_tien,tt.phuong_thuc as phuongThuc,
                      hd.ngay_mua as ngayMua,hd.ghi_chu AS ghiChu,hd.tien_van_chuyen as tienVanChuyen FROM hoa_don hd
                      LEFT JOIN nguoi_dung kh ON kh.id = hd.id_khach_hang
+                      left join thanh_toan tt on tt.id_hoa_don = hd.id
             ORDER BY  hd.ngay_mua DESC;
                         """,
             nativeQuery = true)
