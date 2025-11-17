@@ -371,9 +371,9 @@ export default function ChiTietSanPham() {
                   </Select>
                 </Form.Item>
               </div>
-              {/* Độ Cao */}
+              {/* Giới tính */}
               <div className="col-md-4">
-                <Form.Item label="Đế giày" name="idGT">
+                <Form.Item label="Giới tính" name="idGT">
                   <Select placeholder="Chọn một giá trị">
                     {gioiTinh.map((item) => (
                       <Select.Option key={item.ma} value={item.id}>

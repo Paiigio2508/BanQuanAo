@@ -18,8 +18,8 @@ import {
   Dropdown,
   Space,
 } from "antd";
-import logoShop from "../../assets/images/logo.jpg";
-import bgsider from "../../assets/images/sidebar.png";
+import logoShop from "../../assets/images/logo.png";
+import bgsider from "../../assets/images/side.png";
 import UserContext from "../admin/UserContext";
 import "./DashboardAdmin.css";
 const { Header, Sider, Content } = Layout;
@@ -66,7 +66,15 @@ const DashboardAdmin = ({ children }) => {
         collapsible
         collapsed={collapsed}
         width={235}
-        style={{ minHeight: "100%" }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          height: "100vh",
+          overflow: "auto", // nếu menu dài hơn màn hình
+          background: "#1f1f1f",
+        }}
       >
         <div
           style={{
@@ -111,7 +119,7 @@ const DashboardAdmin = ({ children }) => {
             >
               {!collapsed ? (
                 <>
-                  <img src={logoShop} width={100} alt="logo" />
+                  <img src={logoShop} width={200} alt="logo" />
                   <span
                     style={{ color: "white", marginTop: 5, fontSize: "24px" }}
                   >
@@ -224,38 +232,16 @@ const DashboardAdmin = ({ children }) => {
               </MenuItem>
             </Menu>
 
-            <div
-              style={{
-                textAlign: "center",
-                marginTop: "auto",
-                padding: 20,
-              }}
-            >
-              {collapsed ? (
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "white" }}
-                >
-                  <FaGithub size={20} />
-                </a>
-              ) : (
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "white" }}
-                >
-                  <FaGithub size={20} /> TSPORT
-                </a>
-              )}
-            </div>
+
           </div>
         </div>
       </Sider>
 
-      <Layout>
+  <Layout
+    style={{
+      marginLeft: collapsed ? 80 : 235, // đúng bằng width của Sider
+    }}
+  >
         <Header
           style={{
             background: "#4E4336",

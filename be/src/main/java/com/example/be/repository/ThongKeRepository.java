@@ -160,12 +160,12 @@ group by chi_tiet_san_pham.id,chi_tiet_san_pham.gia_ban,chi_tiet_san_pham.hinh_a
                      """, nativeQuery = true)
     List<SanPhamBanChayRepo> getSPSapHet();
     @Query(value = """
-SELECT DATE(chi_tiet_hoa_don.ngay_tao) AS ngay,
-COUNT(DISTINCT chi_tiet_hoa_don.id_hoa_don) AS tongHoaDon,
-SUM(chi_tiet_hoa_don.so_luong) AS tongSanPham
-FROM chi_tiet_hoa_don
-WHERE DATE(chi_tiet_hoa_don.ngay_tao) = CURDATE()\s
-GROUP BY DATE(chi_tiet_hoa_don.ngay_tao) 	
+SELECT DATE(hdct.ngay_tao) AS ngay,
+COUNT(DISTINCT hdct.id_hoa_don) AS tongHoaDon,
+SUM(hdct.so_luong) AS tongSanPham
+FROM chi_tiet_hoa_don hdct JOIN hoa_don hd ON hd.id = hdct.id_hoa_don
+WHERE DATE(hdct.ngay_tao) = CURDATE() AND hd.trang_thai IN (4,5)
+GROUP BY DATE(hdct.ngay_tao)
             """, nativeQuery = true)
 
     List<BieuDoRepo> getBieuDoNgay();
@@ -174,25 +174,25 @@ SELECT YEARWEEK(CURDATE(), 1) AS yearweek,
 DATE(hdct.ngay_tao) AS ngay,
 COUNT(DISTINCT hdct.id_hoa_don) AS tongHoaDon,
 SUM(hdct.so_luong) AS tongSanPham
-FROM chi_tiet_hoa_don AS hdct
-WHERE YEARWEEK(hdct.ngay_tao, 1) = YEARWEEK(CURDATE(), 1)
+FROM chi_tiet_hoa_don hdct JOIN hoa_don hd ON hd.id = hdct.id_hoa_don
+WHERE YEARWEEK(hdct.ngay_tao, 1) = YEARWEEK(CURDATE(), 1)  AND hd.trang_thai IN (4,5)
 GROUP BY DATE(hdct.ngay_tao) ORDER BY ngay;
               """, nativeQuery = true)
     List<BieuDoRepo> getBieuDoTuan();
 
     @Query(value = """
-Select DATE(chi_tiet_hoa_don.ngay_tao) AS ngay,
-count(distinct chi_tiet_hoa_don.id_hoa_don) as tongHoaDon,
-sum(chi_tiet_hoa_don.so_luong) as tongSanPham from chi_tiet_hoa_don
-where year(chi_tiet_hoa_don.ngay_tao)= year(curdate()) and month(chi_tiet_hoa_don.ngay_tao)=month(curdate())
-group by date(chi_tiet_hoa_don.ngay_tao)
+Select DATE(hdct.ngay_tao) AS ngay,
+count(distinct hdct.id_hoa_don) as tongHoaDon,
+sum(hdct.so_luong) as tongSanPham from chi_tiet_hoa_don hdct JOIN hoa_don hd ON hd.id = hdct.id_hoa_don
+where year(hdct.ngay_tao)= year(curdate()) and month(hdct.ngay_tao)=month(curdate()) and hd.trang_thai=4
+group by date(hdct.ngay_tao)
 """, nativeQuery = true)
     List<BieuDoRepo> getBieuDoThang();
 
     @Query(value = """
-Select count(distinct chi_tiet_hoa_don.id_hoa_don) as tongHoaDon,
-sum(chi_tiet_hoa_don.so_luong) as tongSanPham from chi_tiet_hoa_don
-where year(date (chi_tiet_hoa_don.ngay_tao))= year(curdate())
+Select count(distinct hdct.id_hoa_don) as tongHoaDon,
+sum(hdct.so_luong) as tongSanPham from chi_tiet_hoa_don hdct JOIN hoa_don hd ON hd.id = hdct.id_hoa_don
+where year(date (hdct.ngay_tao))= year(curdate()) and hd.trang_thai=4
             """, nativeQuery = true)
     List<BieuDoRepo> getBieuDoNam();
 
@@ -232,7 +232,7 @@ SELECT COALESCE(SUM(hdct.so_luong), 0) AS tongSanPham
 FROM chi_tiet_hoa_don hdct
 JOIN hoa_don hd ON hd.id = hdct.id_hoa_don
 WHERE hd.trang_thai IN (4, 5)                  -- chỉ đơn hoàn tất/đã thanh toán
-AND hd.ngay_tao >= CURDATE()
+AND hd.ngay_tao >= CURDATE() 
 AND hd.ngay_tao <  CURDATE() + INTERVAL 1 DAY;
             """, nativeQuery = true)
     Integer getSPBanNgay();
@@ -242,7 +242,7 @@ SELECT COALESCE(SUM(hdct.so_luong), 0) AS tongSanPham
 FROM chi_tiet_hoa_don hdct
 JOIN hoa_don hd ON hd.id = hdct.id_hoa_don
 WHERE hd.trang_thai IN (4,5)
-AND hd.ngay_tao >= CURDATE() - INTERVAL 1 DAY     \s
+AND hd.ngay_tao >= CURDATE() - INTERVAL 1 DAY 
 AND hd.ngay_tao <  CURDATE(); \s
             """, nativeQuery = true)
     Integer getSPBanNgayTruoc();

@@ -4,15 +4,15 @@ import { Carousel } from "antd";
 export const TrangChuAdmin = () => {
   // list ảnh banner (dùng link thật của bạn)
   const banners = [
-    "https://img.pikbest.com/origin/10/10/31/97vpIkbEsTShb.jpg!w700wp",
-    "https://img.pikbest.com/origin/10/10/31/97vpIkbEsTShb.jpg!w700wp",
-    "https://thietkewebchuyen.com/wp-content/uploads/thiet-ke-banner-website-anh-bia-Facebook-shop-thoi-trang-quan-ao-7.jpg",
-    "https://thietkewebchuyen.com/wp-content/uploads/thiet-ke-banner-website-anh-bia-Facebook-shop-quan-ao-nam-nu-2.jpg",
+    "https://www.10wallpaper.com/wallpaper/1920x1080/1212/Nike_logo_-_the_global_brand_advertising_wallpaper_05_1920x1080.jpg",
+    "https://cdn.wallpapersafari.com/71/92/SLVR9a.jpg",
+    "https://kicksology.ca/cdn/shop/files/LINING_TITLE_BANNER.jpg?crop=center&height=1080&v=1757619690&width=1920",
+    "https://wallpapers.com/images/hd/puma-logo-in-mint-green-ugzqhxqamdq85i0a.jpg",
   ];
 
   return (
     <div className="container-fluid">
-      <Carousel autoplay>
+      <Carousel autoplay autoplaySpeed={4000}>
         {banners.map((src, index) => (
           <div key={index}>
             <img

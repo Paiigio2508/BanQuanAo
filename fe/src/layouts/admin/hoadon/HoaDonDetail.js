@@ -107,26 +107,24 @@ export default function HoaDonDetail() {
     formHuy.resetFields();
   };
   const submitHuy = async (values) => {
-    try {
-      if (!maNV)
-        return toast.error("Thiếu mã nhân viên. Vui lòng đăng nhập lại.");
-
-      const payload = {
-        ...values, // { lyDoHuy: "..."} hoặc { ghiChu: "..."} tuỳ bạn đặt name
-        maNV,
-        trangThai: -1,
-        action: "CANCEL",
-      };
-
-      await HoaDonAPI.updateTTHoaDon(id, payload);
-
+    const payload = { ...values, maNV };
+     listSanPhams.map((listSanPham, index) =>
+      HoaDonAPI.deleteInvoiceAndRollBackProduct(listSanPham.idCTSP, id)
+    );
+    HoaDonAPI.huyHoaDonQLHoaDon(payload,id, maNV).then((res) => {
       closeHuy();
-      await fetchHoaDonById();
-      toast.success("Đã hủy đơn hàng.");
-    } catch (err) {
-      console.error(err);
-      toast.error("Hủy đơn thất bại.");
-    }
+      fetchHoaDonById();
+      toast("Hủy đơn thành công!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    });
   };
 
   if (!hoaDonState) return null;
@@ -321,7 +319,7 @@ const columnsChiTietSanPham = [
         <Form form={formHuy} layout="vertical" onFinish={submitHuy}>
           <Form.Item
             label="Lý do hủy"
-            name="lyDoHuy"
+            name="ghiChu"
             hasFeedback
             rules={[
               { required: true, message: "Vui lòng không để trống lý do!" },
