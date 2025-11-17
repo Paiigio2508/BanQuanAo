@@ -12,6 +12,7 @@ import { SortDescendingOutlined } from "@ant-design/icons";
 import "./sanpham.css";
 import { ProductCard } from "./productCard";
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
+import { ToastContainer } from "react-toastify";
 
 export const SanPhamClient = ({ children }) => {
   const [products, setProducts] = useState([]);
@@ -317,6 +318,17 @@ export const SanPhamClient = ({ children }) => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

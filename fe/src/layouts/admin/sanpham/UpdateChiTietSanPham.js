@@ -325,7 +325,7 @@ export default function UpdateChiTietSanPham() {
                     >
                       <InputNumber
                         className="border"
-                        style={{ width: 376 }}
+                        style={{ width: 503 }}
                         defaultValue={0}
                         formatter={(value) =>
                           `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -407,7 +407,7 @@ export default function UpdateChiTietSanPham() {
                     >
                       <InputNumber
                         className="border"
-                        style={{ width: 376 }}
+                        style={{ width: 503 }}
                         defaultValue={0}
                         formatter={(value) =>
                           `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -428,7 +428,7 @@ export default function UpdateChiTietSanPham() {
                   ]}
                 >
                   <Input
-                    style={{ width: 770 }}
+                    style={{ width: 1025 }}
                     placeholder="Nhập số lượng sản phẩm"
                     type="number"
                     min={1}
@@ -444,7 +444,7 @@ export default function UpdateChiTietSanPham() {
                   ]}
                 >
                   <TextArea
-                    style={{ width: 770 }}
+                    style={{ width: 1025 }}
                     rows={4}
                     maxLength={200}
                     placeholder="Nhập mô tả sản phẩm"

@@ -64,4 +64,7 @@ chi_tiet_hoa_don hdct left join chi_tiet_san_pham ctsp on ctsp.id = hdct.id_chi_
        where hd.ma=:ma                                                                                
                      """, nativeQuery = true)
     HoaDonRespon searchHDbyMa(String ma );
+
+    @Query(value = "select * from hoa_don where id =:id",nativeQuery = true)
+    HoaDon getHoaDonByIDHD(String id);
 }

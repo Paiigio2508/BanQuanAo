@@ -4,7 +4,9 @@ import "./sanpham.css";
 import { ProductCard } from "./productCard";
 import { useParams } from 'react-router-dom';
 import { HomeAPI } from "../../../pages/api/client/HomeAPI";
-import { FileSearchOutlined} from "@ant-design/icons";
+import { FileSearchOutlined } from "@ant-design/icons";
+import { ToastContainer } from "react-toastify";
+
 export const TimKiemDashBoard = ({ children }) => {
   const { ten } = useParams();
   const [products, setProducts] = useState([]);
@@ -39,30 +41,31 @@ export const TimKiemDashBoard = ({ children }) => {
         />
         <h1 className="banner-title-logo">Sản phẩm</h1>
       </div>
-
-      <div className="container-fuild mt-5">
-        <div className="mt-4 mb-4"
-          style={{ display: "flex", alignItems: "center", height: 50, backgroundColor: "#DFF0D8", color: "#5B5B5B" }}>
-          <h5 className="ms-2"><FileSearchOutlined /> Có {countProducts} kết quả tìm kiếm phù hợp </h5>
-        </div>
-        <div className="row">
-          <div className="col-md-9">
-            <div className="row">
-              <div class="container">
-                <div className="row">
-                  {products.map((product, index) => {
-                    return (
-                      <div className="col-md-3">
-                        <ProductCard key={index} product={product} />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="mt-4 mb-4"
+        style={{ display: "flex", alignItems: "center", height: 50, backgroundColor: "#DFF0D8", color: "#5B5B5B" }}>
+        <h5 className="ms-2"><FileSearchOutlined /> Có {countProducts} kết quả tìm kiếm phù hợp </h5>
       </div>
+      <div className="container-fuild mt-5 ms-5">
+        <div className="row row-cols-2 row-cols-md-5">
+          {products.map((product, index) => (
+            <div className="col" key={index}>
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+
+      </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

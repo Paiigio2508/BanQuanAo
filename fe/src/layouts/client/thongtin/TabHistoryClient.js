@@ -22,8 +22,13 @@ const TabHistoryClient = ({ listBill = [] }) => {
 
   const showModalHuyHoaDon = (id) => {
     setIsModalHuyHoaDon(true);
+    console.log(id)
     setId(id);
   };
+  const closeModalHuy = () => {
+    setIsModalHuyHoaDon(false);
+    formHuyHoaDon.resetFields();
+  }
   const showHDCT = async (id, maHD) => {
     try {
       const res = await HoaDonClientAPI.SearchHDClient(maHD);
@@ -38,45 +43,43 @@ const TabHistoryClient = ({ listBill = [] }) => {
   };
 
   const handleHuyHoaDon = async (values) => {
-    try {
-      const res = await HoaDonClientAPI.detailSanPham(id);
-      const items = Array.isArray(res?.data) ? res.data : [];
-      await Promise.all(
-        items.map((sp) =>
-          HoaDonClientAPI.deleteInvoiceAndRollBackProduct(sp.idctsp, id)
-        )
+    const payload = { ...values, tenKH };
+    console.log(payload)
+    HoaDonClientAPI.detailSanPham(id).then((res) => {
+      res.data.map((listSanPham, index) =>
+        HoaDonClientAPI.deleteInvoiceAndRollBackProduct(listSanPham.idCTSP, id)
       );
-
-      await HoaDonClientAPI.huyHoaDonQLHoaDon(id, tenKH, values);
+    });
+    HoaDonClientAPI.huyHoaDonQLHoaDon(payload,id, tenKH).then((res) => {
+      closeModalHuy();
       formHuyHoaDon.resetFields();
-      setIsModalHuyHoaDon(false);
-
-      toast("🦄 Hủy hóa đơn thành công!", {
+      toast("Hủy hóa đơn thành công!", {
         position: "top-right",
         autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
         theme: "light",
       });
-
-      nav(`/chi-tiet-don-hang/${id}`);
-    } catch (e) {
-      console.error("Hủy hóa đơn lỗi:", e);
-      toast.error("Hủy hóa đơn thất bại!");
-    }
+      nav(`/home-hoa-don/${id}`);
+    });
   };
-const TAG_COLOR_MAP = {
-  "-2": "#595959", // ví dụ: Thất bại / Hết hạn
-  "-1": "#ff4d4f", // Đã hủy
-  0: "#faad14", // Chờ xác nhận
-  1: "#1890ff", // Đã xác nhận
-  2: "#13c2c2", // Đang giao
-  3: "#52c41a", // Hoàn thành
-  10: "#722ed1", // Hoàn tiền / Trả hàng
-};
+  const TAG_COLOR_MAP = {
+    "-2": "#595959", // ví dụ: Thất bại / Hết hạn
+    "-1": "#ff4d4f", // Đã hủy
+    0: "#faad14", // Chờ xác nhận
+    1: "#1890ff", // Đã xác nhận
+    2: "#13c2c2", // Đang giao
+    3: "#52c41a", // Hoàn thành
+    10: "#722ed1", // Hoàn tiền / Trả hàng
+  };
 
-const getTagColor = (status) => {
-  const t = String(status);
-  return TAG_COLOR_MAP[t] || "#108ee9"; // màu default
-};
+  const getTagColor = (status) => {
+    const t = String(status);
+    return TAG_COLOR_MAP[t] || "#108ee9"; // màu default
+  };
 
   const labelTrangThai = (st) => {
     const t = String(st);
@@ -243,27 +246,12 @@ const getTagColor = (status) => {
           >
             <TextArea rows={4} />
           </Form.Item>
-          <Button
-            style={{ marginLeft: 200 }}
-            className="bg-success text-light"
-            onClick={() => {
-              Modal.confirm({
-                title: "Thông báo",
-                content: "Bạn có chắc chắn muốn tiếp tục?",
-                onOk: () => {
-                  formHuyHoaDon.submit();
-                },
-                footer: (_, { OkBtn, CancelBtn }) => (
-                  <>
-                    <CancelBtn />
-                    <OkBtn />
-                  </>
-                ),
-              });
-            }}
-          >
-            Xác nhận
-          </Button>
+          <div className="d-flex justify-content-end gap-2">
+            <Button onClick={closeModalHuy}>Đóng</Button>
+            <Button type="primary" htmlType="submit">
+              Xác nhận hủy
+            </Button>
+          </div>
         </Form>
       </Modal>
 

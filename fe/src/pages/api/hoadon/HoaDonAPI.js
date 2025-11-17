@@ -39,4 +39,25 @@ export class HoaDonAPI {
       },
     });
   };
+
+  static huyHoaDonQLHoaDon = (data, id, maNV) => {
+    return requestAdmin({
+      method: "PUT",
+      url: `/admin/hoa-don/xoa-hoa-don/${id}/${maNV}`,
+      data: data,
+      headers: {
+        Authorization: this.getToken,
+      },
+    });
+  };
+  static deleteInvoiceAndRollBackProduct = (idCTSP, id) => {
+    const getToken = getHeader();
+    return requestAdmin({
+      method: "DELETE",
+      url: `/admin/hoa-don/delete-hoa-don-chi-tiet/${idCTSP}/${id}`,
+      headers: {
+        Authorization: getToken,
+      },
+    });
+  };
 }
