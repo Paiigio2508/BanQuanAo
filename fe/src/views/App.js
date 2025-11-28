@@ -37,7 +37,7 @@ import HoaDon from "../layouts/admin/hoadon/HoaDon";
 import KhachHang from "../layouts/admin/khachhang/KhachHang";
 import AddKhachHang from "../layouts/admin/khachhang/AddKhachHang";
 import UpdateKhachHang from "../layouts/admin/khachhang/UpdateKhachHang";
-
+import AddSanPham from "../layouts/admin/sanpham/AddSanPham";
 // Auth
 import { Login } from "../layouts/login/Login";
 import { QuenMatKhau } from "../layouts/login/QuenMatKhau";
@@ -376,6 +376,16 @@ function App() {
               <AdminGuard>
                 <DashboardAdmin>
                   <ChiTietSanPham />
+                </DashboardAdmin>
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin-them-san-pham"
+            element={
+              <AdminGuard>
+                <DashboardAdmin>
+                  <AddSanPham />
                 </DashboardAdmin>
               </AdminGuard>
             }

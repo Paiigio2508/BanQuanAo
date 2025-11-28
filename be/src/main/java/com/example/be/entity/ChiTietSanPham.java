@@ -6,6 +6,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @Setter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@SuperBuilder
 public class ChiTietSanPham  extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "san_pham_id")
@@ -40,6 +42,7 @@ public class ChiTietSanPham  extends BaseEntity {
     private BigDecimal giaNhap;
     private BigDecimal giaBan;
     private String hinhAnh;
+    private String tenCt;
     private int soLuong;
     private String moTa;
 }

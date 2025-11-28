@@ -6,11 +6,13 @@ import { FilterFilled } from "@ant-design/icons";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GiMaterialsScience } from 'react-icons/gi';
-import { BsFillEyeFill} from 'react-icons/bs';
+import { BsFillEyeFill } from 'react-icons/bs';
 import { TbListDetails } from 'react-icons/tb';
 import { ThuocTinhAPI } from '../../../pages/api/sanpham/ThuocTinh.api';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export default function SanPham() {
+  const nav = useNavigate();
+  const themSP = () => nav("/admin-them-san-pham");
   //Form
   const [selectedValue, setSelectedValue] = useState('1');
 
@@ -73,7 +75,7 @@ export default function SanPham() {
   const [spUpdate, setSpUpdate] = useState("");
   const [tenCheck, setTenCheck] = useState("");
   const showModal = async (idDetail) => {
-    await ThuocTinhAPI.detail("san-pham",idDetail)
+    await ThuocTinhAPI.detail("san-pham", idDetail)
       .then((res) => {
         form1.setFieldsValue({
           id: res.data.id,
@@ -88,7 +90,7 @@ export default function SanPham() {
         setTenCheck(res.data.ten)
         setSpUpdate(res.data)
       })
-      setOpenUpdate(true)
+    setOpenUpdate(true)
   };
 
   const updateSanPham = () => {
@@ -359,9 +361,9 @@ export default function SanPham() {
           >
             <TbListDetails />
           </Link>
-          <a className='btn btn-danger' onClick={() => showModal(`${title}`) }><BsFillEyeFill className='mb-1' /></a>
+          <a className='btn btn-danger' onClick={() => showModal(`${title}`)}><BsFillEyeFill className='mb-1' /></a>
         </Space>
-        
+
       ),
     },
   ]
@@ -439,7 +441,7 @@ export default function SanPham() {
         </div>
 
         <div className="text-end ms-5">
-          <button onClick={() => setOpen(true)} class="button-them">
+          <button onClick={themSP} class="button-them">
             <span class="text">
               <PlusCircleOutlined /> Thêm sản phẩm
             </span>
