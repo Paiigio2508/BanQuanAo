@@ -29,6 +29,7 @@ public class ChiTietSanPhamRequest {
     public String moTa;
     public LocalDateTime ngayTao;
     public LocalDateTime ngaySua;
+    private String tenCt;
     public int trangThai;
 
     public ChiTietSanPham map(ChiTietSanPham ctsp){
@@ -45,6 +46,7 @@ public class ChiTietSanPhamRequest {
         ctsp.setHinhAnh(this.hinhAnh);
         ctsp.setSoLuong(this.soLuong);
         ctsp.setMoTa(this.moTa);
+        ctsp.setTenCt(this.tenCt);
         ctsp.setNgayTao(this.ngayTao);
         ctsp.setNgaySua(this.ngaySua);
         ctsp.setTrangThai(this.trangThai);
