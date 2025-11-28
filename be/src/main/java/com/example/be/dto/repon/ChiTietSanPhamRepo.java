@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Value;
 
 public interface ChiTietSanPhamRepo {
     String getIdCTSP();
+    String getIdSanPham();
+    String getIdMS();
+    String getIdKT();
     String getLinkAnh();
     String getTenSP();
     String getTenKT();

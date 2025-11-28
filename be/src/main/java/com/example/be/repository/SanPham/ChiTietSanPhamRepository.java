@@ -28,7 +28,10 @@ public interface ChiTietSanPhamRepository extends JpaRepository<ChiTietSanPham, 
                      dm.ten as tenDM,
                      cl.ten as tenCL,
                      gt.ten as tenGT,
-                      h.ten as tenHang
+                      h.ten as tenHang,
+                      ms.id AS idMS,
+                  kt.id AS idKT,
+                       sp.id AS idSanPham
                     FROM chi_tiet_san_pham o
                     JOIN san_pham sp  ON o.san_pham_id = sp.id
                     JOIN kich_thuoc kt ON o.kich_thuoc_id = kt.id

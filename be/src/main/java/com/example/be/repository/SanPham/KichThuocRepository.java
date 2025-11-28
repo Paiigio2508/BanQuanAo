@@ -5,6 +5,7 @@ import com.example.be.dto.request.admin.sanphamrequest.ThuocTinhSearchRequest;
 import com.example.be.entity.KichThuoc;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,4 +30,11 @@ public interface KichThuocRepository extends JpaRepository<KichThuoc, String> {
     ORDER BY o.ma DESC
             """, nativeQuery = true)
     List<ThuocTinhRepo> tim(ThuocTinhSearchRequest bangConSearch);
+    @Query("""
+        SELECT DISTINCT kt
+        FROM ChiTietSanPham ctsp
+        JOIN ctsp.kichThuoc kt
+        WHERE ctsp.sanPham.id = :idSanPham
+    """)
+    List<KichThuoc> findBySanPhamId(@Param("idSanPham") String idSanPham);
 }

@@ -1,11 +1,13 @@
 package com.example.be.controller.client;
 
+import com.example.be.dto.impldto.SanPhamDetailResponse;
 import com.example.be.dto.request.admin.DiaChiRequest;
 import com.example.be.dto.request.admin.sanphamrequest.ChiTietSanPhamArraySearchRequest;
 import com.example.be.service.KhachHangService;
 import com.example.be.service.SanPham.HangService;
 import com.example.be.service.SanPham.KichThuocService;
 import com.example.be.service.SanPham.MauSacService;
+import com.example.be.service.SanPham.SanPhamService;
 import com.example.be.service.client.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class ClientController {
     @Autowired
     HangService hangService;
     @Autowired
+    SanPhamService sanPhamService;
+    @Autowired
     KhachHangService khachHangService;
     @GetMapping()
     public ResponseEntity<?> getALL() {
@@ -36,7 +40,11 @@ public class ClientController {
     public ResponseEntity<?> getLocSanPham(@RequestBody ChiTietSanPhamArraySearchRequest request) {
         return ResponseEntity.ok(clientService.getSearchListSanPham(request));
     }
-
+    // detail
+    @GetMapping("/san-pham-detail/{id}")
+    public ResponseEntity<SanPhamDetailResponse> getDetail(@PathVariable("id") String id) {
+        return ResponseEntity.ok(sanPhamService.getProductDetailByCtsp(id));
+    }
     @GetMapping("/tim-kiem/{tenTim}")
     public ResponseEntity<?> getTimSanPham(@PathVariable("tenTim") String tenTim) {
         return ResponseEntity.ok(clientService.getTim(tenTim));
