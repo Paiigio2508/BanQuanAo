@@ -28,7 +28,13 @@ export class HomeAPI {
       url: `/home/${attribute}`,
     });
   };
-
+  // sản phẩm
+  static getProductDetailByCtsp = (ctspId) => {
+    return requestClient({
+      method: "GET",
+      url: `/home/san-pham-detail/${ctspId}`,
+    });
+  };
   // địa chỉ khách h
 
   static getDiaChiByKHClient = (id) => {
@@ -65,5 +71,4 @@ export class HomeAPI {
       data: data,
     });
   };
-
 } 

@@ -47,6 +47,8 @@ export const ProductCard = ({ product }) => {
           idCt={idCt}
           setidCTSP={setidCTSP}
           productData={product}
+          idMS={product.idMS}
+          idKT={product.idKT}
         />
       </div>
     </div>
