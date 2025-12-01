@@ -10,6 +10,7 @@ import com.example.be.entity.SanPham;
 
 import com.example.be.repository.SanPham.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,6 +30,12 @@ public class SanPhamService {
     private HinhAnhRepository hinhAnhRepository;
     @Autowired
     private KichThuocRepository kichThuocRepository;
+
+    public List<SanPham> getALL() {
+        Sort sortByNgayTao = Sort.by(Sort.Direction.DESC, "ngayTao");
+        return sanPhamRepository.findAll(sortByNgayTao);
+    }
+  
     public List<SanPhamRepo> getAllSanPham() {
         return sanPhamRepository.getALLSP();
     }

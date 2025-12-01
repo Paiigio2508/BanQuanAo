@@ -1,23 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, Form, Input, Radio, Select, Space, Table, Tag, Image, Slider } from 'antd';
-import { PlusCircleOutlined, RetweetOutlined } from "@ant-design/icons";
+import { Button, Divider, Form, Modal, Select, Space, Table, Tag, Image, Slider, InputNumber, QRCode, Popover } from 'antd';
+import { EyeOutlined, RetweetOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { BookFilled } from "@ant-design/icons";
 import { FilterFilled } from "@ant-design/icons";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GiMaterialsScience } from 'react-icons/gi';
-import { BsFillEyeFill } from 'react-icons/bs';
 import { ChiTietSanPhamAPI } from '../../../pages/api/sanpham/ChiTietSanPham.api';
 import { ThuocTinhAPI } from '../../../pages/api/sanpham/ThuocTinh.api';
 import { Link, useNavigate } from "react-router-dom";
+import { GrUpdate } from "react-icons/gr";
 import { useParams } from 'react-router-dom';
+import TextArea from 'antd/es/input/TextArea';
 import { Color } from 'antd/es/color-picker';
+import SuaAnhCTSP from './SuaAnhCTSP';
 
 export default function ChiTietSanPham() {
   //Form
   const { id } = useParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ktCheck, setKtCheck] = useState('');
+  const [msCheck, setMsCheck] = useState('');
   const nav = useNavigate();
   const [selectedValue, setSelectedValue] = useState('1');
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const handleChange = (value) => {
     setSelectedValue(value);
@@ -28,11 +39,9 @@ export default function ChiTietSanPham() {
   };
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
+  const [form2] = Form.useForm();
   const [formTim] = Form.useForm();
-
-  const themCTSP = () => {
-    nav(`/admin-them-chi-tiet-san-pham/${id}`);
-  };
+  const [ctData, setCTDatas] = useState({});
 
   //Load Combobox Danh Mục
   const [danhMuc, setDanhMucs] = useState([]);
@@ -118,16 +127,106 @@ export default function ChiTietSanPham() {
   const [chiTietSanPham, setChiTietSanPhams] = useState([]);
 
   useEffect(() => {
+    setCTDatas(dataSource)
     loadChiTietSanPham();
   }, []);
 
   const loadChiTietSanPham = () => {
     ChiTietSanPhamAPI.showCTSPBySanPhamId(id).then((res) => {
       setChiTietSanPhams(res.data);
+      console.log(res.data)
     })
   };
 
+  const dataSource = chiTietSanPham.map((item) => ({
+    idCTSP: item.idCTSP,
+    key: item.idCTSP,
+    linkAnh: item.linkAnh,
+    tenSP: item.tenSP,
+    giaBan: item.giaBan,
+    soLuong: item.soLuong,
+    tenKT: item.tenKT,
+    tenMS: item.tenMS,
+    maMS: item.maMS,
+    trangThai: item.trangThai
+  }));
+  // Update
+  const showModal = async (idCT) => {
+    ChiTietSanPhamAPI.detailChiTietSanPham(idCT).then((result) => {
+      console.log(result.data)
+      setMsCheck(result.data.mauSac)
+      setKtCheck(result.data.kichThuoc)
+      setCTDatas(result.data);
+      setIsModalOpen(true);
+    })
+  };
+  const [optionsCTSP, setOptionsCTSP] = useState([]);
+  useEffect(() => {
+    loadCTSP_Update();
+  }, []);
+  const loadCTSP_Update = async () => {
+    ChiTietSanPhamAPI.getAllChiTietSanPham().then((res) => {
+      setOptionsCTSP(res.data);
+    })
+
+  };
+  const updateCTSanPham = () => {
+    if (ctData.kichThuoc != ktCheck || ctData.mauSac != msCheck) {
+      const checkTrung = (sanPham, mauSac, kichThuoc) => {
+        return optionsCTSP.some(ctsp =>
+          ctsp.idSP === sanPham &&
+          ctsp.idMS === mauSac &&
+          ctsp.idKT === kichThuoc
+        );
+      };
+
+      if (checkTrung(ctData.sanPham, ctData.mauSac, ctData.kichThuoc)) {
+        toast.error('Sản phẩm có kích thước và màu sắc trùng với sản phẩm khác !', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+    }
+    if (ctData.moTa.length > 200) {
+      toast.error('Mô tả không quá 200 kí tự !', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    ChiTietSanPhamAPI.updateChiTietSanPham(ctData.id, ctData)
+      .then(response => {
+        toast.success('✔️ Sửa thành công!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setIsModalOpen(false)
+        loadChiTietSanPham();
+      })
+      .catch(error => console.error('Error adding item:', error));
+  }
   //Tìm kiếm
+
   const onChangeTimKiem = (changedValues, allValues) => {
     const updatedValues = { ...allValues };
     if (updatedValues.soLuongCT && updatedValues.soLuongCT.length > 0) {
@@ -152,7 +251,7 @@ export default function ChiTietSanPham() {
     }
     timKiemCT(updatedValues)
 
-    
+
   }
   const timKiemCT = (dataSearch) => {
     ChiTietSanPhamAPI.searchChiTietSanPham(id, dataSearch)
@@ -186,7 +285,7 @@ export default function ChiTietSanPham() {
           width={100}
           height={100}
           style={{ borderRadius: "15px" }}
-          src={text}
+          src={text || "https://www.gnf-liege.be/img/NoImage.jpg"}
         />
       ),
     },
@@ -256,17 +355,185 @@ export default function ChiTietSanPham() {
       dataIndex: "idCTSP",
       render: (title) => (
         <Space size="middle">
-          <Link
-            to={`/admin-update-chi-tiet-san-pham/${title}`}
-            className="btn btn-danger"
-          >
-            <BsFillEyeFill />
-          </Link>
+          <a>
+            <Button type="primary" shape='round' className='bg-success text-white' icon={<EyeOutlined />} onClick={() => showModal(`${title}`)} />
+            <Modal
+              centered={true}
+              open={isModalOpen}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              width={700}
+              footer={[]}>
+              <div className='text-center mb-3'>
+                <h3>Chi Tiết Sản Phẩm</h3>
+              </div>
+              <Form
+                initialValues={{
+                  size: componentSize,
+                }}
+                onValuesChange={onFormLayoutChange}
+                size={componentSize}
+                onFinish={updateCTSanPham}
+                form={form2}>
+                <div className='row'>
+                  <Form.Item label={<b>Tên sản phẩm </b>} >
+                    <Select defaultValue={ctData.sanPham} disabled>
+                      <Select.Option key={ctData.sanPham} value={ctData.sanPham}>
+                        {ctData.tenSP}
+                      </Select.Option>
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='row'>
+                  <Form.Item label={<b>Mô tả </b>} hasFeedback rules={[{ required: true, message: 'Vui lòng nhập mô tả!', },]}>
+                    <TextArea value={ctData.moTa} onChange={(e) => setCTDatas({ ...ctData, moTa: e.target.value })}></TextArea>
+                  </Form.Item>
+                </div>
+                <div className='row'>
+                  <div className='col-md-6'>
+                    <Form.Item label={<b>Kích thước </b>}>
+                      <Select placeholder="Chọn một giá trị" value={ctData.kichThuoc} onChange={(e) => setCTDatas({ ...ctData, kichThuoc: e })} >
+                        {kichThuoc.map(item => (
+                          <Select.Option key={item.id} value={item.id}>
+                            {item.ten}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-6'>
+                    <Form.Item label={<b>Màu Sắc</b>}>
+                      <Select placeholder="Chọn một giá trị" value={ctData.mauSac} onChange={(e) => setCTDatas({ ...ctData, mauSac: e })}>
+                        {mauSac.map(item => (
+                          <Select.Option key={item.id} value={item.id}>
+                            {item.ten}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </div>
+                <div className='row'>
+                  <div className='col-md-6'>
+                    <Form.Item label={<b>Chất liệu </b>}>
+                      <Select placeholder="Chọn một giá trị" value={ctData.chatLieu} onChange={(e) => setCTDatas({ ...ctData, chatLieu: e })}>
+                        {chatLieu.map(item => (
+                          <Select.Option key={item.id} value={item.id}>
+                            {item.ten}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-6'>
+                    <Form.Item label={<b>Giới tính</b>}>
+                      <Select placeholder="Chọn một giá trị" value={ctData.gioiTinh} onChange={(e) => setCTDatas({ ...ctData, gioiTinh: e })}>
+                        {gioiTinh.map(item => (
+                          <Select.Option key={item.id} value={item.id}>
+                            {item.ten}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </div>
+                <div className='row'>
+                  <div className='col-md-6'>
+                    <Form.Item label={<b>Danh mục </b>}>
+                      <Select placeholder="Chọn một giá trị" value={ctData.danhMuc} onChange={(e) => setCTDatas({ ...ctData, danhMuc: e })}>
+                        {danhMuc.map(item => (
+                          <Select.Option key={item.id} value={item.id}>
+                            {item.ten}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-6'>
+                    <Form.Item label={<b>Hãng</b>}>
+                      <Select placeholder="Chọn một giá trị" value={ctData.hang} onChange={(e) => setCTDatas({ ...ctData, hang: e })}>
+                        {hang.map(item => (
+                          <Select.Option key={item.id} value={item.id}>
+                            {item.ten}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </div>
+                <div className='row'>
+                  <div className='col-md-4'>
+                    <Form.Item label={<b>Số lượng </b>}>
+                      <InputNumber
+                        min={0}
+                        placeholder='Nhập số lượng'
+                        value={ctData.soLuong}
+                        onChange={(e) => setCTDatas({ ...ctData, soLuong: e })}
+                      ></InputNumber>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-4'>
+
+                    <Form.Item label={<b>Giá bán </b>}>
+                      <InputNumber
+                        min={100000}
+                        formatter={(value) =>
+                          `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        }
+                        parser={(value) => value.replace(/\VND\s?|(,*)/g, "")}
+                        style={{ width: 150 }}
+                        value={ctData.giaBan}
+                        onChange={(e) => setCTDatas({ ...ctData, giaBan: e })}
+                      ></InputNumber>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-4'>
+                    <Form.Item label={<b>Trạng thái </b>}>
+                      <Select defaultValue={ctData.trangThai == 0 ? 'Còn bán' : 'Dừng bán'} onChange={(e) => setCTDatas({ ...ctData, trangThai: e })}>
+                        <Select.Option value='0'>Còn Bán</Select.Option>
+                        <Select.Option value='1'>Dừng Bán</Select.Option>
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <label className='mb-2'><b>QR Code :</b></label>
+                  <Popover
+                    overlayInnerStyle={{ padding: 0 }}
+                    content={<QRCode value={ctData.id} bordered={false} size={250} />}
+                  >
+                    <Button icon={<QrcodeOutlined />} className='mb-2 ms-3' style={{ border: '1px solid #C6C5C5', borderRadius: '10px', objectFit: 'cover', width: 150 }}>
+                      View QR
+                    </Button>
+                  </Popover>
+                  <label className='mb-2'><b>Hình ảnh :</b></label>
+                  <SuaAnhCTSP ten={ctData.mauSac} idSP={ctData.id} onReload={loadChiTietSanPham}></SuaAnhCTSP>
+                </div>
+                <div className='row'>
+                  <div className='container text-center'>
+                    <Button className='bg-warning text-dark rounded-pill border mt-3'
+                      onClick={() => {
+                        Modal.confirm({
+                          centered: 'true',
+                          title: 'Thông báo',
+                          content: 'Bạn có chắc chắn muốn cập nhật không?',
+                          onOk: () => { form2.submit(); },
+                          footer: (_, { OkBtn, CancelBtn }) => (
+                            <>
+                              <CancelBtn />
+                              <OkBtn />
+                            </>
+                          ),
+                        });
+                      }}><GrUpdate className='me-1' />Cập Nhật</Button>
+                  </div>
+                </div>
+              </Form>
+
+            </Modal>
+          </a>
         </Space>
       ),
     },
   ]
-
   return (
     <div className="container-fluid" style={{ borderRadius: 20 }}>
       <div className="container-fluid">
@@ -449,14 +716,6 @@ export default function ChiTietSanPham() {
           </Form>
         </div>
 
-        <div className="text-end mt-3">
-          <button onClick={themCTSP} className="button-them">
-            <span className="text">
-              <PlusCircleOutlined /> Thêm chi tiết sản phẩm
-            </span>
-          </button>
-        </div>
-
         <div
           className=" bg-light mt-3 p-3 pt-2"
           style={{
@@ -475,7 +734,7 @@ export default function ChiTietSanPham() {
             <div>
               <Table
                 className="text-center"
-                dataSource={chiTietSanPham}
+                dataSource={dataSource}
                 columns={columns}
                 pagination={{
                   showQuickJumper: true,

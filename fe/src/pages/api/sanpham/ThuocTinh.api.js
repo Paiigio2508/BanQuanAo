@@ -80,4 +80,15 @@ static getAll = (attribute) => {
       },
     });
   };
+
+   static getAllSanPhamForAdd = (id) => {
+    const getToken = getHeader();
+    return requestAdmin({
+      method: "GET",
+      url: `/admin/san-pham/getAll`,
+      headers: {
+        Authorization: getToken,
+      },
+    });
+  };
 }

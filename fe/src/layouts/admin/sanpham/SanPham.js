@@ -310,14 +310,15 @@ export default function SanPham() {
             style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
           >
             {mauSacList.map((mau, index) => (
+              console.log(mau),
               <div key={index} style={{ width: "50%", padding: "0.5rem" }}>
                 <Tag
                   style={{
                     width: 40,
                     height: 20,
-                    border: "1px solid #C6C5C5",
+                    border: "1px solid #f79f9fff",
+                    backgroundColor: mau,
                   }}
-                  color={mau}
                 />
               </div>
             ))}
@@ -352,6 +353,7 @@ export default function SanPham() {
     {
       title: "Hành động",
       key: "action",
+      align: "center",
       dataIndex: "id",
       render: (title) => (
         <Space size="middle">
@@ -361,7 +363,6 @@ export default function SanPham() {
           >
             <TbListDetails />
           </Link>
-          <a className='btn btn-danger' onClick={() => showModal(`${title}`)}><BsFillEyeFill className='mb-1' /></a>
         </Space>
 
       ),

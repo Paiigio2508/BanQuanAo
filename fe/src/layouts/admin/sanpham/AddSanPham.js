@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   Select,
-  Radio,
   Divider,
   InputNumber,
   Modal,
@@ -13,12 +12,10 @@ import {
 import { Link } from "react-router-dom";
 import { MdAddTask, MdDelete } from "react-icons/md";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import axios from "axios";
 import TextArea from "antd/es/input/TextArea";
 import "./SanPham.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import FormItem from "antd/es/form/FormItem";
 import {
   EditOutlined,
   InfoCircleOutlined,
@@ -28,17 +25,16 @@ import { keys } from "@antv/util";
 import { App } from "antd";
 import CloudinaryUpload from "./UpAnh";
 import { useNavigate } from "react-router-dom";
-import convert from "color-convert";
 import "./SanPham.css";
 import { ChiTietSanPhamAPI } from "../../../pages/api/sanpham/ChiTietSanPham.api";
 import { ThuocTinhAPI } from "../../../pages/api/sanpham/ThuocTinh.api";
-// import AddSanPhamModal from "./Modal/AddSanPhamModal";
-// import AddChatLieuModal from "./Modal/AddChatLieuModal";
-// import AddHangModal from "./Modal/AddHangModal";
-// import AddDoCaoModal from "./Modal/AddDoCaoModal";
-// import AddDanhMucModal from "./Modal/AddDanhMucModal";
-// import AddKichThuocModal from "./Modal/AddKichThuoc";
-// import AddMauSacModal from "./Modal/AddMauSac";
+import AddSanPhamModal from "./Modal/AddSanPhamModal";
+import AddChatLieuModal from "./Modal/AddChatLieuModal";
+import AddHangModal from "./Modal/AddHangModal";
+import AddGioiTinhModal from "./Modal/AddGioiTinhModal";
+import AddDanhMucModal from "./Modal/AddDanhMucModal";
+import AddKichThuocModal from "./Modal/AddKichThuoc";
+import AddMauSacModal from "./Modal/AddMauSac";
 import UpdateNhanhModal from "./UpdateNhanhModal";
 export default function AddSanPham() {
   //Form
@@ -46,7 +42,7 @@ export default function AddSanPham() {
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
-  const [formDG] = Form.useForm();
+  const [formGT] = Form.useForm();
   const [formKT] = Form.useForm();
   const [form3] = Form.useForm();
   const [selectedValue, setSelectedValue] = useState("1");
@@ -67,14 +63,13 @@ export default function AddSanPham() {
     setComponentSize(size);
   };
   const [openUpdateNhanh, setUpdateNhanhs] = useState(false);
-  const [openAddAnh, setAddAnhs] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [dataKichThuoc, setDataKichThuocs] = useState([]);
   const [dataSanPham, setDataSanPhams] = useState([]);
   const [dataMauSac, setDataMauSacs] = useState([]);
   const [dataChatLieu, setDataChatLieus] = useState([]);
   const [dataHang, setDataHangs] = useState([]);
-  const [dataDeGiay, setDataDeGiays] = useState([]);
+  const [dataGioiTinh, setDataGioiTinhs] = useState([]);
   const [dataDanhMuc, setDataDanhMucs] = useState([]);
   const [dataMoTa, setDataMoTas] = useState([]);
   const [dataSoLuong, setDataSoLuong] = useState("");
@@ -85,17 +80,19 @@ export default function AddSanPham() {
     setTableData(updatedData);
   };
 
-  const handleLinkAnhChange = (linkAnhList, index) => {
-    if (linkAnhList && linkAnhList.length > 0) {
-      const updatedDataSource = tableData.map((item) => {
-        if (item.tenMau === index || item.ghiChu === "") {
-          // Cập nhật giá trị ghiChu với một mảng các liên kết
-          return { ...item, ghiChu: linkAnhList[0], linkAnh: linkAnhList };
-        }
-        return item;
-      });
-      setTableData(updatedDataSource);
-    }
+  const handleLinkAnhChange = (linkAnhList, tenMau) => {
+    const updatedDataSource = tableData.map((item) => {
+      if (item.tenMau === tenMau) {
+        return {
+          ...item,
+          hinhAnh: linkAnhList[0] || "",   
+          linkAnh: linkAnhList, 
+        };
+      }
+      return item;
+    });
+
+    setTableData(updatedDataSource);
   };
 
   const onChangeKT = (selectedOption) => {
@@ -110,8 +107,8 @@ export default function AddSanPham() {
   const onChangeH = (selectedOption) => {
     setDataHangs(selectedOption);
   };
-  const onChangeDG = (selectedOption) => {
-    setDataDeGiays(selectedOption);
+  const onChangeGT = (selectedOption) => {
+    setDataGioiTinhs(selectedOption);
   };
   const onChangeDM = (selectedOption) => {
     setDataDanhMucs(selectedOption);
@@ -150,7 +147,7 @@ export default function AddSanPham() {
     const newDataMS = msData.filter((data) => dataMauSac.includes(data.ma));
     const newDataCL = cl.filter((data) => dataChatLieu.includes(data.ten));
     const newDataH = h.filter((data) => dataHang.includes(data.ten));
-    const newDataDG = dc.filter((data) => dataDeGiay.includes(data.ten));
+    const newDataGT = gt.filter((data) => dataGioiTinh.includes(data.ten));
     const newDataDM = dm.filter((data) => dataDanhMuc.includes(data.ten));
     const newDataSP = optionsSP.filter((data) =>
       dataSanPham.includes(data.ten)
@@ -160,7 +157,7 @@ export default function AddSanPham() {
       if (
         newDataCL.length <= 0 ||
         newDataH.length <= 0 ||
-        newDataDG.length <= 0 ||
+        newDataGT.length <= 0 ||
         newDataDM.length <= 0 ||
         newDataSP.length <= 0 ||
         dataSoLuong === "" ||
@@ -196,12 +193,12 @@ export default function AddSanPham() {
             moTa: dataMoTa,
             chatLieu: newDataCL[0].id,
             hang: newDataH[0].id,
-            deGiay: newDataDG[0].id,
+            gioiTinh: newDataGT[0].id,
             danhMuc: newDataDM[0].id,
             mauSac: newDataMS[j].id,
             kichThuoc: newDataKT[i].id,
             linkAnh: null,
-            ghiChu: null,
+            hinhAnh: null,
             soLuong: dataSoLuong,
             giaBan: dataGiaBan,
             stt: index++,
@@ -251,12 +248,6 @@ export default function AddSanPham() {
     setColorGroups(Object.entries(groupedCTSP));
   };
 
-  const [selectedColor, setSelectedColor] = useState(null);
-  const handleUploadAnh = (tenMau) => {
-    setSelectedColor(tenMau);
-    setAddAnhs(true);
-  };
-
   useEffect(() => {
     filterProducts();
   }, [tableData]);
@@ -272,12 +263,13 @@ export default function AddSanPham() {
     dataMoTa,
     dataChatLieu,
     dataHang,
-    dataDeGiay,
+    dataGioiTinh,
     dataDanhMuc,
   ]);
 
   //Update nhanh
   const updateNhanh = (newValues) => {
+    console.log("hihi")
     if (selectedRowKeys.length <= 0) {
       toast.error("Chưa chọn dòng để sửa !", {
         position: "top-right",
@@ -400,7 +392,7 @@ export default function AddSanPham() {
     },
     {
       title: "Hành động",
-      dataIndex: "ghiChu",
+      dataIndex: "hinhAnh",
       width: 100,
       render: (_, record) => {
         return (
@@ -527,7 +519,7 @@ export default function AddSanPham() {
     }
 
     for (let i = 0; i < tableData.length; i++) {
-      if (tableData[i].ghiChu == null) {
+      if (!tableData[i].linkAnh || tableData[i].linkAnh.length === 0) {
         toast.error("Không để trống ảnh!", {
           position: "top-right",
           autoClose: 5000,
@@ -541,10 +533,10 @@ export default function AddSanPham() {
         return;
       }
     }
-
     const promises = [];
     for (let i = 0; i < tableData.length; i++) {
-      promises.push(ChiTietSanPhamAPI.createCTSP(tableData[i]));
+      console.log(tableData[i])
+      promises.push(ChiTietSanPhamAPI.themChiTietSanPham(tableData[i]));
     }
     Promise.all(promises)
       .then(() => {
@@ -577,9 +569,10 @@ export default function AddSanPham() {
     loadSP();
   }, []);
   const loadSP = async () => {
-    // ThuocTinhAPI.getAllSanPhamForAdd().then((response) => {
-    //   setOptionsSP(response.data);
-    // });
+    ThuocTinhAPI.getAllSanPhamForAdd().then((response) => {
+      const data = response.data;
+      setOptionsSP(data);
+    });
   };
   //Load Kích Thước
   const [openKT, setOpenKT] = useState(false);
@@ -619,17 +612,17 @@ export default function AddSanPham() {
     });
   };
 
-  // Load Độ Cao
-  const [openDC, setOpenDC] = useState(false);
-  const [dc, setDC] = useState([]);
+  // Load Giới tính
+  const [openGT, setOpenGT] = useState(false);
+  const [gt, setGT] = useState([]);
 
   useEffect(() => {
-    loadDC();
+    loadGT();
   }, []);
-  const loadDC = async () => {
-    ThuocTinhAPI.getAll("de-giay").then((response) => {
+  const loadGT = async () => {
+    ThuocTinhAPI.getAll("gioi-tinh").then((response) => {
       const data = response.data;
-      setDC(data);
+      setGT(data);
     });
   };
 
@@ -645,7 +638,7 @@ export default function AddSanPham() {
       setDM(data);
     });
   };
- 
+
   // Load Hãng
   const [openH, setOpenH] = useState(false);
   const [h, setH] = useState([]);
@@ -741,7 +734,7 @@ export default function AddSanPham() {
               <div className="row">
                 <Form.Item
                   className="col"
-                  style={{ paddingLeft: 150 }}
+                  style={{ paddingLeft: 300 }}
                   name="sanPham"
                   label={<b>Tên Sản Phẩm </b>}
                   hasFeedback
@@ -777,7 +770,7 @@ export default function AddSanPham() {
                     onClick={() => setOpenSP(true)}
                     icon={<PlusCircleOutlined />}
                   ></Button>
-                  {/* <AddSanPhamModal
+                  <AddSanPhamModal
                     open={openSP}
                     onClose={() => setOpenSP(false)}
                     form={form1}
@@ -785,13 +778,14 @@ export default function AddSanPham() {
                     onFormLayoutChange={onFormLayoutChange}
                     loadSP={loadSP}
                     optionsSP={optionsSP}
-                  /> */}
+                  />
                 </Form.Item>
               </div>
               {/* Mô Tả */}
               <Form.Item
                 name="moTa"
                 label={<b>Mô tả </b>}
+                style={{ paddingLeft: 100 }}
                 hasFeedback
                 rules={[
                   { required: true, message: "Vui lòng không để trống mô tả!" },
@@ -813,7 +807,7 @@ export default function AddSanPham() {
                   <div className="row">
                     <Form.Item
                       className="col-md-10"
-                      style={{ paddingLeft: 87 }}
+                      style={{ paddingLeft: 205 }}
                       name="chatLieu"
                       hasFeedback
                       rules={[
@@ -843,7 +837,7 @@ export default function AddSanPham() {
                         onClick={() => setOpenCL(true)}
                         icon={<PlusCircleOutlined />}
                       ></Button>
-                      {/* <AddChatLieuModal
+                      <AddChatLieuModal
                         open={openCL}
                         onClose={() => setOpenCL(false)}
                         form={form1}
@@ -851,7 +845,7 @@ export default function AddSanPham() {
                         onFormLayoutChange={onFormLayoutChange}
                         cl={cl}
                         loadCL={loadCL}
-                      /> */}
+                      />
                     </Form.Item>
                   </div>
                 </div>
@@ -860,7 +854,7 @@ export default function AddSanPham() {
                   <div className="row">
                     <Form.Item
                       className="col-md-8"
-                      style={{ paddingLeft: 54 }}
+                      style={{ paddingLeft: 70 }}
                       name="hang"
                       label={<b>Hãng </b>}
                       hasFeedback
@@ -878,13 +872,13 @@ export default function AddSanPham() {
                         ))}
                       </Select>
                     </Form.Item>
-                    <Form.Item className="col-md-4" style={{ paddingLeft: 62 }}>
+                    <Form.Item className="col-md-4" style={{ paddingLeft: 0 }}>
                       <Button
                         className="bg-success text-white"
                         onClick={() => setOpenH(true)}
                         icon={<PlusCircleOutlined />}
                       ></Button>
-                      {/* <AddHangModal
+                      <AddHangModal
                         open={openH}
                         onClose={() => setOpenH(false)}
                         form={form1}
@@ -892,21 +886,21 @@ export default function AddSanPham() {
                         onFormLayoutChange={onFormLayoutChange}
                         h={h}
                         loadH={loadH}
-                      /> */}
+                      />
                     </Form.Item>
                   </div>
                 </div>
               </div>
-              {/* Đế giày & Danh mục */}
-              {/* Đế giày*/}
+              {/* Giới tính & Danh mục */}
+              {/* Giới tính*/}
               <div className="row">
                 <div className="col-md-6">
                   <div className="row">
                     <Form.Item
                       className="col-md-10"
-                      style={{ paddingLeft: 87 }}
-                      name="deGiay"
-                      label={<b>Đế giày </b>}
+                      style={{ paddingLeft: 205 }}
+                      name="gioiTinh"
+                      label={<b>Giới tính </b>}
                       hasFeedback
                       rules={[{ required: true, message: "" }]}
                     >
@@ -914,9 +908,9 @@ export default function AddSanPham() {
                         placeholder="Chọn một giá trị"
                         style={{ width: 307 }}
                         className="me-2"
-                        onChange={onChangeDG}
+                        onChange={onChangeGT}
                       >
-                        {dc.map((item) => (
+                        {gt.map((item) => (
                           <Select.Option key={item.id} value={item.ten}>
                             {item.ten}
                           </Select.Option>
@@ -926,18 +920,18 @@ export default function AddSanPham() {
                     <Form.Item className="col-md-2">
                       <Button
                         className="bg-success text-white"
-                        onClick={() => setOpenDC(true)}
+                        onClick={() => setOpenGT(true)}
                         icon={<PlusCircleOutlined />}
                       ></Button>
-                      {/* <AddDoCaoModal
-                        open={openDC}
-                        onClose={() => setOpenDC(false)}
-                        form={formDG}
+                      <AddGioiTinhModal
+                        open={openGT}
+                        onClose={() => setOpenGT(false)}
+                        form={formGT}
                         componentSize={componentSize}
                         onFormLayoutChange={onFormLayoutChange}
-                        dc={dc}
-                        loadDC={loadDC}
-                      /> */}
+                        gt={gt}
+                        loadGT={loadGT}
+                      />
                     </Form.Item>
                   </div>
                 </div>
@@ -945,8 +939,8 @@ export default function AddSanPham() {
                 <div className="col-md-6">
                   <div className="row">
                     <Form.Item
-                      className="col-md-9"
-                      style={{ paddingLeft: 39 }}
+                      className="col-md-8"
+                      style={{ paddingLeft: 70 }}
                       name="danhMuc"
                       label={<b>Danh mục</b>}
                       hasFeedback
@@ -965,13 +959,13 @@ export default function AddSanPham() {
                         ))}
                       </Select>
                     </Form.Item>
-                    <Form.Item className="col-md-3">
+                    <Form.Item className="col-md-4" style={{ paddingLeft: 0 }}>
                       <Button
                         className="bg-success text-white w-1"
                         onClick={() => setOpenDM(true)}
                         icon={<PlusCircleOutlined />}
                       ></Button>
-                      {/* <AddDanhMucModal
+                      <AddDanhMucModal
                         open={openDM}
                         onClose={() => setOpenDM(false)}
                         form={form1}
@@ -979,7 +973,7 @@ export default function AddSanPham() {
                         onFormLayoutChange={onFormLayoutChange}
                         dm={dm}
                         loadDM={loadDM}
-                      /> */}
+                      />
                     </Form.Item>
                   </div>
                 </div>
@@ -1053,7 +1047,7 @@ export default function AddSanPham() {
               </h5>
               <hr />
               {/* Kích Thước */}
-              <div className="row" style={{ paddingLeft: 150 }}>
+              <div className="row" style={{ paddingLeft: 290 }}>
                 <div className="col">
                   <Form.Item
                     label={<b>Kích thước </b>}
@@ -1094,7 +1088,7 @@ export default function AddSanPham() {
                       onClick={() => setOpenKT(true)}
                       icon={<PlusCircleOutlined />}
                     ></Button>
-                    {/* <AddKichThuocModal
+                    <AddKichThuocModal
                       open={openKT}
                       onClose={() => setOpenKT(false)}
                       form={formKT}
@@ -1102,13 +1096,13 @@ export default function AddSanPham() {
                       onFormLayoutChange={onFormLayoutChange}
                       ktData={ktData}
                       loadKT={loadKT}
-                    /> */}
+                    />
                     <br />
                   </Form.Item>
                 </div>
               </div>
               {/* Màu Sắc */}
-              <div className="row" style={{ paddingLeft: 150 }}>
+              <div className="row" style={{ paddingLeft: 290 }}>
                 <div className="col">
                   <Form.Item
                     label={<b>Màu sắc </b>}
@@ -1159,7 +1153,7 @@ export default function AddSanPham() {
                       onClick={() => setOpenMS(true)}
                       icon={<PlusCircleOutlined />}
                     ></Button>
-                    {/* <AddMauSacModal
+                    <AddMauSacModal
                       open={openMS}
                       onClose={() => setOpenMS(false)}
                       form={form3}
@@ -1168,7 +1162,7 @@ export default function AddSanPham() {
                       formItemLayout={formItemLayout}
                       msData={msData}
                       loadMS={loadMS}
-                    /> */}
+                    />
                   </Form.Item>
                 </div>
               </div>
@@ -1237,18 +1231,14 @@ export default function AddSanPham() {
                     className="bg-success text-white"
                     onClick={() => {
                       Modal.confirm({
-                        centered: "true",
+                        centered: true,
                         title: "Thông báo",
                         content: "Bạn có chắc chắn muốn thêm không?",
                         onOk: () => {
                           form.submit();
                         },
-                        footer: (_, { OkBtn, CancelBtn }) => (
-                          <>
-                            <CancelBtn />
-                            <OkBtn />
-                          </>
-                        ),
+                        okText: "Đồng ý",
+                        cancelText: "Hủy",
                       });
                     }}
                   >
