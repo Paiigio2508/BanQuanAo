@@ -5,6 +5,7 @@ import com.example.be.dto.request.admin.sanphamrequest.ThuocTinhSearchRequest;
 import com.example.be.service.SanPham.SanPhamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,10 @@ import java.time.LocalDateTime;
 public class SanPhamController {
     @Autowired
     SanPhamService sanPhamService;
-
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getALL(){
+        return new ResponseEntity<>(sanPhamService.getALL(), HttpStatus.OK);
+    }
     @GetMapping
     public ResponseEntity<?> getALLSP(){
         return  ResponseEntity.ok(sanPhamService.getAllSanPham());

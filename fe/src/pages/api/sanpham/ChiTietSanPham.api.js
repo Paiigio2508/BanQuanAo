@@ -22,7 +22,7 @@ export class ChiTietSanPhamAPI {
             },
         });
     };
-    
+
     static themChiTietSanPham = (data) => {
         const getToken = getHeader();
         return requestAdmin({
@@ -64,6 +64,40 @@ export class ChiTietSanPhamAPI {
             method: "POST",
             url: `/admin/chi-tiet-san-pham/search-ctsp/${id}`,
             data: data,
+            headers: {
+                Authorization: getToken,
+            },
+        });
+    };
+
+    static getAnhCTSP = (ten, idSP) => {
+        const getToken = getHeader();
+        return requestAdmin({
+            method: "GET",
+            url: `/admin/hinh-anh/${ten}/${idSP}`,
+            headers: {
+                Authorization: getToken,
+            },
+        });
+    };
+
+    static addAnhTheoMau = (id, data) => {
+        const getToken = getHeader();
+        return requestAdmin({
+            method: "POST",
+            data: data,
+            url: `/admin/hinh-anh/add-anh/${id}`,
+            headers: {
+                Authorization: getToken,
+            },
+        });
+    };
+
+    static deleteAnh = (idAnh) => {
+        const getToken = getHeader();
+        return requestAdmin({
+            method: "DELETE",
+            url: `admin/hinh-anh/delete-anh/${idAnh}`,
             headers: {
                 Authorization: getToken,
             },

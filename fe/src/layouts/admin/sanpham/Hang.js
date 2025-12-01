@@ -115,7 +115,7 @@ export default function Hang() {
     }
     ThuocTinhAPI.update("hang",hangUpdate.id, hangUpdate)
       .then((res) => {
-        toast('✔️ Sửa thành công!', {
+        toast.success('✔️ Sửa thành công!', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,

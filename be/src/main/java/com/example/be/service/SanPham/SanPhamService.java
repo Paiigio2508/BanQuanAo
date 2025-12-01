@@ -8,6 +8,7 @@ import com.example.be.entity.SanPham;
 
 import com.example.be.repository.SanPham.SanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,10 @@ import java.util.List;
 public class SanPhamService {
     @Autowired
     SanPhamRepository sanPhamRepository;
+    public List<SanPham> getALL() {
+        Sort sortByNgayTao = Sort.by(Sort.Direction.DESC, "ngayTao");
+        return sanPhamRepository.findAll(sortByNgayTao);
+    }
     public List<SanPhamRepo> getAllSanPham() {
         return sanPhamRepository.getALLSP();
     }
