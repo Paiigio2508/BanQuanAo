@@ -128,46 +128,60 @@ const ModalDetailSP = ({
     return t?.data;
   };
 
-  const updateCartDetail = async (gioHangId, ctsp, soLuong, thanhTien) => {
-    const r = await GioHangAPI.getAllGhctByIdGh(gioHangId);
-    const cur = (r?.data || []).find((x) => x.idCTSP === ctsp.idCTSP);
-    const soLuongHienCo = Number(cur?.soLuong ?? 0);
-    const thanhTienHienCo = Number(cur?.thanhTien ?? 0);
+const updateCartDetail = async (gioHangId, ctspId, soLuong, thanhTien) => {
+  const r = await GioHangAPI.getAllGhctByIdGh(gioHangId);
+  const cur = (r?.data || []).find((x) => x.idCTSP === ctspId);
 
-    const soLuongThem = Number(soLuong ?? 0);
-    const thanhTienThem = Number(thanhTien ?? 0);
+  const soLuongHienCo = Number(cur?.soLuong ?? 0);
+  const thanhTienHienCo = Number(cur?.thanhTien ?? 0);
 
-    const soLuongMoi = soLuongHienCo + soLuongThem;
-    const tienMoi = thanhTienHienCo + thanhTienThem;
-    const body = {
-      gioHang: { id: cur ? cur.idGioHang : gioHangId },
-      chiTietSanPham: { id: ctsp.idCTSP },
-      soLuong: soLuongMoi,
-      thanhTien: tienMoi,
-      ...(cur && { id: cur.idGhct }),
-    };
-    return cur ? GioHangAPI.updateGHCT(body) : GioHangAPI.addGHCT(body);
+  const soLuongThem = Number(soLuong ?? 0);
+  const thanhTienThem = Number(thanhTien ?? 0);
+
+  const soLuongMoi = soLuongHienCo + soLuongThem;
+  const tienMoi = thanhTienHienCo + thanhTienThem;
+
+  const body = {
+    gioHang: { id: cur ? cur.idGioHang : gioHangId },
+    chiTietSanPham: { id: ctspId },          // dùng ctspId
+    soLuong: soLuongMoi,
+    thanhTien: tienMoi,
+    ...(cur && { id: cur.idGhct }),
   };
+  return cur ? GioHangAPI.updateGHCT(body) : GioHangAPI.addGHCT(body);
+};
 
-  const handleAddGioHang = async () => {
-    try {
-      if (Number(soLuong) > Number(productData?.soLuong || 0))
-        return toast.error("Số lượng sản phẩm không đủ!");
-      const gh = await getOrCreateCart(
-        storedData ? storedData.userID : null,
-        storedGioHang
-      );
-      if (!gh?.id) throw new Error("Không xác định giỏ hàng.");
-      const thanhTien =
-        (selectedVariant?.giaBan ?? productData.giaBan) * soLuong;
-      await updateCartDetail(gh.id, productData, soLuong, thanhTien);
-      loadCountGioHang();
-      toast.success("✔️ Thêm thành công!", { position: "top-right" });
-    } catch (e) {
-      console.error(e);
-      toast.error("Thêm giỏ hàng thất bại. Vui lòng thử lại!");
+
+const handleAddGioHang = async () => {
+  try {
+    if (!selectedVariant) {
+      toast.error("Vui lòng chọn màu và size!");
+      return;
     }
-  };
+
+    if (Number(soLuong) > Number(selectedVariant.soLuong || 0)) {
+      toast.error("Số lượng sản phẩm không đủ!");
+      return;
+    }
+
+    const gh = await getOrCreateCart(
+      storedData ? storedData.userID : null,
+      storedGioHang
+    );
+    if (!gh?.id) throw new Error("Không xác định giỏ hàng.");
+
+    const thanhTien = (selectedVariant.giaBan ?? productDetail?.giaBan) * soLuong;
+
+    await updateCartDetail(gh.id, selectedVariant.id, soLuong, thanhTien);
+
+    loadCountGioHang();
+    toast.success("✔️ Thêm thành công!", { position: "top-right" });
+  } catch (e) {
+    console.error(e);
+    toast.error("Thêm giỏ hàng thất bại. Vui lòng thử lại!");
+  }
+};
+
 
   const loadCountGioHang = async () => {
     try {
