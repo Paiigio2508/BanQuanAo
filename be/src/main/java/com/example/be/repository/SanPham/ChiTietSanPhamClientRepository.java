@@ -298,4 +298,21 @@ GROUP BY o.id, sp.ten, kt.ten, ms.ten, ms.ma, o.so_luong, o.gia_ban, o.trang_tha
                 dm.ten, cl.ten, gt.ten, h.ten;
             """ ,nativeQuery = true)
     List<ChiTietSanPhamRepo> getTimSanPham(@Param("tenTim") String tenTim);
+
+
+    // Lấy tất cả id CTSP theo (sp, màu) – dùng để lấy ảnh theo ctsp_id
+    @Query("""
+           SELECT ctsp.id FROM ChiTietSanPham ctsp
+           WHERE ctsp.sanPham.id = :idSanPham
+             AND ctsp.mauSac.id   = :mauSacId
+           """)
+    List<String> findIdsBySanPhamAndMauSac(@Param("idSanPham") String idSanPham,
+                                           @Param("mauSacId") String mauSacId);
+    // Tất cả CTSP của 1 SP (để build variants)
+    @Query("""
+    SELECT DISTINCT ctsp 
+    FROM ChiTietSanPham ctsp
+       WHERE ctsp.sanPham.id = :idSanPham
+    """)
+    List<ChiTietSanPham> findBySanPhamId(@Param("idSanPham") String idSanPham);
 }

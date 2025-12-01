@@ -16,6 +16,7 @@ import java.util.List;
 public interface ChiTietSanPhamRepository extends JpaRepository<ChiTietSanPham, String> {
     @Query(value = """
 					SELECT o.id AS idCTSP,
+
                     COALESCE(MAX(ha.url), 'Chưa có ảnh') AS linkAnh,
                     sp.ten AS tenSP,
                     kt.ten AS tenKT,

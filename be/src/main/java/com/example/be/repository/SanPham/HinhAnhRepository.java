@@ -29,4 +29,6 @@ public interface HinhAnhRepository extends JpaRepository<HinhAnh, String> {
     // Lấy gộp theo nhiều ctsp_id (để gom ảnh cho 1 màu – vì màu có nhiều biến thể size)
     @Query(value = "SELECT url FROM hinh_anh WHERE chi_tiet_san_pham_id IN (:ctspIds)", nativeQuery = true)
     List<String> findUrlsByCtspIds(@Param("ctspIds") List<String> ctspIds);
+    // Lấy gộp theo nhiều ctsp_id (để gom ảnh cho 1 màu – vì màu có nhiều biến thể size)
+
 }

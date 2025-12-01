@@ -1,43 +1,136 @@
 import { Button, Modal, Image, InputNumber } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import { get, set } from "local-storage";
 import { GioHangAPI } from "../../../pages/api/client/GioHangAPI";
 import { useCart } from "../../client/giohang/CartContext";
+import { HomeAPI } from "../../../pages/api/client/HomeAPI";
+
 const ModalDetailSP = ({
   openModalDetailSP,
   setOpenModalDetailSP,
   productData,
+  idCt,
+  setidCTSP,
+  idMS,
+  idKT,
 }) => {
+  // state hooks
+  const [productDetail, setProductDetail] = useState(null);
+  const [largeImage, setLargeImage] = useState("");
+  const [selectedMauSac, setSelectedMauSac] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
   const [soLuong, setSoLuong] = useState(1);
   const [adding, setAdding] = useState(false);
-  const storedData = get("userData");
-  const storedGioHang = get("GioHang");
-  const handleClose = () => setOpenModalDetailSP(false);
+  const [khachHang, setKhachHang] = useState(null);
+  console.log(productData);
+  // read storedData ONCE (stable reference) — prevents useEffect retrigger
+  const [storedData] = useState(() => get("userData"));
+  const [storedGioHang] = useState(() => get("GioHang"));
+
   const { updateTotalQuantity } = useCart();
-  if (!productData) return null; // tránh lỗi khi chưa có dữ liệu
+
+  /**
+   * Fetch product detail when idCt changes OR when incoming preset ids (idMS/idKT)
+   * We include idMS/idKT in deps so preset selection is applied when they change.
+   */
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!idCt) {
+      // clear previous detail when no id
+      setProductDetail(null);
+      setLargeImage("");
+      setSelectedMauSac(null);
+      setSelectedSize(null);
+      return;
+    }
+
+    (async () => {
+      try {
+        const res = await HomeAPI.getProductDetailByCtsp(idCt);
+        if (cancelled) return;
+        const data = res.data;
+        setProductDetail(data);
+
+        // Apply preset color/size if provided
+        if (idMS) {
+          setSelectedMauSac(idMS);
+          const color = data.colors?.find((c) => c.id === idMS);
+          if (color?.images?.length > 0) {
+            setLargeImage(color.images[0]);
+          }
+        } else {
+          // nếu không preset màu, chọn màu đầu tiên có ảnh (tùy bạn)
+          const firstColor = data.colors?.[0];
+          if (firstColor) {
+            setSelectedMauSac(firstColor.id);
+            if (firstColor.images?.[0]) setLargeImage(firstColor.images[0]);
+          }
+        }
+
+        if (idKT) {
+          setSelectedSize(idKT);
+        } else {
+          // chọn size mặc định nếu cần (ví dụ size đầu tiên)
+          const firstSize = data.sizes?.[0];
+          if (firstSize) setSelectedSize(firstSize.id);
+        }
+      } catch (e) {
+        console.error("loadProductDetail:", e);
+      }
+    })();
+
+    // load stored user id once
+    if (storedData) setKhachHang(storedData.userID);
+
+    return () => {
+      cancelled = true;
+    };
+    // include idCt, idMS, idKT; storedData is stable (useState) so no re-trigger
+  }, [idCt, idMS, idKT, storedData]);
+
+  /** Tìm variant theo màu + size (useMemo luôn được gọi) */
+  const selectedVariant = useMemo(() => {
+    if (!productDetail?.variants || !selectedMauSac || !selectedSize)
+      return null;
+    return (
+      productDetail.variants.find(
+        (v) => v.mauSacId === selectedMauSac && v.sizeId === selectedSize
+      ) || null
+    );
+  }, [productDetail, selectedMauSac, selectedSize]);
+
+  // if productData is required for rendering, return null AFTER hooks
+  if (!productData) return null;
+
+  const handleImageClick = (url) => setLargeImage(url);
+  const handleClose = () => {
+    setOpenModalDetailSP(false);
+    setidCTSP("");
+  };
 
   const soLuongTon = Number(productData.soLuong) || 0;
-  /** Render mã giỏ hàng */
   const taoMa = (n = 6, c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") =>
-  Array.from({ length: n }, () => c[(Math.random() * c.length) | 0]).join("");
+    Array.from({ length: n }, () => c[(Math.random() * c.length) | 0]).join("");
 
-  //kiểm tra tồn tại giỏ hàng chưa, khách hàng đăng nhập hay không đăng nhập
   const getOrCreateCart = async (khachHang, stored) => {
-    if (stored?.id) return stored;// nếu tồn tại giỏ hàng thì return về giỏ hàng
-    if (khachHang) {//kiểm tra nếu đăng nhập -> ktra khách có giỏ hàng chưa
+    if (stored?.id) return stored;
+    if (khachHang) {
       const r = await GioHangAPI.getByIDKH(khachHang);
-    if (r?.data) return r.data;
-      return (await GioHangAPI.addGH({ ma: taoMa(), nguoiDung:{id:khachHang}})).data;
+      if (r?.data) return r.data;
+      return (
+        await GioHangAPI.addGH({ ma: taoMa(), nguoiDung: { id: khachHang } })
+      ).data;
     }
     const t = await GioHangAPI.addGH({ ma: taoMa(), nguoiDung: null });
     set("GioHang", t?.data);
     return t?.data;
-    };
-  //update số lượng giỏ hàng
+  };
+
   const updateCartDetail = async (gioHangId, ctsp, soLuong, thanhTien) => {
     const r = await GioHangAPI.getAllGhctByIdGh(gioHangId);
-    const cur = (r?.data||[]).find(x => x.idCTSP === ctsp.idCTSP);
+    const cur = (r?.data || []).find((x) => x.idCTSP === ctsp.idCTSP);
     const soLuongHienCo = Number(cur?.soLuong ?? 0);
     const thanhTienHienCo = Number(cur?.thanhTien ?? 0);
 
@@ -47,32 +140,35 @@ const ModalDetailSP = ({
     const soLuongMoi = soLuongHienCo + soLuongThem;
     const tienMoi = thanhTienHienCo + thanhTienThem;
     const body = {
-      gioHang: {"id":cur ? cur.idGioHang : gioHangId},
-      chiTietSanPham: {"id":ctsp.idCTSP},
-      soLuong:soLuongMoi,
-      thanhTien:tienMoi,
-      ...(cur && { id: cur.idGhct })
+      gioHang: { id: cur ? cur.idGioHang : gioHangId },
+      chiTietSanPham: { id: ctsp.idCTSP },
+      soLuong: soLuongMoi,
+      thanhTien: tienMoi,
+      ...(cur && { id: cur.idGhct }),
     };
     return cur ? GioHangAPI.updateGHCT(body) : GioHangAPI.addGHCT(body);
-    };
-    //add sp vào giỏ hàng
-    const handleAddGioHang = async () => {
-      try {
-    
-        if (Number(soLuong) > Number(productData?.soLuong || 0))
-          return toast.error("Số lượng sản phẩm không đủ!");
-        const gh = await getOrCreateCart(storedData? storedData.userID:null, storedGioHang);
-        if (!gh?.id) throw new Error("Không xác định giỏ hàng.");
-    
-        const thanhTien = productData.giaBan*soLuong;
-        await updateCartDetail(gh.id, productData, soLuong, thanhTien);
+  };
+
+  const handleAddGioHang = async () => {
+    try {
+      if (Number(soLuong) > Number(productData?.soLuong || 0))
+        return toast.error("Số lượng sản phẩm không đủ!");
+      const gh = await getOrCreateCart(
+        storedData ? storedData.userID : null,
+        storedGioHang
+      );
+      if (!gh?.id) throw new Error("Không xác định giỏ hàng.");
+      const thanhTien =
+        (selectedVariant?.giaBan ?? productData.giaBan) * soLuong;
+      await updateCartDetail(gh.id, productData, soLuong, thanhTien);
       loadCountGioHang();
-        toast.success("✔️ Thêm thành công!", { position: "top-right" });
-      } catch (e) {
-        console.error(e);
-        toast.error("Thêm giỏ hàng thất bại. Vui lòng thử lại!");
-      }
-    };
+      toast.success("✔️ Thêm thành công!", { position: "top-right" });
+    } catch (e) {
+      console.error(e);
+      toast.error("Thêm giỏ hàng thất bại. Vui lòng thử lại!");
+    }
+  };
+
   const loadCountGioHang = async () => {
     try {
       const cartId = storedData?.userID
@@ -88,92 +184,152 @@ const ModalDetailSP = ({
       updateTotalQuantity(0);
     }
   };
+
   return (
     <Modal
       centered
-      open={openModalDetailSP} 
+      open={openModalDetailSP}
       onOk={handleClose}
       onCancel={handleClose}
       width={1000}
-      maskClosable
     >
       <div className="row">
-        <div className="col-md-6 d-flex justify-content-center align-items-center">
+        {/* Left */}
+        <div className="col-md-6 text-center">
           <Image
-            style={{ width: 450, height: 450, objectFit: "contain" }}
-            src={productData.linkAnh}
-            alt={productData.tenSP}
-            fallback="https://via.placeholder.com/450x450?text=No+Image"
+            style={{ width: 450, height: 450 }}
+            src={largeImage}
+            alt="Large Product"
           />
+          <div
+            className="d-flex mt-2"
+            style={{ gap: "8px", overflowX: "auto" }}
+          >
+            {productDetail?.colors
+              ?.find((c) => c.id === selectedMauSac)
+              ?.images?.map((url, i) => (
+                <img
+                  key={i}
+                  style={{
+                    width: 85,
+                    height: 85,
+                    cursor: "pointer",
+                    border: "2px solid #ccc",
+                    borderRadius: "6px",
+                    padding: "1px",
+                    flexShrink: 0,
+                  }}
+                  src={url}
+                  alt={`thumb-${i}`}
+                  onClick={() => handleImageClick(url)}
+                />
+              ))}
+          </div>
         </div>
 
+        {/* Right */}
         <div className="col-md-6">
-          <h3>
-            {productData.tenSP} - {productData.tenGT}
-          </h3>
-
-          <h5 className="mb-3" style={{ color: "red" }}>
+          <h3>{productDetail?.ten}</h3>
+          <h5 style={{ color: "red" }}>
             <span style={{ color: "black" }}>
-              {Intl.NumberFormat("vi-VN").format(
-                roundToThousands(productData.giaBan)
+              {Intl.NumberFormat("en-US").format(
+                selectedVariant?.giaBan || productDetail?.giaBan || 0
               )}{" "}
               VND
             </span>
           </h5>
 
           <hr />
-
           <h6>Màu</h6>
-          <Button
-            style={{
-              backgroundColor: productData.maMS,
-              borderRadius: 40,
-              width: 30,
-              height: 30,
-              border: "1px solid #000",
-            }}
-            aria-label={`Màu ${productData.tenMS || ""}`}
-          />
+          <div className="row">
+            {productDetail?.colors?.map((c) => {
+              const coHang = productDetail?.variants?.some(
+                (v) => v.mauSacId === c.id && v.soLuong > 0
+              );
+              return (
+                <div className="col-md-1" key={c.id}>
+                  <Button
+                    style={{
+                      backgroundColor: c.ma,
+                      borderRadius: 40,
+                      width: 30,
+                      height: 30,
+                      border:
+                        selectedMauSac === c.id
+                          ? "2px solid #4096ff"
+                          : "1px solid black",
+                    }}
+                    disabled={!coHang}
+                    onClick={() => {
+                      setSelectedMauSac(c.id);
+                      if (c.images?.length > 0) setLargeImage(c.images[0]);
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
 
           <hr />
-
           <h6>Size</h6>
-          <div>{productData.tenKT || "-"}</div>
+          <div className="row">
+            {productDetail?.sizes
+              ?.slice()
+              .sort((a, b) => a.ten.localeCompare(b.ten, "vi"))
+              .map((s) => {
+                const variant = productDetail?.variants?.find(
+                  (v) => v.mauSacId === selectedMauSac && v.sizeId === s.id
+                );
+                const hetHang = !variant || variant.soLuong <= 0;
+                return (
+                  <div className="col-md-1 me-2" key={s.id}>
+                    <Button
+                      style={{
+                        borderRadius: 10,
+                        width: 40,
+                        height: 40,
+                        border:
+                          selectedSize === s.id
+                            ? "1px solid #4096ff"
+                            : "1px solid #d9d9d9",
+                      }}
+                      disabled={hetHang}
+                      onClick={() => setSelectedSize(s.id)}
+                    >
+                      {s.ten}
+                    </Button>
+                  </div>
+                );
+              })}
+          </div>
 
           <h6 className="mt-3">Số lượng</h6>
           <div className="row">
             <div className="col">
               <InputNumber
                 min={1}
-                max={soLuongTon}
+                max={selectedVariant?.soLuong || 1}
                 value={soLuong}
-                onChange={(value) => setSoLuong(value || 1)} // ✅ tránh null
+                onChange={(val) => setSoLuong(val)}
               />
             </div>
-            <div className="col">{soLuongTon} sản phẩm có sẵn</div>
+            <div className="col">
+              {selectedVariant?.soLuong ?? 0} sản phẩm có sẵn
+            </div>
           </div>
 
-          <Button
-            className="mt-3"
-            type="primary"
-            onClick={handleAddGioHang}
-            disabled={soLuongTon < 1}
-          >
+          <Button className="mt-3" type="primary" onClick={handleAddGioHang}>
             Thêm vào giỏ hàng
           </Button>
 
           <hr />
-
           <h5>Mô tả sản phẩm:</h5>
-          {/* ✅ Đổi <p> bọc ngoài thành <div> để không lồng p trong p */}
-          <div>
-            <p>
-              ● <label className="me-2">Tên hãng:</label> {productData.tenHang}
-            </p>
-            <p>● Chất liệu: {productData.tenCL}</p>
-            <p>● Danh mục: {productData.tenDM}</p>
-            <div>{productData.moTa}</div>
-          </div>
+          <p>
+            ● Tên hãng: {productDetail?.tenHang} <br />● Giới tính:{" "}
+            {productDetail?.tenGioiTinh} <br />● Danh mục:{" "}
+            {productDetail?.tenDanhMuc} <br />● Chất liệu:{" "}
+            {productDetail?.tenChatLieu} <br />● Mô tả: {productDetail?.moTa}
+          </p>
         </div>
       </div>
     </Modal>
@@ -182,7 +338,7 @@ const ModalDetailSP = ({
 
 export default ModalDetailSP;
 
-// ✅ Tên function là "roundToThousands" thì làm tròn theo 1.000 cho đúng ý nghĩa
+// helper
 function roundToThousands(amount) {
   const n = Number(amount) || 0;
   return Math.round(n / 1000) * 1000;
