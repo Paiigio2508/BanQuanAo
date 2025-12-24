@@ -12,8 +12,8 @@ import java.util.*;
 
 public class Config {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_TmnCode = "C2S94ZUX";
-    public static String secretKey = "PUUWMXPFWJHPEEIAPJFABBHMKNYJNFSY";
+    public static String vnp_TmnCode = "KT37YYXU";
+    public static String secretKey = "UL6OBJEJA6WIT1GLO1ZO7CH0CWCYL1YX";
 
     public static String vnp_Version = "2.1.0";
     public static String vnp_Command = "pay";
