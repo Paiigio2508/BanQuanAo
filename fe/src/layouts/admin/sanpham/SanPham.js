@@ -310,7 +310,6 @@ export default function SanPham() {
             style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
           >
             {mauSacList.map((mau, index) => (
-              console.log(mau),
               <div key={index} style={{ width: "50%", padding: "0.5rem" }}>
                 <Tag
                   style={{

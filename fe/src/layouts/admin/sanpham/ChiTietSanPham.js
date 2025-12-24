@@ -134,7 +134,6 @@ export default function ChiTietSanPham() {
   const loadChiTietSanPham = () => {
     ChiTietSanPhamAPI.showCTSPBySanPhamId(id).then((res) => {
       setChiTietSanPhams(res.data);
-      console.log(res.data)
     })
   };
 
@@ -153,7 +152,6 @@ export default function ChiTietSanPham() {
   // Update
   const showModal = async (idCT) => {
     ChiTietSanPhamAPI.detailChiTietSanPham(idCT).then((result) => {
-      console.log(result.data)
       setMsCheck(result.data.mauSac)
       setKtCheck(result.data.kichThuoc)
       setCTDatas(result.data);
