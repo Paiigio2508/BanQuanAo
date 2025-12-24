@@ -23,7 +23,7 @@ const ModalDetailSP = ({
   const [soLuong, setSoLuong] = useState(1);
   const [adding, setAdding] = useState(false);
   const [khachHang, setKhachHang] = useState(null);
-  console.log(productData);
+
   // read storedData ONCE (stable reference) — prevents useEffect retrigger
   const [storedData] = useState(() => get("userData"));
   const [storedGioHang] = useState(() => get("GioHang"));

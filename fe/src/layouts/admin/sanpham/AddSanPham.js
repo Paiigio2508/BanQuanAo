@@ -269,7 +269,6 @@ export default function AddSanPham() {
 
   //Update nhanh
   const updateNhanh = (newValues) => {
-    console.log("hihi")
     if (selectedRowKeys.length <= 0) {
       toast.error("Chưa chọn dòng để sửa !", {
         position: "top-right",
@@ -535,7 +534,6 @@ export default function AddSanPham() {
     }
     const promises = [];
     for (let i = 0; i < tableData.length; i++) {
-      console.log(tableData[i])
       promises.push(ChiTietSanPhamAPI.themChiTietSanPham(tableData[i]));
     }
     Promise.all(promises)

@@ -22,7 +22,6 @@ const TabHistoryClient = ({ listBill = [] }) => {
 
   const showModalHuyHoaDon = (id) => {
     setIsModalHuyHoaDon(true);
-    console.log(id)
     setId(id);
   };
   const closeModalHuy = () => {
@@ -44,7 +43,6 @@ const TabHistoryClient = ({ listBill = [] }) => {
 
   const handleHuyHoaDon = async (values) => {
     const payload = { ...values, tenKH };
-    console.log(payload)
     HoaDonClientAPI.detailSanPham(id).then((res) => {
       res.data.map((listSanPham, index) =>
         HoaDonClientAPI.deleteInvoiceAndRollBackProduct(listSanPham.idCTSP, id)

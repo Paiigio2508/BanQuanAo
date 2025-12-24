@@ -19,7 +19,7 @@ export const ProductCard = ({ product }) => {
 
       <div className="contentBox">
         <h3 className="product-name" style={{ textAlign: "center" }}>
-          {product.tenSP} [{product.tenMS} - {product.tenKT}]<br></br>
+          {product.tenSP} [{product.tenKT}]<br></br>
           <Button
             className="ms-2"
             styles={{ border: "1px solid black" }}

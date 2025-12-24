@@ -21,7 +21,6 @@ const DetailTraCuuDonHang = () => {
 
         setHoaDonState(resHD.data);
         setListSanPhams(resSP.data);
-        console.log(resHD.data);
       } catch (error) {
         console.error("Lỗi khi load chi tiết đơn hàng:", error);
       }

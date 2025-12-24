@@ -53,8 +53,6 @@ export default function MauSac() {
     setComponentSize(size);
   };
   const formChange = (changedValues, allValues) => {
-    console.log("Changed values:", changedValues); // Các giá trị mới thay đổi
-    console.log("All values:", allValues); // Tất cả các giá trị
   };
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
